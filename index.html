@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>静寂な森の宿 山しのぶ｜小田温泉・熊本 阿蘇</title>
+  <meta name="description" content="熊本・小田温泉。大きな森の静けさに抱かれた全12室の宿。美肌成分たっぷりの自家源泉、地産地消の会席料理。公式サイト最安値保証。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest: #1e3a2f;
+      --forest-light: #2d5040;
+      --gold: #b8943f;
+      --gold-light: #d4af60;
+      --cream: #f4f0e8;
+      --warm-white: #faf8f4;
+      --charcoal: #2a2a2a;
+      --text-muted: #6b6b5e;
+      --border: rgba(184,148,63,0.25);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--charcoal);
+      background: var(--warm-white);
+      line-height: 1.8;
+    }
+
+    /* ===== STICKY HEADER ===== */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      background: rgba(10,25,18,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(184,148,63,0.2);
+      transition: background 0.3s;
+    }
+
+    .header-logo {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.05rem;
+      color: var(--gold-light);
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .header-nav a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+
+    .header-nav a:hover { color: var(--gold-light); }
+
+    .btn-book-header {
+      background: var(--gold);
+      color: #fff !important;
+      padding: 0.45rem 1.2rem;
+      border-radius: 2px;
+      font-weight: 500;
+      font-size: 0.82rem !important;
+      letter-spacing: 0.1em;
+      transition: background 0.2s !important;
+      white-space: nowrap;
+    }
+
+    .btn-book-header:hover { background: var(--gold-light) !important; }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      height: 100vh;
+      min-height: 600px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--forest);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(5,20,12,0.35) 0%, rgba(5,20,12,0.55) 60%, rgba(5,20,12,0.85) 100%),
+        url('https://images.unsplash.com/photo-1542640244-7e672d6cef4e?w=1600&q=80') center/cover no-repeat;
+      animation: zoomIn 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(1); }
+      to { transform: scale(1.06); }
+    }
+
+    .hero-content {
+      position: relative;
+      text-align: center;
+      color: #fff;
+      padding: 0 1.5rem;
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--gold-light);
+      border: 1px solid var(--gold);
+      padding: 0.3rem 1rem;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 1s ease both;
+    }
+
+    .hero-en {
+      font-size: 0.75rem;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      animation: fadeUp 1s 0.15s ease both;
+    }
+
+    .hero-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      line-height: 1.4;
+      margin-bottom: 1.4rem;
+      animation: fadeUp 1s 0.3s ease both;
+    }
+
+    .hero-title span {
+      display: block;
+      font-size: 0.5em;
+      letter-spacing: 0.25em;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-copy {
+      font-size: clamp(0.85rem, 1.8vw, 1rem);
+      color: rgba(255,255,255,0.82);
+      letter-spacing: 0.05em;
+      line-height: 2;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 1s 0.45s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeUp 1s 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--gold);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.9rem 2.4rem;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.15em;
+      border: 2px solid var(--gold);
+      transition: all 0.25s;
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--gold-light);
+    }
+
+    .btn-outline {
+      display: inline-block;
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 0.9rem 2rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
+      border: 1px solid rgba(255,255,255,0.4);
+      transition: all 0.25s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: rgba(255,255,255,0.45);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      animation: fadeUp 1s 1.2s ease both;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.45));
+      animation: scrollPulse 2s ease infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(0.8); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    /* ===== HIGHLIGHT BAR ===== */
+    .highlight-bar {
+      background: var(--forest);
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      padding: 0;
+    }
+
+    .highlight-item {
+      flex: 1;
+      max-width: 280px;
+      text-align: center;
+      padding: 1.6rem 1rem;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .highlight-item:last-child { border-right: none; }
+
+    .highlight-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .highlight-item strong {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.88rem;
+      color: var(--gold-light);
+      letter-spacing: 0.1em;
+      display: block;
+    }
+
+    .highlight-item small {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.05em;
+      line-height: 1.5;
+    }
+
+    /* ===== SECTIONS ===== */
+    section { padding: 6rem 1.5rem; }
+
+    .section-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+
+    .section-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      line-height: 1.5;
+      color: var(--forest);
+    }
+
+    .section-body {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 2.1;
+      max-width: 540px;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--gold);
+      margin: 1.2rem 0 1.6rem;
+    }
+
+    /* ===== ABOUT ===== */
+    .about {
+      background: var(--warm-white);
+    }
+
+    .about-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .about-image {
+      position: relative;
+    }
+
+    .about-image img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .about-image::before {
+      content: '';
+      position: absolute;
+      top: -16px;
+      left: -16px;
+      right: 16px;
+      bottom: 16px;
+      border: 1px solid var(--border);
+      z-index: -1;
+    }
+
+    .about-award {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 2rem;
+      padding: 0.6rem 1rem;
+      background: var(--cream);
+      border-left: 3px solid var(--gold);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== ONSEN ===== */
+    .onsen {
+      background: var(--forest);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .onsen::before {
+      content: '湯';
+      position: absolute;
+      right: -0.1em;
+      top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 20rem;
+      color: rgba(255,255,255,0.025);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .onsen-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .onsen .section-title { color: #fff; }
+    .onsen .section-body { color: rgba(255,255,255,0.7); max-width: none; }
+    .onsen .divider { background: var(--gold-light); }
+
+    .onsen-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin-top: 2.5rem;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .onsen-stat {
+      background: rgba(255,255,255,0.04);
+      padding: 1.4rem;
+      text-align: center;
+    }
+
+    .onsen-stat .num {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.8rem;
+      color: var(--gold-light);
+      display: block;
+      line-height: 1.2;
+    }
+
+    .onsen-stat .unit { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+    .onsen-stat .label { font-size: 0.72rem; color: rgba(255,255,255,0.6); margin-top: 0.2rem; letter-spacing: 0.05em; }
+
+    .onsen-baths {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 2rem;
+    }
+
+    .bath-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .bath-item::before {
+      content: '';
+      width: 20px;
+      height: 1px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .onsen-image img {
+      width: 100%;
+      height: 520px;
+      object-fit: cover;
+    }
+
+    /* ===== ROOMS ===== */
+    .rooms {
+      background: var(--cream);
+    }
+
+    .rooms-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .rooms-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .rooms-header .divider { margin: 1.2rem auto 1.6rem; }
+
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .room-card {
+      background: #fff;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .room-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+    }
+
+    .room-card img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s;
+    }
+
+    .room-card:hover img { transform: scale(1.04); }
+    .room-card-img { overflow: hidden; }
+
+    .room-card-body {
+      padding: 1.4rem 1.5rem 1.8rem;
+    }
+
+    .room-type {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .room-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.02rem;
+      font-weight: 500;
+      line-height: 1.5;
+      color: var(--forest);
+      margin-bottom: 0.8rem;
+    }
+
+    .room-desc {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+      margin-bottom: 1rem;
+    }
+
+    .room-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      padding: 0.2rem 0.6rem;
+      background: var(--cream);
+      color: var(--forest);
+      letter-spacing: 0.05em;
+      border: 1px solid var(--border);
+    }
+
+    .rooms-cta {
+      text-align: center;
+      margin-top: 3rem;
+    }
+
+    .btn-dark {
+      display: inline-block;
+      background: var(--forest);
+      color: #fff;
+      text-decoration: none;
+      padding: 0.9rem 2.8rem;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.15em;
+      border: 2px solid var(--forest);
+      transition: all 0.25s;
+    }
+
+    .btn-dark:hover {
+      background: transparent;
+      color: var(--forest);
+    }
+
+    /* ===== CUISINE ===== */
+    .cuisine {
+      background: var(--warm-white);
+    }
+
+    .cuisine-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .cuisine-image-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 6px;
+      height: 500px;
+    }
+
+    .cuisine-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cuisine-image-wrap img:first-child {
+      grid-column: 1 / 3;
+      height: 280px;
+    }
+
+    .cuisine-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    .cuisine-feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.2rem;
+      background: var(--cream);
+      border-left: 2px solid var(--gold);
+    }
+
+    .feature-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+    .feature-text strong {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--forest);
+      margin-bottom: 0.2rem;
+    }
+
+    .feature-text span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ===== FACILITIES ===== */
+    .facilities {
+      background: var(--cream);
+    }
+
+    .facilities-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .facilities-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .facilities-header .divider { margin: 1.2rem auto 1.6rem; }
+
+    .facilities-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .facility-card {
+      background: #fff;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      border-top: 2px solid transparent;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .facility-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+    }
+
+    .facility-icon { font-size: 2rem; margin-bottom: 0.8rem; }
+
+    .facility-name {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.9rem;
+      color: var(--forest);
+      margin-bottom: 0.4rem;
+    }
+
+    .facility-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ===== CTA BAND ===== */
+    .cta-band {
+      background: linear-gradient(135deg, var(--forest) 0%, #0d2820 100%);
+      padding: 5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-band::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1504870712357-65ea720d6078?w=1200&q=50') center/cover no-repeat;
+      opacity: 0.08;
+    }
+
+    .cta-band-inner {
+      position: relative;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .cta-band .section-label { color: var(--gold-light); }
+
+    .cta-title {
+      font-family: 'Noto Serif JP', serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      color: #fff;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .cta-note {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    .cta-note span {
+      color: var(--gold-light);
+      font-weight: 500;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-gold-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--gold);
+      color: #fff;
+      text-decoration: none;
+      padding: 1rem 2.8rem;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      border: 2px solid var(--gold);
+      transition: all 0.25s;
+    }
+
+    .btn-gold-lg:hover {
+      background: var(--gold-light);
+      border-color: var(--gold-light);
+    }
+
+    .btn-tel {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 1rem 2rem;
+      font-size: 0.92rem;
+      letter-spacing: 0.1em;
+      border: 1px solid rgba(255,255,255,0.3);
+      transition: all 0.25s;
+    }
+
+    .btn-tel:hover {
+      border-color: var(--gold-light);
+      color: var(--gold-light);
+    }
+
+    /* ===== ACCESS ===== */
+    .access {
+      background: var(--warm-white);
+    }
+
+    .access-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .access-map {
+      height: 380px;
+      background: #d4d0c8;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .access-map iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .access-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .access-row {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .access-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .access-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      width: 70px;
+      flex-shrink: 0;
+      padding-top: 0.1rem;
+    }
+
+    .access-value {
+      font-size: 0.85rem;
+      color: var(--charcoal);
+      line-height: 1.9;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: #0d1f16;
+      color: rgba(255,255,255,0.55);
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.1rem;
+      color: var(--gold-light);
+      letter-spacing: 0.2em;
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-address {
+      font-size: 0.75rem;
+      line-height: 2;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--gold-light); }
+
+    .footer-copy {
+      font-size: 0.68rem;
+      margin-top: 1.5rem;
+      color: rgba(255,255,255,0.25);
+    }
+
+    /* ===== FLOATING BOOK BTN (mobile) ===== */
+    .float-book {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 90;
+      background: var(--gold);
+      color: #fff;
+      text-align: center;
+      padding: 1rem;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      letter-spacing: 0.15em;
+      text-decoration: none;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.2);
+    }
+
+    /* ===== SCROLL ANIMATION ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .about-inner,
+      .onsen-inner,
+      .cuisine-inner,
+      .access-inner { grid-template-columns: 1fr; gap: 3rem; }
+
+      .onsen-inner { direction: initial; }
+
+      .rooms-grid { grid-template-columns: 1fr 1fr; }
+
+      .facilities-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .header-nav .nav-link { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      section { padding: 4rem 1.2rem; }
+
+      .rooms-grid { grid-template-columns: 1fr; }
+      .facilities-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .highlight-bar { flex-wrap: wrap; }
+      .highlight-item { flex: 0 0 50%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+
+      .float-book { display: block; }
+      header { padding: 0 1rem; }
+      .header-logo { font-size: 0.9rem; }
+
+      .cuisine-image-wrap { height: 340px; }
+      .cuisine-image-wrap img:first-child { height: 180px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-logo">山しのぶ</div>
+  <nav class="header-nav">
+    <a href="#onsen" class="nav-link">温泉</a>
+    <a href="#rooms" class="nav-link">お部屋</a>
+    <a href="#cuisine" class="nav-link">お料理</a>
+    <a href="#access" class="nav-link">アクセス</a>
+    <a href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener" class="btn-book-header">ご予約</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">KUMA MOTO · ODA ONSEN · SINCE ——</div>
+    <p class="hero-en">Yama Shinobu · A Quiet Forest Inn</p>
+    <h1 class="hero-title">
+      <span>静寂な森の宿</span>
+      山しのぶ
+    </h1>
+    <p class="hero-copy">
+      大きな森の静けさに抱かれた全12室。<br>
+      美肌成分溢れる自家源泉、地産地消の会席料理で<br>
+      心とカラダを深く癒す、小田温泉の宿。
+    </p>
+    <div class="hero-actions">
+      <a href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener" class="btn-primary">今すぐ予約する</a>
+      <a href="#about" class="btn-outline">宿について知る</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- HIGHLIGHT BAR -->
+<div class="highlight-bar">
+  <div class="highlight-item">
+    <div class="highlight-icon">♨</div>
+    <strong>7つの湯処</strong>
+    <small>自家源泉かけ流し<br>24時間いつでも入浴可</small>
+  </div>
+  <div class="highlight-item">
+    <div class="highlight-icon">🏡</div>
+    <strong>全12室の小宿</strong>
+    <small>温泉付き離れも完備<br>ゆったりとした時間を</small>
+  </div>
+  <div class="highlight-item">
+    <div class="highlight-icon">🍽</div>
+    <strong>地産地消の会席</strong>
+    <small>熊本の恵みを一品一品<br>丁寧に仕上げた料理</small>
+  </div>
+  <div class="highlight-item">
+    <div class="highlight-icon">🏆</div>
+    <strong>最安値保証</strong>
+    <small>公式サイト予約が<br>最もお得です</small>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-image reveal">
+      <img src="https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&q=80" alt="山しのぶ外観イメージ" loading="lazy">
+    </div>
+    <div class="about-text reveal">
+      <span class="section-label">About</span>
+      <h2 class="section-title">森の奥の<br>小さな隠れ宿</h2>
+      <div class="divider"></div>
+      <p class="section-body">
+        熊本・阿蘇の南西、小田温泉にたたずむ「山しのぶ」。黒川温泉から車でわずか5分の場所に、静かな森に守られた全12室の宿があります。<br><br>
+        大自然の静けさの中で、美肌成分豊かな源泉と、地元阿蘇の恵みを使った料理が旅人を迎えます。「好きな時に、好きなだけ」温泉を楽しめる贅沢な時間を、どうぞ。
+      </p>
+      <div class="about-award">
+        <span>🏅</span>
+        <span>TripAdvisor エクセレンス認証 受賞・全館禁煙</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ONSEN -->
+<section class="onsen" id="onsen">
+  <div class="onsen-inner">
+    <div class="onsen-text reveal">
+      <span class="section-label">Hot Spring</span>
+      <h2 class="section-title">肌を潤す<br>美人の湯</h2>
+      <div class="divider"></div>
+      <p class="section-body">
+        泉質はナトリウム-炭酸水素塩・塩化物・硫酸塩温泉。美肌成分として知られるメタケイ酸を310mg含有（有効とされる基準値の6倍以上）。のぼせにくく、心地よい湯加減が特長です。
+      </p>
+      <div class="onsen-stats">
+        <div class="onsen-stat">
+          <span class="num">67.4<span class="unit">℃</span></span>
+          <div class="label">源泉温度</div>
+        </div>
+        <div class="onsen-stat">
+          <span class="num">310<span class="unit">mg</span></span>
+          <div class="label">メタケイ酸含有量</div>
+        </div>
+        <div class="onsen-stat">
+          <span class="num">7</span>
+          <div class="label">湯処の数</div>
+        </div>
+        <div class="onsen-stat">
+          <span class="num">24<span class="unit">h</span></span>
+          <div class="label">入浴可能時間</div>
+        </div>
+      </div>
+      <div class="onsen-baths">
+        <div class="bath-item">男女別露天風呂・内風呂（24時間）</div>
+        <div class="bath-item">貸切風呂「川蝉の湯」（無料）</div>
+        <div class="bath-item">貸切風呂「啄木鳥の湯」（無料）</div>
+        <div class="bath-item">貸切風呂「五右衛門の湯」（無料）</div>
+        <div class="bath-item">立ち寄り湯も受付中（11〜14時）</div>
+      </div>
+    </div>
+    <div class="onsen-image reveal">
+      <img src="https://images.unsplash.com/photo-1596178065887-1198b6148b2b?w=800&q=80" alt="温泉イメージ" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section class="rooms" id="rooms">
+  <div class="rooms-inner">
+    <div class="rooms-header reveal">
+      <span class="section-label">Rooms</span>
+      <h2 class="section-title">5タイプ、全12室</h2>
+      <div class="divider"></div>
+      <p class="section-body" style="margin:0 auto; text-align:center;">
+        温泉付き離れから、使い勝手のよいスタンダード和室まで。旅のスタイルに合わせてお選びください。
+      </p>
+    </div>
+    <div class="rooms-grid">
+      <a class="room-card reveal" href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener">
+        <div class="room-card-img">
+          <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=600&q=80" alt="温泉付き離れ" loading="lazy">
+        </div>
+        <div class="room-card-body">
+          <span class="room-type">PREMIUM · 離れ</span>
+          <div class="room-name">和室二間（10畳＋4.5畳）<br>内風呂＋露天付き</div>
+          <p class="room-desc">当館で最も広い戸建ての離れ。グループやご家族での滞在に最適な、プライベート源泉付き客室。</p>
+          <div class="room-tags">
+            <span class="tag">露天風呂付</span>
+            <span class="tag">内風呂付</span>
+            <span class="tag">2〜6名</span>
+          </div>
+        </div>
+      </a>
+      <a class="room-card reveal" href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener">
+        <div class="room-card-img">
+          <img src="https://images.unsplash.com/photo-1540518614846-7eded433c457?w=600&q=80" alt="新館和洋室" loading="lazy">
+        </div>
+        <div class="room-card-body">
+          <span class="room-type">NEW 2023 · 新館</span>
+          <div class="room-name">和洋室（ベッド2台）<br>内風呂＋露天付き</div>
+          <p class="room-desc">2023年新設。ベッドの快適さと和の趣を融合。源泉かけ流しの露天・内湯を客室で楽しめます。</p>
+          <div class="room-tags">
+            <span class="tag">露天風呂付</span>
+            <span class="tag">ベッド2台</span>
+            <span class="tag">NEW</span>
+          </div>
+        </div>
+      </a>
+      <a class="room-card reveal" href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener">
+        <div class="room-card-img">
+          <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="和室スタンダード" loading="lazy">
+        </div>
+        <div class="room-card-body">
+          <span class="room-type">STANDARD · 和室</span>
+          <div class="room-name">和室（7.5畳＋3畳）<br>大浴場・貸切風呂利用</div>
+          <p class="room-desc">温泉はお部屋にありませんが、館内の男女別大浴場と無料の貸切風呂を24時間ご利用いただけます。</p>
+          <div class="room-tags">
+            <span class="tag">大浴場利用可</span>
+            <span class="tag">貸切風呂無料</span>
+            <span class="tag">2〜4名</span>
+          </div>
+        </div>
+      </a>
+    </div>
+    <div class="rooms-cta reveal">
+      <a href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener" class="btn-dark">全室・空室を確認して予約する</a>
+    </div>
+  </div>
+</section>
+
+<!-- CUISINE -->
+<section class="cuisine" id="cuisine">
+  <div class="cuisine-inner">
+    <div class="cuisine-text reveal">
+      <span class="section-label">Cuisine</span>
+      <h2 class="section-title">阿蘇の恵みを<br>一皿に</h2>
+      <div class="divider"></div>
+      <p class="section-body">
+        「地産地消、カラダにいいものを」をテーマに、熊本の食材にこだわった会席料理を提供しています。季節ごとに移ろう食材を、心を込めて一品一品丁寧に仕上げます。
+      </p>
+      <div class="cuisine-features">
+        <div class="cuisine-feature">
+          <div class="feature-icon">🐴</div>
+          <div class="feature-text">
+            <strong>熊本名物 馬刺し</strong>
+            <span>新鮮な熊本産馬刺しを旬の味わいとともに</span>
+          </div>
+        </div>
+        <div class="cuisine-feature">
+          <div class="feature-icon">🥩</div>
+          <div class="feature-text">
+            <strong>あか牛 &amp; 阿蘇鶏</strong>
+            <span>阿蘇産ブランド食材の陶板焼きを堪能</span>
+          </div>
+        </div>
+        <div class="cuisine-feature">
+          <div class="feature-icon">🍜</div>
+          <div class="feature-text">
+            <strong>自家製蕎麦 &amp; 川魚</strong>
+            <span>手打ち蕎麦と渓流の清流魚の塩焼き</span>
+          </div>
+        </div>
+        <div class="cuisine-feature">
+          <div class="feature-icon">🌾</div>
+          <div class="feature-text">
+            <strong>自家農園の米</strong>
+            <span>朝食は自家農園産のご飯でおかわり自由</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cuisine-image-wrap reveal">
+      <img src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80" alt="会席料理" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=400&q=80" alt="馬刺し" loading="lazy">
+      <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80" alt="陶板焼き" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- FACILITIES -->
+<section class="facilities" id="facilities">
+  <div class="facilities-inner">
+    <div class="facilities-header reveal">
+      <span class="section-label">Facilities</span>
+      <h2 class="section-title">館内施設</h2>
+      <div class="divider"></div>
+    </div>
+    <div class="facilities-grid">
+      <div class="facility-card reveal">
+        <div class="facility-icon">🌌</div>
+        <div class="facility-name">天文館</div>
+        <p class="facility-desc">阿蘇の澄んだ夜空を<br>満喫できる特別な空間</p>
+      </div>
+      <div class="facility-card reveal">
+        <div class="facility-icon">📚</div>
+        <div class="facility-name">図書館</div>
+        <p class="facility-desc">ゆったりと読書を楽しむ<br>静かな空間</p>
+      </div>
+      <div class="facility-card reveal">
+        <div class="facility-icon">🔥</div>
+        <div class="facility-name">囲炉裏</div>
+        <p class="facility-desc">日本古来の炉端で<br>ほっと温まる時間</p>
+      </div>
+      <div class="facility-card reveal">
+        <div class="facility-icon">♨️</div>
+        <div class="facility-name">足湯</div>
+        <p class="facility-desc">気軽に源泉を楽しめる<br>無料の足湯</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="cta-band-inner reveal">
+    <span class="section-label">Reservation</span>
+    <h2 class="cta-title">公式サイトからのご予約が<br>最もお得です</h2>
+    <p class="cta-note">
+      <span>最安値保証</span> — 公式サイト予約のみ特別特典あり。<br>
+      ご予約・お問い合わせはお気軽にどうぞ。
+    </p>
+    <div class="cta-buttons">
+      <a href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener" class="btn-gold-lg">
+        <span>📅</span> 空室を確認・予約する
+      </a>
+      <a href="tel:0967-44-0188" class="btn-tel">
+        <span>📞</span> 0967-44-0188
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ACCESS -->
+<section class="access" id="access">
+  <div class="access-inner">
+    <div class="reveal">
+      <span class="section-label">Access</span>
+      <h2 class="section-title">アクセス</h2>
+      <div class="divider"></div>
+      <div class="access-info">
+        <div class="access-row">
+          <span class="access-label">住所</span>
+          <div class="access-value">〒869-2402<br>熊本県阿蘇郡南小国町<br>満願寺5960（小田温泉）</div>
+        </div>
+        <div class="access-row">
+          <span class="access-label">電話</span>
+          <div class="access-value"><a href="tel:0967-44-0188" style="color:inherit;">0967-44-0188</a></div>
+        </div>
+        <div class="access-row">
+          <span class="access-label">福岡より</span>
+          <div class="access-value">大分自動車道 日田IC → 阿蘇方面 約1時間20分</div>
+        </div>
+        <div class="access-row">
+          <span class="access-label">熊本より</span>
+          <div class="access-value">九州自動車道 熊本IC → 阿蘇方面 約1時間30分</div>
+        </div>
+        <div class="access-row">
+          <span class="access-label">大分より</span>
+          <div class="access-value">湯布院IC → やまなみハイウェイ経由 約1時間</div>
+        </div>
+        <div class="access-row">
+          <span class="access-label">バス</span>
+          <div class="access-value">黒川温泉バス停よりタクシー約5分<br>15時以降は<strong>無料送迎あり</strong>（要連絡）</div>
+        </div>
+        <div class="access-row">
+          <span class="access-label">駐車場</span>
+          <div class="access-value">無料 12台</div>
+        </div>
+      </div>
+    </div>
+    <div class="access-map reveal">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3314.0!2d131.1!3d33.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3541d56f5a5a5a5a%3A0x0!2z5bGx44GX44Gu44G144CD5bGx44GX44Gu44G144GC!5e0!3m2!1sja!2sjp!4v1!5m2!1sja!2sjp"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="山しのぶ Google マップ">
+      </iframe>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">静寂な森の宿 山しのぶ</div>
+  <div class="footer-address">
+    〒869-2402 熊本県阿蘇郡南小国町満願寺5960（小田温泉）<br>
+    TEL: 0967-44-0188　全館禁煙
+  </div>
+  <div class="footer-links">
+    <a href="https://www.yamashinobu.com/" target="_blank" rel="noopener">公式サイト</a>
+    <a href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener">ご予約</a>
+    <a href="https://www.jhpds.net/yamashinobu/hi/hip9000/hiw9001Init.do?yadNo=354988" target="_blank" rel="noopener">予約変更・キャンセル</a>
+    <a href="https://www.facebook.com/yamashinobu/" target="_blank" rel="noopener">Facebook</a>
+  </div>
+  <div class="footer-copy">© 静寂な森の宿 山しのぶ All Rights Reserved.</div>
+</footer>
+
+<!-- FLOATING BOOK BUTTON (mobile) -->
+<a href="https://www.hpdsp.net/yamasinobu/hw/hwp3100/hww3101.do?yadNo=354988" target="_blank" rel="noopener" class="float-book">
+  今すぐ予約する（最安値保証）
+</a>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Header transparency
+  const header = document.querySelector('header');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 80) {
+      header.style.background = 'rgba(8,22,14,0.97)';
+    } else {
+      header.style.background = 'rgba(10,25,18,0.92)';
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>口コミ投稿のお願い｜静寂な森の宿 山しのぶ</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest: #1e3a2f;
+      --forest-light: #2d5040;
+      --gold: #b8943f;
+      --gold-light: #d4af60;
+      --cream: #f4f0e8;
+      --warm-white: #faf8f4;
+      --charcoal: #2a2a2a;
+      --text-muted: #6b6b5e;
+      --border: rgba(184,148,63,0.25);
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      color: var(--charcoal);
+      background: var(--forest);
+      line-height: 1.9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .logo {
+      font-family: 'Noto Serif JP', serif;
+      color: var(--gold-light);
+      letter-spacing: 0.2em;
+      font-size: 1rem;
+      margin: 1rem 0 1.5rem;
+      text-align: center;
+    }
+
+    .card {
+      background: var(--warm-white);
+      width: 100%;
+      max-width: 520px;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+
+    .card-head {
+      background: var(--forest-light);
+      color: #fff;
+      padding: 1.8rem 1.5rem 1.6rem;
+      text-align: center;
+    }
+
+    .card-head .thanks {
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      color: var(--gold-light);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-head h1 {
+      font-family: 'Noto Serif JP', serif;
+      font-weight: 400;
+      font-size: 1.25rem;
+      letter-spacing: 0.08em;
+      line-height: 1.6;
+    }
+
+    .card-body { padding: 1.6rem 1.5rem 2rem; }
+
+    .lead {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 1.4rem;
+    }
+
+    .review-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    .review-box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--gold);
+      border-radius: 4px;
+      padding: 1.2rem 1.2rem;
+      font-size: 0.92rem;
+      line-height: 2;
+      color: var(--charcoal);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      border: none;
+      border-radius: 4px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-copy {
+      background: var(--gold);
+      color: #fff;
+    }
+    .btn-copy:active { transform: scale(0.99); }
+    .btn-copy.done { background: var(--forest-light); }
+
+    .btn-map {
+      background: var(--forest);
+      color: #fff;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+    .btn-map.ready { pointer-events: auto; opacity: 1; }
+    .btn-map.ready:active { transform: scale(0.99); }
+
+    .steps {
+      margin-top: 1.6rem;
+      padding-top: 1.4rem;
+      border-top: 1px dashed var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+    .steps b { color: var(--forest); }
+    .steps ol { margin: 0.4rem 0 0 1.1rem; }
+    .steps li { margin-bottom: 0.3rem; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 2rem;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--charcoal);
+      color: #fff;
+      padding: 0.8rem 1.4rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 50;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .footer-note {
+      color: rgba(255,255,255,0.45);
+      font-size: 0.7rem;
+      margin-top: 1.6rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="logo">静寂な森の宿　山しのぶ</div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="thanks">THANK YOU</div>
+      <h1>ご回答ありがとうございました</h1>
+    </div>
+    <div class="card-body">
+      <p class="lead">
+        よろしければ、いただいたご感想を<br>
+        Googleマップにもご投稿いただけると嬉しいです。
+      </p>
+
+      <span class="review-label">▼ 投稿用の文章</span>
+      <div class="review-box" id="reviewText"></div>
+
+      <button class="btn btn-copy" id="copyBtn">
+        <span>📋</span> 文章をコピーする
+      </button>
+
+      <a class="btn btn-map" id="mapBtn"
+         href="https://search.google.com/local/writereview?placeid=ChIJA_dmf4UwQTURUlnJjTtKhxw"
+         target="_blank" rel="noopener">
+        <span>⭐</span> Googleマップへ投稿する
+      </a>
+
+      <div class="steps">
+        <b>かんたん3ステップ</b>
+        <ol>
+          <li>「文章をコピーする」を押す</li>
+          <li>「Googleマップへ投稿する」を押す</li>
+          <li>口コミ欄を長押しして貼り付け → 投稿</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note">静寂な森の宿 山しのぶ｜熊本・小田温泉</p>
+
+  <div class="toast" id="toast">コピーしました</div>
+
+  <script>
+    var DEFAULT_REVIEW =
+      "熊本・小田温泉の「静寂な森の宿 山しのぶ」に宿泊しました。\n" +
+      "森に包まれた静かな環境で、源泉かけ流しの温泉を心ゆくまで楽しめ、\n" +
+      "とてもゆったりとした時間を過ごせました。\n" +
+      "地産地消の会席料理も一品一品丁寧で、温かいおもてなしが印象的でした。\n" +
+      "また訪れたいと思える、特別な宿です。";
+
+    // URLの ?text= があればその文章（お客様の回答を反映した文）を表示。
+    // 無ければ上のサンプル文章を表示する。textContent で安全に挿入。
+    var params = new URLSearchParams(location.search);
+    var raw = params.get("text") || params.get("review");
+    var reviewText = (raw && raw.trim().length > 0) ? raw : DEFAULT_REVIEW;
+
+    var box = document.getElementById("reviewText");
+    box.textContent = reviewText;
+
+    var toast = document.getElementById("toast");
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(function () { toast.classList.remove("show"); }, 1800);
+    }
+
+    var copyBtn = document.getElementById("copyBtn");
+    var mapBtn = document.getElementById("mapBtn");
+
+    function unlockMap() {
+      mapBtn.classList.add("ready");
+    }
+
+    function fallbackCopy(t) {
+      var ta = document.createElement("textarea");
+      ta.value = t;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    copyBtn.addEventListener("click", function () {
+      var done = function () {
+        copyBtn.classList.add("done");
+        copyBtn.innerHTML = "<span>✓</span> コピーしました";
+        unlockMap();
+        showToast("コピーしました。次にマップへ進んでください");
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(reviewText).then(done, function () {
+          if (fallbackCopy(reviewText)) done();
+          else showToast("コピーできませんでした。長押しで選択してください");
+        });
+      } else {
+        if (fallbackCopy(reviewText)) done();
+        else showToast("コピーできませんでした。長押しで選択してください");
+      }
+    });
+  </script>
+
+</body>
+</html>
