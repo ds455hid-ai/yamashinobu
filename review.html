@@ -93,16 +93,35 @@
     }
 
     .review-box {
+      display: block;
+      width: 100%;
       background: #fff;
       border: 1px solid var(--border);
       border-left: 3px solid var(--gold);
       border-radius: 4px;
-      padding: 1.2rem 1.2rem;
+      padding: 1.2rem;
+      font-family: 'Noto Sans JP', sans-serif;
       font-size: 0.92rem;
       line-height: 2;
       color: var(--charcoal);
       white-space: pre-wrap;
       word-break: break-word;
+      resize: vertical;
+      overflow: hidden;
+      -webkit-appearance: none;
+    }
+
+    .review-box:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(184,148,63,0.25);
+    }
+
+    .edit-hint {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      line-height: 1.7;
     }
 
     .btn {
@@ -192,8 +211,9 @@
         Googleマップにもご投稿いただけると嬉しいです。
       </p>
 
-      <span class="review-label">▼ 投稿用の文章</span>
-      <div class="review-box" id="reviewText"></div>
+      <span class="review-label">▼ 投稿用の文章（自由に編集できます）</span>
+      <textarea class="review-box" id="reviewText" rows="6" aria-label="投稿用の文章"></textarea>
+      <p class="edit-hint">✏️ この文章はその場で書き換えられます。内容を確認し、必要なら修正してからコピーしてください。</p>
 
       <button class="btn btn-copy" id="copyBtn">
         <span>📋</span> 文章をコピーする
@@ -208,9 +228,9 @@
       <div class="steps">
         <b>かんたん3ステップ</b>
         <ol>
+          <li>上の文章を確認し、<b>必要なら自由に修正</b>する</li>
           <li>「文章をコピーする」を押す</li>
-          <li>「Googleマップへ投稿する」を押す</li>
-          <li>口コミ欄を長押しして貼り付け → 投稿</li>
+          <li>「Googleマップへ投稿する」→ 口コミ欄に貼り付けて投稿</li>
         </ol>
       </div>
     </div>
@@ -229,13 +249,21 @@
       "また訪れたいと思える、特別な宿です。";
 
     // URLの ?text= があればその文章（お客様の回答を反映した文）を表示。
-    // 無ければ上のサンプル文章を表示する。textContent で安全に挿入。
+    // 無ければ上のサンプル文章を表示する。
     var params = new URLSearchParams(location.search);
     var raw = params.get("text") || params.get("review");
     var reviewText = (raw && raw.trim().length > 0) ? raw : DEFAULT_REVIEW;
 
     var box = document.getElementById("reviewText");
-    box.textContent = reviewText;
+    box.value = reviewText;   // 編集可能な入力欄に初期表示
+
+    // 入力欄の高さを中身に合わせて自動調整（編集に応じて伸縮）
+    function autoResize() {
+      box.style.height = "auto";
+      box.style.height = (box.scrollHeight + 2) + "px";
+    }
+    autoResize();
+    box.addEventListener("input", autoResize);
 
     var toast = document.getElementById("toast");
     function showToast(msg) {
@@ -266,6 +294,7 @@
     }
 
     copyBtn.addEventListener("click", function () {
+      var current = box.value;   // ← お客様が編集した後の最新の文章をコピー
       var done = function () {
         copyBtn.classList.add("done");
         copyBtn.innerHTML = "<span>✓</span> コピーしました";
@@ -273,12 +302,12 @@
         showToast("コピーしました。次にマップへ進んでください");
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(reviewText).then(done, function () {
-          if (fallbackCopy(reviewText)) done();
+        navigator.clipboard.writeText(current).then(done, function () {
+          if (fallbackCopy(current)) done();
           else showToast("コピーできませんでした。長押しで選択してください");
         });
       } else {
-        if (fallbackCopy(reviewText)) done();
+        if (fallbackCopy(current)) done();
         else showToast("コピーできませんでした。長押しで選択してください");
       }
     });
