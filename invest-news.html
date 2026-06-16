@@ -218,6 +218,57 @@
     .badge-us { background: rgba(108,111,255,0.2); color: var(--accent); }
     .badge-crypto { background: rgba(0,200,150,0.2); color: var(--up); }
     .badge-fx { background: rgba(255,92,92,0.2); color: var(--down); }
+    .badge-orcan { background: rgba(99,179,237,0.2); color: #63b3ed; }
+
+    /* オルカン fund card */
+    .fund-card {
+      background: linear-gradient(135deg, rgba(99,179,237,0.1), rgba(108,111,255,0.08));
+      border: 1px solid rgba(99,179,237,0.3);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .fund-card-title {
+      font-size: 0.72rem;
+      color: #63b3ed;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.5rem;
+    }
+
+    .fund-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .fund-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .fund-stat {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 0.5rem 0.6rem;
+    }
+
+    .fund-stat-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+
+    .fund-stat-value {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .fund-stat-value.highlight { color: #63b3ed; }
 
     .impact {
       font-size: 0.72rem;
@@ -363,12 +414,18 @@
       <span class="ticker-price">18,943</span>
       <span class="ticker-change up-bg">+1.05%</span>
     </div>
+    <div class="ticker-item">
+      <span class="ticker-name">オルカン</span>
+      <span class="ticker-price" id="orcan-nav">¥24,318</span>
+      <span class="ticker-change up-bg" id="orcan-change">+0.61%</span>
+    </div>
   </div>
 </div>
 
 <!-- Tabs -->
 <div class="tabs">
   <button class="tab active" onclick="switchTab(this, 'all')">すべて</button>
+  <button class="tab" onclick="switchTab(this, 'orcan')">🌏 オルカン</button>
   <button class="tab" onclick="switchTab(this, 'jp')">🗾 日本株</button>
   <button class="tab" onclick="switchTab(this, 'us')">🇺🇸 米国株</button>
   <button class="tab" onclick="switchTab(this, 'crypto')">₿ 仮想通貨</button>
@@ -440,6 +497,20 @@
     <div class="card-footer">
       <span class="card-time">30分前</span>
       <span class="card-source">Reuters</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-orcan">オルカン</span>
+      <span class="impact up">▲ 好調</span>
+    </div>
+    <div class="card-headline">オルカン純資産残高が6兆円を突破、新NISA効果で個人買い継続</div>
+    <div class="card-summary">eMAXIS Slim 全世界株式の純資産残高が6兆円を超え、国内公募投信で歴代最速ペースで増加中。新NISAの成長投資枠・つみたて枠の両方で1位を維持。</div>
+    <div class="card-point"><span>📌 投資家視点</span>規模拡大により信託報酬のさらなる引き下げ期待も。長期積立の軸として引き続き有力。</div>
+    <div class="card-footer">
+      <span class="card-time">1日前</span>
+      <span class="card-source">三菱UFJ AM</span>
     </div>
   </div>
 </div>
@@ -628,6 +699,152 @@
     <div class="card-footer">
       <span class="card-time">4日前</span>
       <span class="card-source">SBI証券レポート</span>
+    </div>
+  </div>
+</div>
+
+<!-- Orcan Section -->
+<div id="section-orcan" class="section">
+  <div class="section-title">🌏 オルカン（全世界株式）</div>
+
+  <!-- Fund Stats Card -->
+  <div class="fund-card">
+    <div class="fund-card-title">📋 ファンド基本情報</div>
+    <div class="fund-name">eMAXIS Slim 全世界株式<br>（オール・カントリー）</div>
+    <div class="fund-stats">
+      <div class="fund-stat">
+        <div class="fund-stat-label">基準価額（前営業日）</div>
+        <div class="fund-stat-value highlight">¥24,318</div>
+      </div>
+      <div class="fund-stat">
+        <div class="fund-stat-label">前日比</div>
+        <div class="fund-stat-value up">+¥148（+0.61%）</div>
+      </div>
+      <div class="fund-stat">
+        <div class="fund-stat-label">純資産残高</div>
+        <div class="fund-stat-value">6.2兆円</div>
+      </div>
+      <div class="fund-stat">
+        <div class="fund-stat-label">信託報酬（年率）</div>
+        <div class="fund-stat-value highlight">0.05775%</div>
+      </div>
+      <div class="fund-stat">
+        <div class="fund-stat-label">設定来リターン</div>
+        <div class="fund-stat-value up">+143.2%</div>
+      </div>
+      <div class="fund-stat">
+        <div class="fund-stat-label">ベンチマーク</div>
+        <div class="fund-stat-value" style="font-size:0.72rem;">MSCI ACWI（円換算）</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 地域構成 -->
+  <div class="fund-card" style="margin-bottom:0.75rem;">
+    <div class="fund-card-title">🗺 主な組入地域（上位）</div>
+    <div style="margin-top:0.5rem; display:flex; flex-direction:column; gap:0.4rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.82rem;">🇺🇸 米国</span>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:120px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
+            <div style="width:63%; height:100%; background:#6c6fff; border-radius:3px;"></div>
+          </div>
+          <span style="font-size:0.78rem; color:var(--text); min-width:36px; text-align:right;">63.0%</span>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.82rem;">🗾 日本</span>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:120px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
+            <div style="width:5.5%; height:100%; background:#f5a623; border-radius:3px;"></div>
+          </div>
+          <span style="font-size:0.78rem; color:var(--text); min-width:36px; text-align:right;">5.5%</span>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.82rem;">🇬🇧 英国</span>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:120px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
+            <div style="width:3.7%; height:100%; background:#63b3ed; border-radius:3px;"></div>
+          </div>
+          <span style="font-size:0.78rem; color:var(--text); min-width:36px; text-align:right;">3.7%</span>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.82rem;">🇨🇳 中国</span>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:120px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
+            <div style="width:3.2%; height:100%; background:#fc8181; border-radius:3px;"></div>
+          </div>
+          <span style="font-size:0.78rem; color:var(--text); min-width:36px; text-align:right;">3.2%</span>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.82rem;">🌍 その他</span>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div style="width:120px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;">
+            <div style="width:24.6%; height:100%; background:var(--muted); border-radius:3px;"></div>
+          </div>
+          <span style="font-size:0.78rem; color:var(--text); min-width:36px; text-align:right;">24.6%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- News -->
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-orcan">オルカン</span>
+      <span class="impact up">▲ 好調</span>
+    </div>
+    <div class="card-headline">純資産残高6兆円突破 — 新NISAつみたて・成長投資枠で人気1位を維持</div>
+    <div class="card-summary">新NISA開始以来、つみたて投資枠・成長投資枠ともに買付金額1位をキープ。毎月の積立額は1,000億円超と推計され、純資産は急拡大中。</div>
+    <div class="card-point"><span>📌 投資家視点</span>残高増加により信託報酬のさらなる引き下げ（受益者還元型）の可能性あり。長期積立の核として信頼性◎。</div>
+    <div class="card-footer">
+      <span class="card-time">1日前</span>
+      <span class="card-source">三菱UFJ AM</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-orcan">オルカン</span>
+      <span class="impact down">▼ 注意</span>
+    </div>
+    <div class="card-headline">円高進行でオルカン基準価額に逆風 — 為替の影響を理解しよう</div>
+    <div class="card-summary">オルカンは約9割が海外資産のため、円高になると円換算の基準価額が下がる。ドル円が1円円高になるとオルカンは約0.6%下落する計算。</div>
+    <div class="card-point"><span>📌 投資家視点</span>為替変動は短期ノイズ。長期で積立を続けることでドルコスト平均法が機能し、為替リスクは分散される。</div>
+    <div class="card-footer">
+      <span class="card-time">3日前</span>
+      <span class="card-source">楽天証券レポート</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-orcan">オルカン</span>
+      <span class="impact up">▲ 参考</span>
+    </div>
+    <div class="card-headline">「オルカン vs S&P500」論争に結論は？ — 長期では大差なしが有力説</div>
+    <div class="card-summary">過去10年はS&P500が優位だったが、それ以前の10年はオルカンが優位。どちらが良いかは将来の米国比率次第で、分散の観点ではオルカンが王道。</div>
+    <div class="card-point"><span>📌 投資家視点</span>迷ったらオルカン1本が最もシンプルで合理的。S&P500は「米国への集中賭け」と理解した上で選ぶのが◎。</div>
+    <div class="card-footer">
+      <span class="card-time">5日前</span>
+      <span class="card-source">投信ブロガー調査</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-orcan">オルカン</span>
+      <span class="impact up">▲ お得情報</span>
+    </div>
+    <div class="card-headline">信託報酬0.05775%は世界最安水準 — 100万円を30年積立した場合の差は？</div>
+    <div class="card-summary">信託報酬が1%違うと30年後の資産額に約26%の差が生まれる試算。オルカンの低コストは長期投資での最大の武器のひとつ。</div>
+    <div class="card-point"><span>📌 投資家視点</span>毎月5万円を30年積立（年利6%想定）で約5,000万円。そのうちコスト節約分だけで約130万円の差が生まれる計算。</div>
+    <div class="card-footer">
+      <span class="card-time">1週間前</span>
+      <span class="card-source">モーニングスター</span>
     </div>
   </div>
 </div>
