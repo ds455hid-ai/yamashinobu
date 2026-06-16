@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>積立シミュレーター</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3348;
+      --accent: #6c6fff;
+      --green: #00c896;
+      --red: #ff5c5c;
+      --gold: #f5a623;
+      --blue: #63b3ed;
+      --text: #e8eaf0;
+      --muted: #7b82a0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,17,23,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.875rem 1rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .back-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.3rem 0.65rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .header h1 {
+      font-size: 1.05rem; font-weight: 700;
+      background: linear-gradient(135deg, #6c6fff, #00c896);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    /* ── Mode Tabs ── */
+    .mode-tabs {
+      display: flex; gap: 0;
+      padding: 0.75rem 1rem;
+      overflow-x: auto; scrollbar-width: none;
+      border-bottom: 1px solid var(--border);
+    }
+    .mode-tabs::-webkit-scrollbar { display: none; }
+
+    .mode-tab {
+      flex-shrink: 0;
+      padding: 0.45rem 0.9rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      margin-right: 0.4rem;
+    }
+    .mode-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .mode-tab:not(.active):hover { border-color: var(--border); color: var(--text); }
+
+    /* ── Panel ── */
+    .panel { display: none; padding: 1rem; }
+    .panel.active { display: block; }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 1rem; }
+
+    .form-label {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; color: var(--muted);
+      margin-bottom: 0.35rem;
+    }
+
+    .form-label strong {
+      font-size: 1rem; color: var(--text); font-weight: 700;
+    }
+
+    .form-label .unit { font-size: 0.72rem; color: var(--muted); }
+
+    input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--border);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg);
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg);
+    }
+
+    .range-row {
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    .range-input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.3rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      width: 72px;
+      text-align: center;
+    }
+
+    /* ── Calc Button ── */
+    .calc-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, var(--accent), #4e52cc);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin: 1.2rem 0;
+      letter-spacing: 0.04em;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .calc-btn:hover { opacity: 0.9; }
+    .calc-btn:active { transform: scale(0.98); }
+
+    /* ── Result ── */
+    .result-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .result-box.show { display: block; }
+
+    .result-title {
+      font-size: 0.72rem; color: var(--muted);
+      font-weight: 600; letter-spacing: 0.06em;
+      margin-bottom: 0.75rem;
+    }
+
+    .result-main {
+      font-size: 2rem; font-weight: 800;
+      color: var(--green);
+      margin-bottom: 0.25rem;
+      line-height: 1;
+    }
+
+    .result-sub { font-size: 0.78rem; color: var(--muted); margin-bottom: 1rem; }
+
+    .result-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.5rem; margin-bottom: 0.75rem;
+    }
+
+    .result-item {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 0.6rem 0.75rem;
+    }
+
+    .result-item-label { font-size: 0.68rem; color: var(--muted); margin-bottom: 2px; }
+    .result-item-value { font-size: 0.95rem; font-weight: 700; }
+    .c-green { color: var(--green); }
+    .c-blue { color: var(--blue); }
+    .c-gold { color: var(--gold); }
+    .c-red { color: var(--red); }
+
+    /* ── Chart ── */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      height: 200px;
+      margin-top: 0.75rem;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .chart-legend {
+      display: flex; gap: 1rem; margin-top: 0.5rem;
+    }
+
+    .legend-item {
+      display: flex; align-items: center; gap: 0.3rem;
+      font-size: 0.72rem; color: var(--muted);
+    }
+
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 2px; flex-shrink: 0;
+    }
+
+    /* ── Milestone ── */
+    .milestone-list { margin-top: 0.75rem; }
+    .milestone-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+    }
+    .milestone-item:last-child { border-bottom: none; }
+    .milestone-age { color: var(--muted); }
+    .milestone-val { font-weight: 700; }
+
+    /* ── Withdrawal schedule ── */
+    .withdrawal-note {
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 10px;
+      padding: 0.65rem 0.8rem;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+
+    .withdrawal-note strong { color: var(--gold); }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px; background: var(--border);
+      margin: 1rem 0;
+    }
+
+    /* ── Info tip ── */
+    .tip {
+      font-size: 0.75rem; color: var(--muted);
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+
+    .bottom-pad { height: 3rem; }
+
+    @media (min-width: 600px) {
+      .panel { padding: 1.25rem 1.5rem; }
+      .mode-tabs { padding: 0.75rem 1.5rem; }
+      .header { padding: 1rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <a href="invest-news.html" class="back-btn">← ニュース</a>
+  <h1>📈 積立シミュレーター</h1>
+</div>
+
+<!-- Mode Tabs -->
+<div class="mode-tabs">
+  <button class="mode-tab active" onclick="switchMode(this,'future')">将来いくら？</button>
+  <button class="mode-tab" onclick="switchMode(this,'need')">老後にいくら必要？</button>
+  <button class="mode-tab" onclick="switchMode(this,'reverse')">月いくら積立？</button>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL 1: 将来いくら？
+═══════════════════════════════════════════ -->
+<div id="panel-future" class="panel active">
+  <div class="tip">毎月一定額を積み立てた場合、老後に資産がいくらになるか計算します。</div>
+
+  <!-- 現在年齢 -->
+  <div class="form-group">
+    <div class="form-label">現在の年齢 <strong id="f-age-v">30</strong><span class="unit">歳</span></div>
+    <div class="range-row">
+      <input type="range" id="f-age" min="15" max="70" value="30"
+             oninput="sync('f-age','f-age-v','f-age-n');calcFuture()">
+      <input type="number" id="f-age-n" class="range-input" value="30" min="15" max="70"
+             oninput="sync2('f-age-n','f-age','f-age-v');calcFuture()">
+      <span style="font-size:.72rem;color:var(--muted)">歳</span>
+    </div>
+  </div>
+
+  <!-- 積立終了（老後開始）年齢 -->
+  <div class="form-group">
+    <div class="form-label">積立終了（老後開始）年齢 <strong id="f-retire-v">60</strong><span class="unit">歳</span></div>
+    <div class="range-row">
+      <input type="range" id="f-retire" min="40" max="80" value="60"
+             oninput="sync('f-retire','f-retire-v','f-retire-n');calcFuture()">
+      <input type="number" id="f-retire-n" class="range-input" value="60" min="40" max="80"
+             oninput="sync2('f-retire-n','f-retire','f-retire-v');calcFuture()">
+      <span style="font-size:.72rem;color:var(--muted)">歳</span>
+    </div>
+  </div>
+
+  <!-- 毎月の積立額 -->
+  <div class="form-group">
+    <div class="form-label">毎月の積立額 <strong id="f-amt-v">3</strong><span class="unit">万円</span></div>
+    <div class="range-row">
+      <input type="range" id="f-amt" min="1" max="50" step="0.5" value="3"
+             oninput="sync('f-amt','f-amt-v','f-amt-n');calcFuture()">
+      <input type="number" id="f-amt-n" class="range-input" value="3" min="1" max="50" step="0.5"
+             oninput="sync2('f-amt-n','f-amt','f-amt-v');calcFuture()">
+      <span style="font-size:.72rem;color:var(--muted)">万円</span>
+    </div>
+  </div>
+
+  <!-- 年利 -->
+  <div class="form-group">
+    <div class="form-label">想定年利 <strong id="f-rate-v">5</strong><span class="unit">%</span></div>
+    <div class="range-row">
+      <input type="range" id="f-rate" min="0" max="15" step="0.1" value="5"
+             oninput="sync('f-rate','f-rate-v','f-rate-n');calcFuture()">
+      <input type="number" id="f-rate-n" class="range-input" value="5" min="0" max="15" step="0.1"
+             oninput="sync2('f-rate-n','f-rate','f-rate-v');calcFuture()">
+      <span style="font-size:.72rem;color:var(--muted)">%</span>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcFuture()">計算する</button>
+
+  <!-- Result -->
+  <div id="future-result" class="result-box">
+    <div class="result-title">📊 老後開始時の資産総額</div>
+    <div class="result-main" id="f-total">—</div>
+    <div class="result-sub" id="f-sub">—</div>
+
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-item-label">積立元本</div>
+        <div class="result-item-value c-blue" id="f-principal">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">運用益</div>
+        <div class="result-item-value c-green" id="f-returns">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">積立期間</div>
+        <div class="result-item-value" id="f-period">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">お金が2倍になる年数</div>
+        <div class="result-item-value c-gold" id="f-double">—</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-wrap">
+      <canvas id="futureChart"></canvas>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#6c6fff"></div>元本</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00c896"></div>運用益</div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="divider"></div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.4rem;font-weight:600;">📍 節目の資産額</div>
+    <div class="milestone-list" id="f-milestones"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL 2: 老後にいくら必要？
+═══════════════════════════════════════════ -->
+<div id="panel-need" class="panel">
+  <div class="tip">老後に毎月いくら必要かを入力すると、必要な老後資金の総額を計算します。</div>
+
+  <!-- 老後の月生活費 -->
+  <div class="form-group">
+    <div class="form-label">老後の月生活費（目標） <strong id="n-expense-v">20</strong><span class="unit">万円</span></div>
+    <div class="range-row">
+      <input type="range" id="n-expense" min="5" max="80" value="20"
+             oninput="sync('n-expense','n-expense-v','n-expense-n');calcNeed()">
+      <input type="number" id="n-expense-n" class="range-input" value="20" min="5" max="80"
+             oninput="sync2('n-expense-n','n-expense','n-expense-v');calcNeed()">
+      <span style="font-size:.72rem;color:var(--muted)">万円</span>
+    </div>
+  </div>
+
+  <!-- 年金受給額（見込み） -->
+  <div class="form-group">
+    <div class="form-label">年金受給額（見込み） <strong id="n-pension-v">10</strong><span class="unit">万円/月</span></div>
+    <div class="range-row">
+      <input type="range" id="n-pension" min="0" max="40" value="10"
+             oninput="sync('n-pension','n-pension-v','n-pension-n');calcNeed()">
+      <input type="number" id="n-pension-n" class="range-input" value="10" min="0" max="40"
+             oninput="sync2('n-pension-n','n-pension','n-pension-v');calcNeed()">
+      <span style="font-size:.72rem;color:var(--muted)">万円</span>
+    </div>
+  </div>
+
+  <!-- 老後開始年齢 -->
+  <div class="form-group">
+    <div class="form-label">老後開始年齢 <strong id="n-retire-v">65</strong><span class="unit">歳</span></div>
+    <div class="range-row">
+      <input type="range" id="n-retire" min="50" max="80" value="65"
+             oninput="sync('n-retire','n-retire-v','n-retire-n');calcNeed()">
+      <input type="number" id="n-retire-n" class="range-input" value="65" min="50" max="80"
+             oninput="sync2('n-retire-n','n-retire','n-retire-v');calcNeed()">
+      <span style="font-size:.72rem;color:var(--muted)">歳</span>
+    </div>
+  </div>
+
+  <!-- 想定寿命 -->
+  <div class="form-group">
+    <div class="form-label">想定寿命 <strong id="n-life-v">90</strong><span class="unit">歳</span></div>
+    <div class="range-row">
+      <input type="range" id="n-life" min="70" max="110" value="90"
+             oninput="sync('n-life','n-life-v','n-life-n');calcNeed()">
+      <input type="number" id="n-life-n" class="range-input" value="90" min="70" max="110"
+             oninput="sync2('n-life-n','n-life','n-life-v');calcNeed()">
+      <span style="font-size:.72rem;color:var(--muted)">歳</span>
+    </div>
+  </div>
+
+  <!-- 取り崩し時の年利 -->
+  <div class="form-group">
+    <div class="form-label">老後の運用利回り（取り崩しながら） <strong id="n-rate-v">2</strong><span class="unit">%</span></div>
+    <div class="range-row">
+      <input type="range" id="n-rate" min="0" max="8" step="0.1" value="2"
+             oninput="sync('n-rate','n-rate-v','n-rate-n');calcNeed()">
+      <input type="number" id="n-rate-n" class="range-input" value="2" min="0" max="8" step="0.1"
+             oninput="sync2('n-rate-n','n-rate','n-rate-v');calcNeed()">
+      <span style="font-size:.72rem;color:var(--muted)">%</span>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcNeed()">計算する</button>
+
+  <!-- Result -->
+  <div id="need-result" class="result-box">
+    <div class="result-title">💰 必要な老後資金（自己資金）</div>
+    <div class="result-main" id="n-total">—</div>
+    <div class="result-sub" id="n-sub">—</div>
+
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-item-label">月の不足額</div>
+        <div class="result-item-value c-red" id="n-shortfall">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">老後期間</div>
+        <div class="result-item-value" id="n-period">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">生活費総額（単純合計）</div>
+        <div class="result-item-value c-gold" id="n-raw-total">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">運用で浮く金額</div>
+        <div class="result-item-value c-green" id="n-saving">—</div>
+      </div>
+    </div>
+
+    <div class="withdrawal-note" id="n-note"></div>
+
+    <!-- Drawdown chart -->
+    <div class="chart-wrap">
+      <canvas id="needChart"></canvas>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#63b3ed"></div>残高推移</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff5c5c;opacity:.4"></div>取り崩し額</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL 3: 月いくら積立？（逆算）
+═══════════════════════════════════════════ -->
+<div id="panel-reverse" class="panel">
+  <div class="tip">老後に毎月いくら使いたいかを決め、そのために今から月いくら積み立てればよいかを逆算します。</div>
+
+  <!-- 老後の月収目標 -->
+  <div class="form-group">
+    <div class="form-label">老後の月生活費（目標） <strong id="r-target-v">20</strong><span class="unit">万円</span></div>
+    <div class="range-row">
+      <input type="range" id="r-target" min="5" max="80" value="20"
+             oninput="sync('r-target','r-target-v','r-target-n');calcReverse()">
+      <input type="number" id="r-target-n" class="range-input" value="20" min="5" max="80"
+             oninput="sync2('r-target-n','r-target','r-target-v');calcReverse()">
+      <span style="font-size:.72rem;color:var(--muted)">万円</span>
+    </div>
+  </div>
+
+  <!-- 年金受給額 -->
+  <div class="form-group">
+    <div class="form-label">年金受給額（見込み） <strong id="r-pension-v">10</strong><span class="unit">万円/月</span></div>
+    <div class="range-row">
+      <input type="range" id="r-pension" min="0" max="40" value="10"
+             oninput="sync('r-pension','r-pension-v','r-pension-n');calcReverse()">
+      <input type="number" id="r-pension-n" class="range-input" value="10" min="0" max="40"
+             oninput="sync2('r-pension-n','r-pension','r-pension-v');calcReverse()">
+      <span style="font-size:.72rem;color:var(--muted)">万円</span>
+    </div>
+  </div>
+
+  <!-- 現在の年齢 -->
+  <div class="form-group">
+    <div class="form-label">現在の年齢 <strong id="r-age-v">30</strong><span class="unit">歳</span></div>
+    <div class="range-row">
+      <input type="range" id="r-age" min="15" max="70" value="30"
+             oninput="sync('r-age','r-age-v','r-age-n');calcReverse()">
+      <input type="number" id="r-age-n" class="range-input" value="30" min="15" max="70"
+             oninput="sync2('r-age-n','r-age','r-age-v');calcReverse()">
+      <span style="font-size:.72rem;color:var(--muted)">歳</span>
+    </div>
+  </div>
+
+  <!-- 老後開始年齢 -->
+  <div class="form-group">
+    <div class="form-label">老後開始年齢（積立終了） <strong id="r-retire-v">65</strong><span class="unit">歳</span></div>
+    <div class="range-row">
+      <input type="range" id="r-retire" min="40" max="80" value="65"
+             oninput="sync('r-retire','r-retire-v','r-retire-n');calcReverse()">
+      <input type="number" id="r-retire-n" class="range-input" value="65" min="40" max="80"
+             oninput="sync2('r-retire-n','r-retire','r-retire-v');calcReverse()">
+      <span style="font-size:.72rem;color:var(--muted)">歳</span>
+    </div>
+  </div>
+
+  <!-- 想定寿命 -->
+  <div class="form-group">
+    <div class="form-label">想定寿命 <strong id="r-life-v">90</strong><span class="unit">歳</span></div>
+    <div class="range-row">
+      <input type="range" id="r-life" min="70" max="110" value="90"
+             oninput="sync('r-life','r-life-v','r-life-n');calcReverse()">
+      <input type="number" id="r-life-n" class="range-input" value="90" min="70" max="110"
+             oninput="sync2('r-life-n','r-life','r-life-v');calcReverse()">
+      <span style="font-size:.72rem;color:var(--muted)">歳</span>
+    </div>
+  </div>
+
+  <!-- 年利（積立時） -->
+  <div class="form-group">
+    <div class="form-label">年利（積立時・オルカン想定） <strong id="r-rate-v">5</strong><span class="unit">%</span></div>
+    <div class="range-row">
+      <input type="range" id="r-rate" min="0" max="15" step="0.1" value="5"
+             oninput="sync('r-rate','r-rate-v','r-rate-n');calcReverse()">
+      <input type="number" id="r-rate-n" class="range-input" value="5" min="0" max="15" step="0.1"
+             oninput="sync2('r-rate-n','r-rate','r-rate-v');calcReverse()">
+      <span style="font-size:.72rem;color:var(--muted)">%</span>
+    </div>
+  </div>
+
+  <!-- 年利（取り崩し時） -->
+  <div class="form-group">
+    <div class="form-label">年利（老後・取り崩し時） <strong id="r-rate2-v">2</strong><span class="unit">%</span></div>
+    <div class="range-row">
+      <input type="range" id="r-rate2" min="0" max="8" step="0.1" value="2"
+             oninput="sync('r-rate2','r-rate2-v','r-rate2-n');calcReverse()">
+      <input type="number" id="r-rate2-n" class="range-input" value="2" min="0" max="8" step="0.1"
+             oninput="sync2('r-rate2-n','r-rate2','r-rate2-v');calcReverse()">
+      <span style="font-size:.72rem;color:var(--muted)">%</span>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcReverse()">逆算する</button>
+
+  <!-- Result -->
+  <div id="reverse-result" class="result-box">
+    <div class="result-title">📅 必要な毎月の積立額</div>
+    <div class="result-main" id="r-monthly">—</div>
+    <div class="result-sub" id="r-sub">—</div>
+
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-item-label">必要な老後資金（目標）</div>
+        <div class="result-item-value c-gold" id="r-goal">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">積立期間</div>
+        <div class="result-item-value" id="r-period">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">総積立元本</div>
+        <div class="result-item-value c-blue" id="r-principal">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">運用益（複利効果）</div>
+        <div class="result-item-value c-green" id="r-returns">—</div>
+      </div>
+    </div>
+
+    <!-- Combined chart: accumulation → drawdown -->
+    <div class="divider"></div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem;font-weight:600;">📊 資産推移（積立〜老後）</div>
+    <div class="chart-wrap" style="height:220px;">
+      <canvas id="reverseChart"></canvas>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#6c6fff"></div>元本</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#00c896"></div>運用益</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ff5c5c;opacity:.5"></div>取り崩し後</div>
+    </div>
+
+    <!-- Pattern comparison -->
+    <div class="divider"></div>
+    <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem;font-weight:600;">🔄 「もし早く始めていたら？」比較</div>
+    <div id="r-compare" class="milestone-list"></div>
+  </div>
+</div>
+
+<div class="bottom-pad"></div>
+
+<script>
+/* ─── Utility ─── */
+const $ = id => document.getElementById(id);
+const fmt = (val, digits = 0) => val.toFixed(digits).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const fmtMan = val => {
+  const man = val / 10000;
+  if (man >= 10000) return fmt(man / 10000, 1) + '億円';
+  if (man >= 1) return fmt(man, 0) + '万円';
+  return fmt(val, 0) + '円';
+};
+
+function sync(rangeId, labelId, numId) {
+  const v = $(rangeId).value;
+  $(labelId).textContent = v;
+  $(numId).value = v;
+}
+
+function sync2(numId, rangeId, labelId) {
+  const v = $(numId).value;
+  $(rangeId).value = v;
+  $(labelId).textContent = v;
+}
+
+function switchMode(el, name) {
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  $('panel-' + name).classList.add('active');
+}
+
+/* Monthly rate from annual rate */
+function monthlyRate(annualPct) {
+  return Math.pow(1 + annualPct / 100, 1 / 12) - 1;
+}
+
+/* FV of monthly annuity */
+function fvAnnuity(pmt, r, n) {
+  if (r === 0) return pmt * n;
+  return pmt * (Math.pow(1 + r, n) - 1) / r;
+}
+
+/* PV of monthly annuity (how much you need NOW to fund monthly withdrawals) */
+function pvAnnuity(pmt, r, n) {
+  if (r === 0) return pmt * n;
+  return pmt * (1 - Math.pow(1 + r, -n)) / r;
+}
+
+/* ─── Chart helpers ─── */
+function getCtx(canvasId) {
+  const canvas = $(canvasId);
+  const parent = canvas.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = parent.clientWidth * dpr;
+  canvas.height = parent.clientHeight * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  return { ctx, w: parent.clientWidth, h: parent.clientHeight };
+}
+
+function drawStackedBar(canvasId, data, xLabels) {
+  /* data: [{principal, returns}] */
+  const { ctx, w, h } = getCtx(canvasId);
+  const PAD = { top: 20, right: 10, bottom: 30, left: 55 };
+  const chartW = w - PAD.left - PAD.right;
+  const chartH = h - PAD.top - PAD.bottom;
+
+  const maxVal = Math.max(...data.map(d => (d.principal || 0) + (d.returns || 0)));
+  const bw = Math.max(2, chartW / data.length - 1);
+
+  ctx.clearRect(0, 0, w, h);
+
+  /* Y grid + labels */
+  const steps = 4;
+  ctx.textAlign = 'right';
+  ctx.font = `${10}px sans-serif`;
+  ctx.fillStyle = '#7b82a0';
+  for (let i = 0; i <= steps; i++) {
+    const val = (maxVal / steps) * i;
+    const y = PAD.top + chartH - (val / maxVal) * chartH;
+    ctx.fillStyle = '#2e3348';
+    ctx.fillRect(PAD.left, y, chartW, 1);
+    ctx.fillStyle = '#7b82a0';
+    ctx.fillText(fmtMan(val), PAD.left - 4, y + 4);
+  }
+
+  /* Bars */
+  data.forEach((d, i) => {
+    const x = PAD.left + i * (chartW / data.length);
+    const totalH = ((d.principal + d.returns) / maxVal) * chartH;
+    const principalH = (d.principal / maxVal) * chartH;
+    const returnsH = totalH - principalH;
+
+    /* returns (green, on top) */
+    ctx.fillStyle = '#00c896';
+    ctx.fillRect(x + 0.5, PAD.top + chartH - totalH, bw, returnsH);
+    /* principal (blue, bottom) */
+    ctx.fillStyle = '#6c6fff';
+    ctx.fillRect(x + 0.5, PAD.top + chartH - principalH, bw, principalH);
+
+    /* X label */
+    const every = Math.ceil(data.length / 8);
+    if (i % every === 0) {
+      ctx.fillStyle = '#7b82a0';
+      ctx.textAlign = 'center';
+      ctx.fillText(xLabels[i], x + bw / 2, h - 6);
+    }
+  });
+}
+
+function drawLineChart(canvasId, series, xLabels, colors) {
+  /* series: [{values:[...], fill:bool}] */
+  const { ctx, w, h } = getCtx(canvasId);
+  const PAD = { top: 20, right: 10, bottom: 30, left: 55 };
+  const chartW = w - PAD.left - PAD.right;
+  const chartH = h - PAD.top - PAD.bottom;
+
+  const allVals = series.flatMap(s => s.values);
+  const maxVal = Math.max(...allVals, 1);
+  const n = series[0].values.length;
+
+  ctx.clearRect(0, 0, w, h);
+
+  const steps = 4;
+  ctx.font = '10px sans-serif';
+  for (let i = 0; i <= steps; i++) {
+    const val = (maxVal / steps) * i;
+    const y = PAD.top + chartH - (val / maxVal) * chartH;
+    ctx.fillStyle = '#2e3348';
+    ctx.fillRect(PAD.left, y, chartW, 1);
+    ctx.fillStyle = '#7b82a0';
+    ctx.textAlign = 'right';
+    ctx.fillText(fmtMan(val), PAD.left - 4, y + 4);
+  }
+
+  series.forEach(s => {
+    const pts = s.values.map((v, i) => ({
+      x: PAD.left + i * (chartW / (n - 1)),
+      y: PAD.top + chartH - (Math.max(v, 0) / maxVal) * chartH
+    }));
+
+    ctx.beginPath();
+    pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    if (s.fill) {
+      ctx.lineTo(pts[pts.length - 1].x, PAD.top + chartH);
+      ctx.lineTo(pts[0].x, PAD.top + chartH);
+      ctx.closePath();
+      ctx.fillStyle = s.color + '22';
+      ctx.fill();
+    }
+  });
+
+  /* X labels */
+  const every = Math.ceil(n / 8);
+  for (let i = 0; i < n; i += every) {
+    ctx.fillStyle = '#7b82a0';
+    ctx.textAlign = 'center';
+    ctx.fillText(xLabels[i], PAD.left + i * (chartW / (n - 1)), h - 6);
+  }
+}
+
+/* ─── Panel 1: 将来いくら？ ─── */
+function calcFuture() {
+  const age = parseInt($('f-age').value);
+  const retire = parseInt($('f-retire').value);
+  const monthly = parseFloat($('f-amt').value) * 10000;
+  const rate = parseFloat($('f-rate').value);
+
+  if (retire <= age) return;
+
+  const years = retire - age;
+  const months = years * 12;
+  const r = monthlyRate(rate);
+
+  const total = fvAnnuity(monthly, r, months);
+  const principal = monthly * months;
+  const returns = total - principal;
+
+  $('f-total').textContent = fmtMan(total);
+  $('f-sub').textContent = `${age}歳〜${retire}歳（${years}年間）の積立結果`;
+  $('f-principal').textContent = fmtMan(principal);
+  $('f-returns').textContent = fmtMan(returns);
+  $('f-period').textContent = `${years}年間`;
+  $('f-double').textContent = rate > 0 ? `約${Math.ceil(72 / rate)}年` : '—';
+
+  /* Milestones */
+  const marks = [];
+  [5, 10, 20, 30, years].forEach(y => {
+    if (y <= years) {
+      const m = y * 12;
+      const v = fvAnnuity(monthly, r, m);
+      marks.push({ age: age + y, val: v });
+    }
+  });
+  const uniqueMarks = marks.filter((m, i, arr) => arr.findIndex(x => x.age === m.age) === i);
+  $('f-milestones').innerHTML = uniqueMarks.map(m =>
+    `<div class="milestone-item">
+      <span class="milestone-age">${m.age}歳</span>
+      <span class="milestone-val c-green">${fmtMan(m.val)}</span>
+    </div>`
+  ).join('');
+
+  /* Chart data (yearly) */
+  const chartData = [];
+  const chartLabels = [];
+  for (let y = 1; y <= years; y++) {
+    const m = y * 12;
+    const fv = fvAnnuity(monthly, r, m);
+    chartData.push({ principal: monthly * m, returns: fv - monthly * m });
+    chartLabels.push(`${age + y}歳`);
+  }
+
+  $('future-result').classList.add('show');
+  requestAnimationFrame(() => drawStackedBar('futureChart', chartData, chartLabels));
+}
+
+/* ─── Panel 2: 老後にいくら必要？ ─── */
+function calcNeed() {
+  const expense = parseFloat($('n-expense').value) * 10000;
+  const pension = parseFloat($('n-pension').value) * 10000;
+  const retire = parseInt($('n-retire').value);
+  const life = parseInt($('n-life').value);
+  const rate = parseFloat($('n-rate').value);
+
+  if (life <= retire) return;
+
+  const shortfall = Math.max(expense - pension, 0);
+  const retireYears = life - retire;
+  const retireMonths = retireYears * 12;
+  const r = monthlyRate(rate);
+
+  const needed = pvAnnuity(shortfall, r, retireMonths);
+  const rawTotal = shortfall * retireMonths;
+  const saving = rawTotal - needed;
+
+  $('n-total').textContent = fmtMan(needed);
+  $('n-sub').textContent = `${retire}〜${life}歳（${retireYears}年間）の老後資金`;
+  $('n-shortfall').textContent = fmtMan(shortfall) + '/月';
+  $('n-period').textContent = `${retireYears}年間`;
+  $('n-raw-total').textContent = fmtMan(rawTotal);
+  $('n-saving').textContent = rate > 0 ? fmtMan(saving) : '0円';
+  $('n-note').innerHTML = `<strong>📌 ポイント</strong><br>年金で月${fmtMan(pension)}受取、生活費${fmtMan(expense)}との差額 <strong style="color:var(--red)">${fmtMan(shortfall)}/月</strong> を自己資産でカバーする必要があります。${rate > 0 ? `老後も年利${rate}%で運用することで、単純合計より<strong style="color:var(--green)">${fmtMan(saving)}少なく</strong>てすみます。` : ''}`;
+
+  /* Drawdown chart */
+  const balances = [needed];
+  const labels = [`${retire}歳`];
+  let balance = needed;
+  for (let y = 1; y <= retireYears; y++) {
+    for (let m = 0; m < 12; m++) {
+      balance = balance * (1 + r) - shortfall;
+      if (balance < 0) balance = 0;
+    }
+    balances.push(balance);
+    labels.push(`${retire + y}歳`);
+  }
+
+  $('need-result').classList.add('show');
+  requestAnimationFrame(() => drawLineChart('needChart',
+    [{ values: balances, color: '#63b3ed', fill: true }],
+    labels
+  ));
+}
+
+/* ─── Panel 3: 逆算 ─── */
+function calcReverse() {
+  const target = parseFloat($('r-target').value) * 10000;
+  const pension = parseFloat($('r-pension').value) * 10000;
+  const age = parseInt($('r-age').value);
+  const retire = parseInt($('r-retire').value);
+  const life = parseInt($('r-life').value);
+  const rate = parseFloat($('r-rate').value);
+  const rate2 = parseFloat($('r-rate2').value);
+
+  if (retire <= age || life <= retire) return;
+
+  const shortfall = Math.max(target - pension, 0);
+  const accYears = retire - age;
+  const retYears = life - retire;
+  const accMonths = accYears * 12;
+  const retMonths = retYears * 12;
+  const r = monthlyRate(rate);
+  const r2 = monthlyRate(rate2);
+
+  /* Step 1: needed at retirement */
+  const goalAtRetire = pvAnnuity(shortfall, r2, retMonths);
+
+  /* Step 2: required monthly savings */
+  const monthlySavings = r > 0
+    ? goalAtRetire * r / (Math.pow(1 + r, accMonths) - 1)
+    : goalAtRetire / accMonths;
+
+  const totalPrincipal = monthlySavings * accMonths;
+  const totalReturns = goalAtRetire - totalPrincipal;
+
+  $('r-monthly').textContent = fmtMan(monthlySavings);
+  $('r-sub').textContent = `${age}歳〜${retire}歳（${accYears}年間）積み立てて老後${retYears}年間 月${fmtMan(target)}生活`;
+  $('r-goal').textContent = fmtMan(goalAtRetire);
+  $('r-period').textContent = `${accYears}年間`;
+  $('r-principal').textContent = fmtMan(totalPrincipal);
+  $('r-returns').textContent = fmtMan(Math.max(totalReturns, 0));
+
+  /* Combined chart */
+  const allData = [];
+  const allLabels = [];
+  /* Accumulation phase */
+  for (let y = 0; y <= accYears; y++) {
+    const m = y * 12;
+    const fv = fvAnnuity(monthlySavings, r, m);
+    allData.push({
+      principal: Math.min(monthlySavings * m, fv),
+      returns: Math.max(fv - monthlySavings * m, 0),
+      drawdown: 0
+    });
+    allLabels.push(`${age + y}歳`);
+  }
+  /* Drawdown phase */
+  let balance = goalAtRetire;
+  for (let y = 1; y <= retYears; y++) {
+    for (let m = 0; m < 12; m++) {
+      balance = balance * (1 + r2) - shortfall;
+      if (balance < 0) balance = 0;
+    }
+    allData.push({ principal: 0, returns: 0, drawdown: balance });
+    allLabels.push(`${retire + y}歳`);
+  }
+
+  /* Comparison: "if started N years earlier" */
+  const diffs = [5, 10];
+  const compareRows = diffs.map(d => {
+    const earlyAge = Math.max(15, age - d);
+    const earlyYears = retire - earlyAge;
+    const earlyMonths = earlyYears * 12;
+    const earlyR = r;
+    const earlyGoal = goalAtRetire;
+    const earlyMonthly = earlyR > 0
+      ? earlyGoal * earlyR / (Math.pow(1 + earlyR, earlyMonths) - 1)
+      : earlyGoal / earlyMonths;
+    const diff = monthlySavings - earlyMonthly;
+    return `<div class="milestone-item">
+      <span class="milestone-age">${earlyAge}歳スタートなら</span>
+      <span class="milestone-val c-green">${fmtMan(earlyMonthly)}/月（月${fmtMan(diff)}お得）</span>
+    </div>`;
+  });
+  $('r-compare').innerHTML = compareRows.join('') + `<div class="milestone-item"><span class="milestone-age" style="color:var(--muted);font-size:0.72rem;">💡 早く始めるほど月の積立負担が減ります</span></div>`;
+
+  $('reverse-result').classList.add('show');
+
+  requestAnimationFrame(() => {
+    /* Build series for line chart */
+    const accVals = allData.slice(0, accYears + 1).map(d => d.principal + d.returns);
+    const ddVals = Array(accYears + 1).fill(null).concat(allData.slice(accYears + 1).map(d => d.drawdown));
+    const combined = allData.map((d, i) => i <= accYears ? d.principal + d.returns : d.drawdown);
+    const principalLine = allData.slice(0, accYears + 1).map(d => d.principal);
+    const returnsLine = allData.slice(0, accYears + 1).map(d => d.principal + d.returns);
+    const drawdownLine = Array(accYears + 1).fill(null).concat(allData.slice(accYears + 1).map(d => d.drawdown));
+
+    /* Stacked bar for accumulation, line for drawdown */
+    const accBarData = allData.slice(0, accYears + 1).map(d => ({
+      principal: d.principal, returns: d.returns, drawdown: 0
+    }));
+    const retBalances = [goalAtRetire, ...allData.slice(accYears + 1).map(d => d.drawdown)];
+
+    drawCombinedChart('reverseChart', accBarData, retBalances, allLabels, accYears);
+  });
+}
+
+function drawCombinedChart(canvasId, accData, retData, labels, splitIdx) {
+  const { ctx, w, h } = getCtx(canvasId);
+  const PAD = { top: 20, right: 10, bottom: 30, left: 55 };
+  const chartW = w - PAD.left - PAD.right;
+  const chartH = h - PAD.top - PAD.bottom;
+
+  const n = labels.length;
+  const allVals = [
+    ...accData.map(d => d.principal + d.returns),
+    ...retData
+  ];
+  const maxVal = Math.max(...allVals, 1);
+
+  ctx.clearRect(0, 0, w, h);
+
+  /* Grid */
+  const steps = 4;
+  for (let i = 0; i <= steps; i++) {
+    const val = (maxVal / steps) * i;
+    const y = PAD.top + chartH - (val / maxVal) * chartH;
+    ctx.fillStyle = '#2e3348';
+    ctx.fillRect(PAD.left, y, chartW, 1);
+    ctx.fillStyle = '#7b82a0';
+    ctx.textAlign = 'right';
+    ctx.font = '10px sans-serif';
+    ctx.fillText(fmtMan(val), PAD.left - 4, y + 4);
+  }
+
+  /* Split line */
+  const splitX = PAD.left + splitIdx * (chartW / (n - 1));
+  ctx.strokeStyle = '#f5a623';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(splitX, PAD.top);
+  ctx.lineTo(splitX, PAD.top + chartH);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#f5a623';
+  ctx.textAlign = 'center';
+  ctx.font = '9px sans-serif';
+  ctx.fillText('老後開始', splitX, PAD.top - 4);
+
+  /* Accumulation bars */
+  const bw = Math.max(2, (chartW / n) * 0.8);
+  accData.forEach((d, i) => {
+    const x = PAD.left + i * (chartW / (n - 1)) - bw / 2;
+    const totalH = ((d.principal + d.returns) / maxVal) * chartH;
+    const principalH = (d.principal / maxVal) * chartH;
+    ctx.fillStyle = '#00c896';
+    ctx.fillRect(x, PAD.top + chartH - totalH, bw, totalH - principalH);
+    ctx.fillStyle = '#6c6fff';
+    ctx.fillRect(x, PAD.top + chartH - principalH, bw, principalH);
+  });
+
+  /* Drawdown line */
+  if (retData.length > 1) {
+    ctx.beginPath();
+    retData.forEach((v, i) => {
+      const x = PAD.left + (splitIdx + i) * (chartW / (n - 1));
+      const y = PAD.top + chartH - (v / maxVal) * chartH;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = '#ff5c5c';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.lineTo(PAD.left + (splitIdx + retData.length - 1) * (chartW / (n - 1)), PAD.top + chartH);
+    ctx.lineTo(splitX, PAD.top + chartH);
+    ctx.closePath();
+    ctx.fillStyle = '#ff5c5c22';
+    ctx.fill();
+  }
+
+  /* X labels */
+  const every = Math.ceil(n / 8);
+  for (let i = 0; i < n; i += every) {
+    ctx.fillStyle = '#7b82a0';
+    ctx.textAlign = 'center';
+    ctx.font = '10px sans-serif';
+    ctx.fillText(labels[i], PAD.left + i * (chartW / (n - 1)), h - 6);
+  }
+}
+
+/* ─── Init: run default calc on load ─── */
+window.addEventListener('load', () => {
+  calcFuture();
+  calcNeed();
+  calcReverse();
+});
+
+window.addEventListener('resize', () => {
+  const activePanel = document.querySelector('.panel.active');
+  if (!activePanel) return;
+  const id = activePanel.id;
+  if (id === 'panel-future') calcFuture();
+  else if (id === 'panel-need') calcNeed();
+  else calcReverse();
+});
+</script>
+</body>
+</html>
