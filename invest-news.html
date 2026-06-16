@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投資ニュース要約</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3348;
+      --accent: #6c6fff;
+      --accent2: #00c896;
+      --red: #ff5c5c;
+      --gold: #f5a623;
+      --text: #e8eaf0;
+      --muted: #7b82a0;
+      --up: #00c896;
+      --down: #ff5c5c;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.875rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6c6fff, #00c896);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-left .date {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    .refresh-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.4rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.2s;
+    }
+
+    .refresh-btn:hover { background: var(--accent); border-color: var(--accent); }
+
+    /* Price ticker */
+    .ticker {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0;
+      overflow: hidden;
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0 1rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .ticker-inner::-webkit-scrollbar { display: none; }
+
+    .ticker-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .ticker-name { font-size: 0.72rem; color: var(--muted); }
+    .ticker-price { font-size: 0.85rem; font-weight: 600; }
+    .ticker-change { font-size: 0.72rem; font-weight: 600; padding: 1px 5px; border-radius: 4px; }
+    .up { color: var(--up); }
+    .down { color: var(--down); }
+    .up-bg { background: rgba(0,200,150,0.15); color: var(--up); }
+    .down-bg { background: rgba(255,92,92,0.15); color: var(--down); }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 0;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex-shrink: 0;
+      padding: 0.4rem 0.85rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      margin-right: 0.4rem;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .tab:not(.active):hover {
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    /* AI summary banner */
+    .ai-banner {
+      margin: 0 1rem 1rem;
+      background: linear-gradient(135deg, rgba(108,111,255,0.15), rgba(0,200,150,0.1));
+      border: 1px solid rgba(108,111,255,0.3);
+      border-radius: 12px;
+      padding: 0.875rem 1rem;
+    }
+
+    .ai-banner-label {
+      font-size: 0.7rem;
+      color: var(--accent);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .ai-banner-text {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* News cards */
+    .section {
+      display: none;
+      padding: 0 1rem;
+    }
+
+    .section.active { display: block; }
+
+    .section-title {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .news-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s, transform 0.1s;
+      cursor: pointer;
+    }
+
+    .news-card:hover {
+      border-color: rgba(108,111,255,0.4);
+      transform: translateY(-1px);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .badge {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-jp { background: rgba(245,166,35,0.2); color: var(--gold); }
+    .badge-us { background: rgba(108,111,255,0.2); color: var(--accent); }
+    .badge-crypto { background: rgba(0,200,150,0.2); color: var(--up); }
+    .badge-fx { background: rgba(255,92,92,0.2); color: var(--down); }
+
+    .impact {
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .card-headline {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-summary {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-point {
+      background: var(--surface2);
+      border-left: 3px solid var(--accent);
+      padding: 0.4rem 0.6rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+
+    .card-point span {
+      color: var(--accent);
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.6rem;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-time { font-size: 0.7rem; color: var(--muted); }
+    .card-source { font-size: 0.7rem; color: var(--muted); }
+
+    /* Loading spinner */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Bottom padding */
+    .bottom-pad { height: 2rem; }
+
+    /* Responsive */
+    @media (min-width: 600px) {
+      .header { padding: 1rem 1.5rem; }
+      .tabs { padding: 0.75rem 1.5rem; }
+      .ai-banner { margin: 0 1.5rem 1rem; }
+      .section { padding: 0 1.5rem; }
+    }
+
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+
+    @keyframes shimmer { to { background-position: -200% 0; } }
+
+    .price-skeleton {
+      width: 60px;
+      height: 14px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <h1>📊 投資ニュース要約</h1>
+    <div class="date" id="headerDate"></div>
+  </div>
+  <button class="refresh-btn" onclick="refreshAll()">
+    <span id="refreshIcon">↻</span> 更新
+  </button>
+</div>
+
+<!-- Price Ticker -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker">
+    <div class="ticker-item">
+      <span class="ticker-name">BTC</span>
+      <span class="ticker-price" id="btc-price"><span class="skeleton price-skeleton"></span></span>
+      <span class="ticker-change" id="btc-change">...</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">ETH</span>
+      <span class="ticker-price" id="eth-price"><span class="skeleton price-skeleton"></span></span>
+      <span class="ticker-change" id="eth-change">...</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">USD/JPY</span>
+      <span class="ticker-price" id="usdjpy-price">155.42</span>
+      <span class="ticker-change up-bg">+0.31%</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">日経225</span>
+      <span class="ticker-price">38,420</span>
+      <span class="ticker-change down-bg">-0.48%</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">S&P500</span>
+      <span class="ticker-price">5,312</span>
+      <span class="ticker-change up-bg">+0.72%</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">NASDAQ</span>
+      <span class="ticker-price">18,943</span>
+      <span class="ticker-change up-bg">+1.05%</span>
+    </div>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab(this, 'all')">すべて</button>
+  <button class="tab" onclick="switchTab(this, 'jp')">🗾 日本株</button>
+  <button class="tab" onclick="switchTab(this, 'us')">🇺🇸 米国株</button>
+  <button class="tab" onclick="switchTab(this, 'crypto')">₿ 仮想通貨</button>
+  <button class="tab" onclick="switchTab(this, 'fx')">💴 為替・FX</button>
+</div>
+
+<!-- AI Summary -->
+<div class="ai-banner">
+  <div class="ai-banner-label">⚡ AI 今日のまとめ</div>
+  <div class="ai-banner-text" id="aiSummary">
+    米国株は利下げ期待で上昇継続。FRB議事録が今夜公開予定で注目。仮想通貨はBTCが高値圏を維持、ETFへの資金流入が続く。円安傾向でトヨタなど輸出株に追い風。本日は守りながら攻める日。
+  </div>
+</div>
+
+<!-- All News -->
+<div id="section-all" class="section active">
+  <div class="section-title">🔥 注目ニュース</div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-us">米国株</span>
+      <span class="impact up">▲ 強気</span>
+    </div>
+    <div class="card-headline">FRBが年内2回の利下げを示唆、S&P500が最高値更新へ</div>
+    <div class="card-summary">FOMC議事録でパウエル議長が「インフレ鈍化は順調」と発言。市場は9月と12月の利下げを織り込み始めた。</div>
+    <div class="card-point"><span>📌 投資家視点</span>成長株・テクノロジーETF（QQQ等）に追い風。債券価格も上昇しやすい。</div>
+    <div class="card-footer">
+      <span class="card-time">2時間前</span>
+      <span class="card-source">Bloomberg</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-jp">日本株</span>
+      <span class="impact down">▼ 注意</span>
+    </div>
+    <div class="card-headline">日銀が7月追加利上げを検討か、国債市場が反応</div>
+    <div class="card-summary">関係者によると日銀は7月の金融政策決定会合で0.1%の追加利上げを議論する見通し。長期金利が1.1%台に上昇。</div>
+    <div class="card-point"><span>📌 投資家視点</span>銀行株にプラス。不動産・高配当株には売り圧力。住宅ローン金利も上昇見込み。</div>
+    <div class="card-footer">
+      <span class="card-time">4時間前</span>
+      <span class="card-source">日経新聞</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-crypto">仮想通貨</span>
+      <span class="impact up">▲ 強気</span>
+    </div>
+    <div class="card-headline">ビットコインETFへの資金流入が過去最高、機関投資家の買い加速</div>
+    <div class="card-summary">米ビットコインスポットETFに先週だけで30億ドルの資金流入。ブラックロックのIBITが残高でGLDを抜く可能性も。</div>
+    <div class="card-point"><span>📌 投資家視点</span>機関マネーの流入は価格の下支えに。半減期後の需給も引き続き好調。</div>
+    <div class="card-footer">
+      <span class="card-time">1時間前</span>
+      <span class="card-source">CoinDesk</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-fx">為替・FX</span>
+      <span class="impact down">▼ 注意</span>
+    </div>
+    <div class="card-headline">ドル円155円台で推移、財務省が「過度な変動に対応」と牽制</div>
+    <div class="card-summary">財務省幹部が円安進行に対して口頭介入。米利下げ観測と日銀利上げ観測で「円高方向」への転換点が近い可能性。</div>
+    <div class="card-point"><span>📌 投資家視点</span>円高に備えてドル建て資産の比率調整を検討。ヘッジ付き外国株式も選択肢。</div>
+    <div class="card-footer">
+      <span class="card-time">30分前</span>
+      <span class="card-source">Reuters</span>
+    </div>
+  </div>
+</div>
+
+<!-- Japan Stock News -->
+<div id="section-jp" class="section">
+  <div class="section-title">🗾 日本株ニュース</div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-jp">日本株</span>
+      <span class="impact up">▲ 強気</span>
+    </div>
+    <div class="card-headline">トヨタ、通期営業利益が過去最高の5兆円超え — 円安と販売台数増が寄与</div>
+    <div class="card-summary">トヨタ自動車が発表した通期決算は営業利益5.3兆円と過去最高を更新。ハイブリッド車の好調と円安効果が主因。</div>
+    <div class="card-point"><span>📌 投資家視点</span>自動車セクター全体に好影響。サプライヤー株（デンソー・アイシン等）にも波及期待。</div>
+    <div class="card-footer">
+      <span class="card-time">昨日</span>
+      <span class="card-source">日経新聞</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-jp">日本株</span>
+      <span class="impact up">▲ 注目</span>
+    </div>
+    <div class="card-headline">半導体関連株が急騰、東京エレクトロン・アドバンテストが年初来高値</div>
+    <div class="card-summary">NVIDIA好決算を受けて米国の半導体株が上昇、翌日の日本市場でも半導体製造装置メーカーが大幅高。</div>
+    <div class="card-point"><span>📌 投資家視点</span>AI需要による半導体好況は継続。ただし株価は先行している面もあり、急騰後の調整に注意。</div>
+    <div class="card-footer">
+      <span class="card-time">3時間前</span>
+      <span class="card-source">東洋経済</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-jp">日本株</span>
+      <span class="impact down">▼ 注意</span>
+    </div>
+    <div class="card-headline">日銀利上げ観測で不動産REITに売り — 金利上昇が収益を圧迫</div>
+    <div class="card-summary">日銀の追加利上げ観測が強まる中、J-REITは借入コスト増加への懸念から軟調。東証REIT指数は年初来安値に接近。</div>
+    <div class="card-point"><span>📌 投資家視点</span>高配当目的でREITを保有している場合は比率縮小を検討。銀行株へのシフトも一案。</div>
+    <div class="card-footer">
+      <span class="card-time">5時間前</span>
+      <span class="card-source">日経新聞</span>
+    </div>
+  </div>
+</div>
+
+<!-- US Stock News -->
+<div id="section-us" class="section">
+  <div class="section-title">🇺🇸 米国株ニュース</div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-us">米国株</span>
+      <span class="impact up">▲ 強気</span>
+    </div>
+    <div class="card-headline">NVIDIA、データセンター売上が前年比+400%で四半期最高益を更新</div>
+    <div class="card-summary">NVIDIAのQ1決算はEPS・売上ともにアナリスト予想を大幅上回り、時間外取引で株価は+8%上昇。AI需要は衰えず。</div>
+    <div class="card-point"><span>📌 投資家視点</span>NVDA単体株だけでなく、SOXLなどの半導体ETFも恩恵を受ける。中長期でのAI投資テーマは継続。</div>
+    <div class="card-footer">
+      <span class="card-time">昨夜</span>
+      <span class="card-source">Bloomberg</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-us">米国株</span>
+      <span class="impact up">▲ 注目</span>
+    </div>
+    <div class="card-headline">アップルが新AI機能「Apple Intelligence」発表、株価で時価総額3兆ドル回復</div>
+    <div class="card-summary">WWDCでAI機能の大規模アップデートを発表。Siriの刷新とOpenAI連携が好感され、投資家心理が改善した。</div>
+    <div class="card-point"><span>📌 投資家視点</span>AAPLは機関投資家の保有比率が高く、上昇はS&P500・QQQにも直接影響。NISA成長投資枠での長期保有候補。</div>
+    <div class="card-footer">
+      <span class="card-time">2日前</span>
+      <span class="card-source">CNBC</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-us">米国株</span>
+      <span class="impact down">▼ 注意</span>
+    </div>
+    <div class="card-headline">米国消費者信頼感指数が予想下回る、景気後退リスクを改めて意識</div>
+    <div class="card-summary">6月の消費者信頼感指数は98.7と予想の102.5を下回る。高金利の長期化が消費に影響を与えている可能性。</div>
+    <div class="card-point"><span>📌 投資家視点</span>消費関連株（小売・外食）には逆風。守りの観点から高配当ETF（VYM・DGRO）への分散も検討を。</div>
+    <div class="card-footer">
+      <span class="card-time">6時間前</span>
+      <span class="card-source">Reuters</span>
+    </div>
+  </div>
+</div>
+
+<!-- Crypto News -->
+<div id="section-crypto" class="section">
+  <div class="section-title">₿ 仮想通貨ニュース</div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-crypto">仮想通貨</span>
+      <span class="impact up">▲ 強気</span>
+    </div>
+    <div class="card-headline">ビットコイン1,000万円台を維持 — 半減期後の需給タイト続く</div>
+    <div class="card-summary">4月の半減期後、採掘報酬が半減したことで新規供給が減少。ETF経由の需要が吸収し続けており価格を下支え。</div>
+    <div class="card-point"><span>📌 投資家視点</span>過去の半減期サイクルでは半減期後6〜18ヶ月で最高値更新。中長期の積立が有効な局面。</div>
+    <div class="card-footer">
+      <span class="card-time" id="crypto-time1">更新中...</span>
+      <span class="card-source">CoinPost</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-crypto">仮想通貨</span>
+      <span class="impact up">▲ 注目</span>
+    </div>
+    <div class="card-headline">イーサリアムETFが米SECで承認、機関マネー流入に期待</div>
+    <div class="card-summary">SECがイーサリアムのスポットETFを承認し、7月から取引開始予定。ビットコインに続く制度化の流れが加速。</div>
+    <div class="card-point"><span>📌 投資家視点</span>ETH/BTC比率の回復に期待。ステーキング収益も加味するとリスクリターンは改善傾向。</div>
+    <div class="card-footer">
+      <span class="card-time">昨日</span>
+      <span class="card-source">CoinDesk</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-crypto">仮想通貨</span>
+      <span class="impact down">▼ 注意</span>
+    </div>
+    <div class="card-headline">日本の仮想通貨税制改正、申告分離課税の実現はいつ？</div>
+    <div class="card-summary">自民党の税制調査会で仮想通貨への申告分離課税（20%）導入が再び議題に。現行の総合課税（最大55%）からの変更を求める声が高まる。</div>
+    <div class="card-point"><span>📌 投資家視点</span>税制改正が実現すれば国内投資家の投資意欲が大幅向上。法整備の進捗をウォッチ。</div>
+    <div class="card-footer">
+      <span class="card-time">3日前</span>
+      <span class="card-source">日経新聞</span>
+    </div>
+  </div>
+</div>
+
+<!-- FX News -->
+<div id="section-fx" class="section">
+  <div class="section-title">💴 為替・FXニュース</div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-fx">為替</span>
+      <span class="impact down">▼ 円高警戒</span>
+    </div>
+    <div class="card-headline">米利下げ＋日銀利上げのダブル効果で、年末に145円台の予測も</div>
+    <div class="card-summary">大手証券各社が年末のドル円予測を引き下げ。最も円高を見込む予測は140円台。日米金利差の縮小が主な要因。</div>
+    <div class="card-point"><span>📌 投資家視点</span>ドル建て外国株の円換算リターンが目減りするリスク。為替ヘッジ付きETFへの乗り換えも選択肢。</div>
+    <div class="card-footer">
+      <span class="card-time">1日前</span>
+      <span class="card-source">Bloomberg</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-fx">為替</span>
+      <span class="impact up">▲ 注目</span>
+    </div>
+    <div class="card-headline">ユーロ圏のインフレ鈍化でECBが6月利下げを決定、ユーロ軟化</div>
+    <div class="card-summary">ECBが主要政策金利を0.25%引き下げ。欧州の景気減速を背景に追加利下げも示唆し、ユーロは対円で軟調。</div>
+    <div class="card-point"><span>📌 投資家視点</span>欧州株（EXS1など）のヘッジなし保有は為替リスクが小さくなる面も。欧州株は割安感が続く。</div>
+    <div class="card-footer">
+      <span class="card-time">2日前</span>
+      <span class="card-source">Reuters</span>
+    </div>
+  </div>
+
+  <div class="news-card">
+    <div class="card-top">
+      <span class="badge badge-fx">為替</span>
+      <span class="impact down">▼ 注意</span>
+    </div>
+    <div class="card-headline">スワップポイント狙いのトルコリラ・メキシコペソ投資に注意喚起</div>
+    <div class="card-summary">高金利通貨のスワップポイント狙い投資は一見魅力的だが、為替差損がスワップ収益を上回るケースが多数報告されている。</div>
+    <div class="card-point"><span>📌 投資家視点</span>高スワップ通貨は経常赤字や政情不安で急落リスク大。初心者にはドル・ユーロ・円の主要通貨ペアを推奨。</div>
+    <div class="card-footer">
+      <span class="card-time">4日前</span>
+      <span class="card-source">SBI証券レポート</span>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-pad"></div>
+
+<script>
+  // Set today's date
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' });
+  document.getElementById('headerDate').textContent = dateStr + ' 更新';
+
+  // Tab switching
+  function switchTab(el, name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('section-' + name).classList.add('active');
+  }
+
+  // Fetch crypto prices from CoinGecko (free API)
+  async function fetchCryptoPrices() {
+    try {
+      const res = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=jpy&include_24hr_change=true'
+      );
+      const data = await res.json();
+
+      if (data.bitcoin) {
+        const btcPrice = data.bitcoin.jpy;
+        const btcChange = data.bitcoin.jpy_24h_change;
+        document.getElementById('btc-price').textContent = '¥' + Math.round(btcPrice).toLocaleString();
+        const btcEl = document.getElementById('btc-change');
+        btcEl.textContent = (btcChange >= 0 ? '+' : '') + btcChange.toFixed(2) + '%';
+        btcEl.className = 'ticker-change ' + (btcChange >= 0 ? 'up-bg' : 'down-bg');
+      }
+
+      if (data.ethereum) {
+        const ethPrice = data.ethereum.jpy;
+        const ethChange = data.ethereum.jpy_24h_change;
+        document.getElementById('eth-price').textContent = '¥' + Math.round(ethPrice).toLocaleString();
+        const ethEl = document.getElementById('eth-change');
+        ethEl.textContent = (ethChange >= 0 ? '+' : '') + ethChange.toFixed(2) + '%';
+        ethEl.className = 'ticker-change ' + (ethChange >= 0 ? 'up-bg' : 'down-bg');
+      }
+
+      document.getElementById('crypto-time1').textContent = new Date().toLocaleTimeString('ja-JP', {hour: '2-digit', minute: '2-digit'}) + ' 更新';
+    } catch (e) {
+      document.getElementById('btc-price').textContent = '取得失敗';
+      document.getElementById('eth-price').textContent = '取得失敗';
+    }
+  }
+
+  // Refresh all
+  function refreshAll() {
+    const icon = document.getElementById('refreshIcon');
+    icon.style.animation = 'spin 0.8s linear infinite';
+    fetchCryptoPrices().finally(() => {
+      setTimeout(() => { icon.style.animation = ''; }, 500);
+    });
+  }
+
+  // Initial load
+  fetchCryptoPrices();
+
+  // Auto-refresh crypto prices every 60 seconds
+  setInterval(fetchCryptoPrices, 60000);
+</script>
+</body>
+</html>
