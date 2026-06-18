@@ -24,66 +24,56 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
       background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(108,111,255,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,200,150,0.06) 0%, transparent 60%);
       color: var(--text);
       min-height: 100vh;
     }
 
-    /* Hero */
+    /* ── Hero ── */
     .hero {
-      padding: 2.5rem 1.25rem 1.5rem;
+      padding: 3rem 1.5rem 2rem;
       text-align: center;
     }
 
-    .hero-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .hero-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+      display: block;
+      filter: drop-shadow(0 0 20px rgba(108,111,255,0.4));
+    }
 
     .hero h1 {
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #6c6fff, #00c896);
+      background: linear-gradient(135deg, #6c6fff 0%, #00c896 60%, #63b3ed 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 0.4rem;
+      background-clip: text;
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      animation: gradientShift 6s ease infinite;
+      background-size: 200% 200%;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .hero p {
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.7;
+      max-width: 360px;
+      margin: 0 auto;
     }
 
-    /* Ticker strip */
-    .ticker {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 0.5rem 0;
-      margin-bottom: 1.5rem;
-      overflow: hidden;
-    }
-
-    .ticker-inner {
-      display: flex;
-      gap: 1.5rem;
-      padding: 0 1rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .ticker-inner::-webkit-scrollbar { display: none; }
-
-    .ticker-item {
-      display: flex; align-items: center; gap: 0.4rem;
-      white-space: nowrap; flex-shrink: 0;
-    }
-
-    .ticker-name { font-size: 0.7rem; color: var(--muted); }
-    .ticker-price { font-size: 0.82rem; font-weight: 600; }
-    .ticker-change { font-size: 0.68rem; font-weight: 600; padding: 1px 5px; border-radius: 4px; }
-    .up-bg { background: rgba(0,200,150,0.15); color: var(--green); }
-    .down-bg { background: rgba(255,92,92,0.15); color: var(--red); }
-
-    /* Section */
-    .section {
+    /* ── Price Cards Grid ── */
+    .price-section {
       padding: 0 1.25rem;
       margin-bottom: 2rem;
     }
@@ -92,109 +82,244 @@
       font-size: 0.72rem;
       color: var(--muted);
       font-weight: 700;
-      letter-spacing: 0.08em;
-      margin-bottom: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
       display: flex;
       align-items: center;
       gap: 0.4rem;
     }
 
-    /* Main cards */
-    .main-card {
+    .price-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+    }
+
+    .price-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.85rem 0.75rem;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .price-card:hover {
+      border-color: rgba(108,111,255,0.35);
+      transform: translateY(-2px);
+    }
+
+    .price-card-name {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+
+    .price-card-value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+      margin-bottom: 0.3rem;
+      word-break: break-all;
+    }
+
+    .price-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 20px;
+    }
+
+    .badge-up { background: rgba(0,200,150,0.15); color: var(--green); }
+    .badge-down { background: rgba(255,92,92,0.15); color: var(--red); }
+
+    /* ── Section ── */
+    .section {
+      padding: 0 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Tool Cards ── */
+    .tool-card {
+      display: block;
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.35rem;
+      margin-bottom: 0.85rem;
+      transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      border-radius: 18px 0 0 18px;
+    }
+
+    .tool-card.news::before { background: linear-gradient(180deg, var(--accent), var(--green)); }
+    .tool-card.sim::before  { background: linear-gradient(180deg, var(--gold), var(--accent)); }
+    .tool-card.orcan::before { background: linear-gradient(180deg, var(--blue), var(--green)); }
+
+    .tool-card:hover {
+      border-color: rgba(108,111,255,0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .tool-card:active { transform: translateY(-1px); }
+
+    .tool-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+      padding-left: 0.5rem;
+    }
+
+    .tool-card-left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .tool-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .icon-news  { background: linear-gradient(135deg, rgba(108,111,255,0.25), rgba(0,200,150,0.15)); }
+    .icon-sim   { background: linear-gradient(135deg, rgba(245,166,35,0.25), rgba(108,111,255,0.15)); }
+    .icon-orcan { background: linear-gradient(135deg, rgba(99,179,237,0.25), rgba(0,200,150,0.15)); }
+
+    .tool-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .tool-subtitle {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .tool-arrow {
+      font-size: 1.2rem;
+      color: var(--accent);
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
+    .tool-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 0.85rem;
+      padding-left: 0.5rem;
+    }
+
+    .tool-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      padding-left: 0.5rem;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .tool-card:hover .tag {
+      border-color: rgba(108,111,255,0.25);
+    }
+
+    /* ── Quick Access Grid ── */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .quick-card {
       display: block;
       text-decoration: none;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 1.25rem;
-      margin-bottom: 0.75rem;
-      transition: border-color 0.2s, transform 0.1s;
+      padding: 1.1rem 1rem;
+      transition: border-color 0.2s, background 0.2s, transform 0.15s;
     }
 
-    .main-card:hover {
-      border-color: var(--accent);
+    .quick-card:hover {
+      border-color: rgba(108,111,255,0.4);
+      background: rgba(108,111,255,0.05);
       transform: translateY(-2px);
     }
 
-    .main-card:active { transform: translateY(0); }
+    .quick-card:active { transform: translateY(0); }
 
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-icon-title {
-      display: flex; align-items: center; gap: 0.6rem;
-    }
-
-    .card-icon {
-      width: 44px; height: 44px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; flex-shrink: 0;
-    }
-
-    .icon-news    { background: linear-gradient(135deg, rgba(108,111,255,0.3), rgba(0,200,150,0.2)); }
-    .icon-sim     { background: linear-gradient(135deg, rgba(245,166,35,0.3), rgba(108,111,255,0.2)); }
-    .icon-orcan   { background: linear-gradient(135deg, rgba(99,179,237,0.3), rgba(0,200,150,0.2)); }
-
-    .card-title { font-size: 1rem; font-weight: 700; }
-    .card-desc  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.75rem; }
-    .card-arrow { font-size: 1.1rem; color: var(--accent); }
-
-    .card-tags {
-      display: flex; flex-wrap: wrap; gap: 0.35rem;
-    }
-
-    .tag {
-      font-size: 0.68rem;
-      padding: 2px 8px;
-      border-radius: 20px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-    }
-
-    /* Sub-link grid */
-    .sub-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-    }
-
-    .sub-card {
+    .quick-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.45rem;
       display: block;
-      text-decoration: none;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.85rem 0.9rem;
-      transition: border-color 0.2s, background 0.2s;
     }
 
-    .sub-card:hover {
-      border-color: var(--accent);
-      background: rgba(108,111,255,0.06);
+    .quick-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text);
     }
 
-    .sub-card-icon { font-size: 1.2rem; margin-bottom: 0.3rem; }
-    .sub-card-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
-    .sub-card-desc  { font-size: 0.7rem; color: var(--muted); line-height: 1.4; }
+    .quick-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
 
-    /* Date */
+    /* ── Footer ── */
     .updated {
       text-align: center;
       font-size: 0.7rem;
       color: var(--muted);
-      padding-bottom: 2rem;
+      padding: 1rem 0 2.5rem;
+      opacity: 0.7;
+    }
+
+    /* ── Responsive ── */
+    @media (min-width: 480px) {
+      .price-card-value { font-size: 1rem; }
     }
 
     @media (min-width: 600px) {
-      .hero { padding: 3rem 2rem 2rem; }
+      .hero { padding: 4rem 2rem 2.5rem; }
+      .hero h1 { font-size: 2.2rem; }
+      .price-section { padding: 0 2rem; }
       .section { padding: 0 2rem; }
-      .sub-grid { grid-template-columns: repeat(4, 1fr); }
+      .price-grid { grid-template-columns: repeat(6, 1fr); }
+      .quick-grid { grid-template-columns: repeat(4, 1fr); }
     }
   </style>
 </head>
@@ -202,63 +327,65 @@
 
 <!-- Hero -->
 <div class="hero">
-  <div class="hero-icon">💹</div>
+  <span class="hero-icon">💹</span>
   <h1>投資ダッシュボード</h1>
-  <p>ニュース要約・積立シミュレーター・複利計算を<br>ひとまとめに</p>
+  <p>ニュース要約・積立シミュレーター・複利計算を<br>ひとまとめにした投資情報ハブ</p>
 </div>
 
-<!-- Ticker -->
-<div class="ticker">
-  <div class="ticker-inner">
-    <div class="ticker-item">
-      <span class="ticker-name">BTC</span>
-      <span class="ticker-price" id="btc-price">取得中...</span>
-      <span class="ticker-change" id="btc-change">—</span>
+<!-- Price Cards -->
+<div class="price-section">
+  <div class="section-label">📈 マーケット概況</div>
+  <div class="price-grid">
+    <div class="price-card">
+      <div class="price-card-name">BTC</div>
+      <div class="price-card-value" id="btc-price">取得中...</div>
+      <span class="price-badge" id="btc-change">—</span>
     </div>
-    <div class="ticker-item">
-      <span class="ticker-name">ETH</span>
-      <span class="ticker-price" id="eth-price">取得中...</span>
-      <span class="ticker-change" id="eth-change">—</span>
+    <div class="price-card">
+      <div class="price-card-name">ETH</div>
+      <div class="price-card-value" id="eth-price">取得中...</div>
+      <span class="price-badge" id="eth-change">—</span>
     </div>
-    <div class="ticker-item">
-      <span class="ticker-name">USD/JPY</span>
-      <span class="ticker-price">155.42</span>
-      <span class="ticker-change down-bg">-0.21%</span>
+    <div class="price-card">
+      <div class="price-card-name">USD/JPY</div>
+      <div class="price-card-value">155.42</div>
+      <span class="price-badge badge-down">▼ -0.21%</span>
     </div>
-    <div class="ticker-item">
-      <span class="ticker-name">日経225</span>
-      <span class="ticker-price">38,420</span>
-      <span class="ticker-change down-bg">-0.48%</span>
+    <div class="price-card">
+      <div class="price-card-name">日経225</div>
+      <div class="price-card-value">38,420</div>
+      <span class="price-badge badge-down">▼ -0.48%</span>
     </div>
-    <div class="ticker-item">
-      <span class="ticker-name">S&P500</span>
-      <span class="ticker-price">5,312</span>
-      <span class="ticker-change up-bg">+0.72%</span>
+    <div class="price-card">
+      <div class="price-card-name">S&P500</div>
+      <div class="price-card-value">5,312</div>
+      <span class="price-badge badge-up">▲ +0.72%</span>
     </div>
-    <div class="ticker-item">
-      <span class="ticker-name">オルカン</span>
-      <span class="ticker-price">¥24,318</span>
-      <span class="ticker-change up-bg">+0.61%</span>
+    <div class="price-card">
+      <div class="price-card-name">オルカン</div>
+      <div class="price-card-value">¥24,318</div>
+      <span class="price-badge badge-up">▲ +0.61%</span>
     </div>
   </div>
 </div>
 
-<!-- Main tools -->
+<!-- Tool Cards -->
 <div class="section">
   <div class="section-label">🛠 ツール</div>
 
-  <a href="invest-news.html" class="main-card">
-    <div class="card-header">
-      <div class="card-icon-title">
-        <div class="card-icon icon-news">📰</div>
+  <a href="invest-news.html" class="tool-card news">
+    <div class="tool-card-header">
+      <div class="tool-card-left">
+        <div class="tool-icon icon-news">📰</div>
         <div>
-          <div class="card-title">投資ニュース要約</div>
+          <div class="tool-title">投資ニュース要約</div>
+          <div class="tool-subtitle">AIが毎日の情報をまとめて表示</div>
         </div>
       </div>
-      <span class="card-arrow">›</span>
+      <span class="tool-arrow">›</span>
     </div>
-    <div class="card-desc">日本株・米国株・仮想通貨・為替・オルカンの最新ニュースをAIが要約。毎日の情報収集をまとめて確認。</div>
-    <div class="card-tags">
+    <div class="tool-desc">日本株・米国株・仮想通貨・為替・オルカンの最新ニュースをAIが要約。毎日の情報収集をまとめて確認できます。</div>
+    <div class="tool-tags">
       <span class="tag">🗾 日本株</span>
       <span class="tag">🇺🇸 米国株</span>
       <span class="tag">₿ 仮想通貨</span>
@@ -267,73 +394,71 @@
     </div>
   </a>
 
-  <a href="simulator.html" class="main-card">
-    <div class="card-header">
-      <div class="card-icon-title">
-        <div class="card-icon icon-sim">📈</div>
+  <a href="simulator.html" class="tool-card sim">
+    <div class="tool-card-header">
+      <div class="tool-card-left">
+        <div class="tool-icon icon-sim">📈</div>
         <div>
-          <div class="card-title">積立シミュレーター</div>
+          <div class="tool-title">積立シミュレーター</div>
+          <div class="tool-subtitle">複利計算で将来の資産を試算</div>
         </div>
       </div>
-      <span class="card-arrow">›</span>
+      <span class="tool-arrow">›</span>
     </div>
-    <div class="card-desc">将来いくらになるか、老後にいくら必要か、月いくら積み立てるべきかを複利計算でシミュレート。</div>
-    <div class="card-tags">
+    <div class="tool-desc">将来いくらになるか、老後にいくら必要か、月いくら積み立てるべきかを複利計算でシミュレートできます。</div>
+    <div class="tool-tags">
       <span class="tag">将来いくら？</span>
       <span class="tag">老後資金</span>
       <span class="tag">逆算</span>
       <span class="tag">複利グラフ</span>
     </div>
   </a>
-</div>
 
-<!-- Quick links to simulator tabs -->
-<div class="section">
-  <div class="section-label">⚡ クイックアクセス</div>
-  <div class="sub-grid">
-    <a href="simulator.html" class="sub-card" onclick="localStorage.setItem('simTab','future')">
-      <div class="sub-card-icon">🔮</div>
-      <div class="sub-card-title">将来いくら？</div>
-      <div class="sub-card-desc">積立金額と年利で将来の資産を試算</div>
-    </a>
-    <a href="simulator.html" class="sub-card">
-      <div class="sub-card-icon">🏖</div>
-      <div class="sub-card-title">老後資金の計算</div>
-      <div class="sub-card-desc">必要な老後資金の総額を計算</div>
-    </a>
-    <a href="simulator.html" class="sub-card">
-      <div class="sub-card-icon">🎯</div>
-      <div class="sub-card-title">月いくら積立？</div>
-      <div class="sub-card-desc">老後の目標から月額を逆算</div>
-    </a>
-    <a href="simulator.html" class="sub-card">
-      <div class="sub-card-icon">📊</div>
-      <div class="sub-card-title">複利グラフ</div>
-      <div class="sub-card-desc">複利 vs 単利を視覚的に比較</div>
-    </a>
-  </div>
-</div>
-
-<!-- About -->
-<div class="section">
-  <div class="section-label">🌏 オルカンについて</div>
-  <a href="invest-news.html#orcan" class="main-card" style="border-color:rgba(99,179,237,0.3);">
-    <div class="card-header">
-      <div class="card-icon-title">
-        <div class="card-icon icon-orcan">🌏</div>
+  <a href="invest-news.html#orcan" class="tool-card orcan" style="border-color:rgba(99,179,237,0.2);">
+    <div class="tool-card-header">
+      <div class="tool-card-left">
+        <div class="tool-icon icon-orcan">🌏</div>
         <div>
-          <div class="card-title">eMAXIS Slim 全世界株式</div>
+          <div class="tool-title">eMAXIS Slim 全世界株式</div>
+          <div class="tool-subtitle">オルカン情報ハブ</div>
         </div>
       </div>
-      <span class="card-arrow">›</span>
+      <span class="tool-arrow">›</span>
     </div>
-    <div class="card-desc">純資産6.2兆円・信託報酬0.05775%。新NISAで人気No.1のインデックスファンド情報をまとめて確認。</div>
-    <div class="card-tags">
+    <div class="tool-desc">純資産6.2兆円・信託報酬0.05775%。新NISAで人気No.1のインデックスファンド情報をまとめて確認。</div>
+    <div class="tool-tags">
       <span class="tag">基準価額</span>
       <span class="tag">地域別割合</span>
       <span class="tag">NISA対応</span>
     </div>
   </a>
+</div>
+
+<!-- Quick Access -->
+<div class="section">
+  <div class="section-label">⚡ クイックアクセス</div>
+  <div class="quick-grid">
+    <a href="simulator.html" class="quick-card" onclick="localStorage.setItem('simTab','future')">
+      <span class="quick-icon">🔮</span>
+      <div class="quick-title">将来いくら？</div>
+      <div class="quick-desc">積立金額と年利で将来の資産を試算</div>
+    </a>
+    <a href="simulator.html" class="quick-card">
+      <span class="quick-icon">🏖</span>
+      <div class="quick-title">老後資金の計算</div>
+      <div class="quick-desc">必要な老後資金の総額を計算</div>
+    </a>
+    <a href="simulator.html" class="quick-card">
+      <span class="quick-icon">🎯</span>
+      <div class="quick-title">月いくら積立？</div>
+      <div class="quick-desc">老後の目標から月額を逆算</div>
+    </a>
+    <a href="simulator.html" class="quick-card">
+      <span class="quick-icon">📊</span>
+      <div class="quick-title">複利グラフ</div>
+      <div class="quick-desc">複利 vs 単利を視覚的に比較</div>
+    </a>
+  </div>
 </div>
 
 <div class="updated" id="updated"></div>
@@ -353,15 +478,15 @@
         const p = data.bitcoin.jpy, c = data.bitcoin.jpy_24h_change;
         document.getElementById('btc-price').textContent = '¥' + Math.round(p).toLocaleString();
         const el = document.getElementById('btc-change');
-        el.textContent = (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
-        el.className = 'ticker-change ' + (c >= 0 ? 'up-bg' : 'down-bg');
+        el.textContent = (c >= 0 ? '▲ +' : '▼ ') + c.toFixed(2) + '%';
+        el.className = 'price-badge ' + (c >= 0 ? 'badge-up' : 'badge-down');
       }
       if (data.ethereum) {
         const p = data.ethereum.jpy, c = data.ethereum.jpy_24h_change;
         document.getElementById('eth-price').textContent = '¥' + Math.round(p).toLocaleString();
         const el = document.getElementById('eth-change');
-        el.textContent = (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
-        el.className = 'ticker-change ' + (c >= 0 ? 'up-bg' : 'down-bg');
+        el.textContent = (c >= 0 ? '▲ +' : '▼ ') + c.toFixed(2) + '%';
+        el.className = 'price-badge ' + (c >= 0 ? 'badge-up' : 'badge-down');
       }
     } catch(e) {}
   }
