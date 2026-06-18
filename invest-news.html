@@ -620,6 +620,22 @@
 <div id="section-jp" class="section">
   <div class="section-title">🗾 日本株ニュース</div>
 
+  <!-- 日本主要銘柄 -->
+  <div class="fund-card" style="margin-bottom:0.75rem;">
+    <div class="fund-card-title">🗾 日本主要銘柄（時価総額順・2025年6月時点）</div>
+    <div style="margin-top:0.6rem;font-size:0.7rem;color:var(--muted);margin-bottom:0.5rem;">※ 東証プライム上場銘柄　棒グラフ＝相対時価総額（トヨタ比）</div>
+    <div style="display:grid;grid-template-columns:1.8rem 1fr 3.5rem 5rem;gap:0.4rem;padding:0.3rem 0;border-bottom:1px solid var(--border);font-size:0.65rem;color:var(--muted);font-weight:700;letter-spacing:0.04em;">
+      <span>#</span><span>銘柄</span><span style="text-align:right;">コード</span><span>セクター</span>
+    </div>
+    <div id="jp-stocks-rows"></div>
+    <button id="jp-stocks-toggle-btn" onclick="toggleJpStocks()" style="margin-top:0.6rem;width:100%;background:rgba(255,194,68,0.08);border:1px solid rgba(255,194,68,0.3);color:var(--gold);padding:0.5rem;border-radius:8px;font-size:0.75rem;cursor:pointer;transition:all 0.2s;font-family:inherit;">
+      📋 TOP30まで見る ▼
+    </button>
+    <div style="margin-top:0.75rem;font-size:0.68rem;color:var(--muted);border-top:1px solid var(--border);padding-top:0.5rem;">
+      東証プライム市場　上場銘柄数 約1,600社　（2025年6月基準）
+    </div>
+  </div>
+
   <div class="news-card cat-jp">
     <div class="card-top">
       <span class="badge badge-jp">日本株</span>
@@ -1198,6 +1214,79 @@
   }
 
   renderHoldings(false);
+
+  // Japan stocks data (東証プライム 時価総額上位 2025年6月)
+  const JP_STOCKS = [
+    {rank:1,  name:'トヨタ自動車',           code:'7203', sector:'自動車',     cap:45, color:'var(--gold)'},
+    {rank:2,  name:'ソニーグループ',          code:'6758', sector:'電機・エンタメ', cap:22, color:'var(--blue)'},
+    {rank:3,  name:'キーエンス',             code:'6861', sector:'電子機器',    cap:20, color:'var(--blue)'},
+    {rank:4,  name:'三菱UFJ FG',           code:'8306', sector:'銀行',       cap:19, color:'var(--accent)'},
+    {rank:5,  name:'信越化学工業',           code:'4063', sector:'化学',       cap:14, color:'var(--green)'},
+    {rank:6,  name:'ファーストリテイリング',   code:'9983', sector:'小売',       cap:14, color:'var(--gold)'},
+    {rank:7,  name:'東京エレクトロン',        code:'8035', sector:'半導体装置',  cap:13, color:'var(--blue)'},
+    {rank:8,  name:'ソフトバンクグループ',    code:'9984', sector:'IT投資',     cap:13, color:'var(--accent)'},
+    {rank:9,  name:'リクルートホールディングス',code:'6098', sector:'HR・情報',   cap:12, color:'var(--blue)'},
+    {rank:10, name:'KDDI',                 code:'9433', sector:'通信',       cap:11, color:'var(--accent)'},
+    {rank:11, name:'日立製作所',             code:'6501', sector:'総合電機',    cap:11, color:'var(--blue)'},
+    {rank:12, name:'任天堂',                code:'7974', sector:'ゲーム',      cap:10, color:'var(--green)'},
+    {rank:13, name:'三井住友 FG',           code:'8316', sector:'銀行',       cap:10, color:'var(--accent)'},
+    {rank:14, name:'NTT',                  code:'9432', sector:'通信',       cap:10, color:'var(--accent)'},
+    {rank:15, name:'ダイキン工業',           code:'6367', sector:'空調機器',    cap:9,  color:'var(--gold)'},
+    {rank:16, name:'本田技研工業',           code:'7267', sector:'自動車',     cap:8,  color:'var(--gold)'},
+    {rank:17, name:'中外製薬',              code:'4519', sector:'製薬',       cap:8,  color:'var(--green)'},
+    {rank:18, name:'三菱商事',              code:'8058', sector:'商社',       cap:8,  color:'var(--gold)'},
+    {rank:19, name:'ファナック',             code:'6954', sector:'FA・ロボット', cap:7,  color:'var(--blue)'},
+    {rank:20, name:'村田製作所',            code:'6981', sector:'電子部品',    cap:7,  color:'var(--blue)'},
+    {rank:21, name:'オリエンタルランド',      code:'4661', sector:'レジャー',    cap:6,  color:'var(--gold)'},
+    {rank:22, name:'武田薬品工業',          code:'4502', sector:'製薬',       cap:6,  color:'var(--green)'},
+    {rank:23, name:'伊藤忠商事',            code:'8001', sector:'商社',       cap:6,  color:'var(--gold)'},
+    {rank:24, name:'アステラス製薬',         code:'4503', sector:'製薬',       cap:5,  color:'var(--green)'},
+    {rank:25, name:'日本電産（ニデック）',    code:'6594', sector:'モーター',    cap:4,  color:'var(--blue)'},
+    {rank:26, name:'住友商事',              code:'8053', sector:'商社',       cap:4,  color:'var(--gold)'},
+    {rank:27, name:'エーザイ',              code:'4523', sector:'製薬',       cap:4,  color:'var(--green)'},
+    {rank:28, name:'キヤノン',              code:'7751', sector:'精密機器',    cap:4,  color:'var(--muted)'},
+    {rank:29, name:'丸紅',                 code:'8002', sector:'商社',       cap:3,  color:'var(--gold)'},
+    {rank:30, name:'セブン&アイ HD',        code:'3382', sector:'小売',       cap:3,  color:'var(--muted)'},
+  ];
+
+  function jpStockRow(s, isLast) {
+    const barW = (s.cap / 45 * 100).toFixed(1);
+    const border = isLast ? '' : 'border-bottom:1px solid rgba(46,51,72,0.5);';
+    return `<div style="display:grid;grid-template-columns:1.8rem 1fr 3.5rem 5rem;gap:0.4rem;padding:0.45rem 0;${border}align-items:center;">
+      <span style="font-size:0.68rem;color:var(--muted);">${s.rank}</span>
+      <div>
+        <div style="font-size:0.82rem;font-weight:700;">${s.name}</div>
+        <div style="height:3px;background:var(--border);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="width:${barW}%;height:100%;background:${s.color};border-radius:2px;"></div></div>
+      </div>
+      <span style="font-size:0.72rem;text-align:right;color:var(--muted);font-family:monospace;">${s.code}</span>
+      <span style="font-size:0.68rem;color:${s.color};border:1px solid ${s.color};padding:0.1rem 0.35rem;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:0.85;">${s.sector}</span>
+    </div>`;
+  }
+
+  let jpStocksExpanded = false;
+
+  function renderJpStocks(expanded) {
+    const count = expanded ? 30 : 10;
+    document.getElementById('jp-stocks-rows').innerHTML =
+      JP_STOCKS.slice(0, count).map((s, i) => jpStockRow(s, i === count - 1)).join('');
+  }
+
+  function toggleJpStocks() {
+    jpStocksExpanded = !jpStocksExpanded;
+    renderJpStocks(jpStocksExpanded);
+    const btn = document.getElementById('jp-stocks-toggle-btn');
+    if (jpStocksExpanded) {
+      btn.textContent = '▲ 折りたたむ';
+      btn.style.color = 'var(--muted)';
+      btn.style.borderColor = 'rgba(100,100,120,0.3)';
+    } else {
+      btn.textContent = '📋 TOP30まで見る ▼';
+      btn.style.color = 'var(--gold)';
+      btn.style.borderColor = 'rgba(255,194,68,0.3)';
+    }
+  }
+
+  renderJpStocks(false);
 
   // Fetch crypto prices from CoinGecko (free API)
   async function fetchCryptoPrices() {
