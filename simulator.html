@@ -330,6 +330,18 @@
     /* Chart: 2-line (compound vs simple) */
     .chart-wrap-tall { height: 240px; margin-top: 0.75rem; }
 
+    /* ── Sample scenario buttons ── */
+    .scenario-wrap { margin-bottom: 1rem; }
+    .scenario-label { font-size: 0.7rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+    .scenario-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .scenario-btn {
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px; font-size: 0.76rem; cursor: pointer;
+      color: var(--text); background: var(--surface2); border: 1px solid var(--border);
+      transition: all 0.15s; white-space: nowrap;
+    }
+    .scenario-btn:hover { background: rgba(108,111,255,0.2); border-color: var(--accent); color: var(--accent); }
+
     @media (min-width: 600px) {
       .panel { padding: 1.25rem 1.5rem; }
       .mode-tabs { padding: 0.75rem 1.5rem; }
@@ -358,6 +370,16 @@
 ═══════════════════════════════════════════ -->
 <div id="panel-future" class="panel active">
   <div class="tip">毎月一定額を積み立てた場合、老後に資産がいくらになるか計算します。</div>
+
+  <div class="scenario-wrap">
+    <div class="scenario-label">📋 サンプルシナリオ</div>
+    <div class="scenario-btns">
+      <button class="scenario-btn" onclick="setFuture(25,65,3,5)">🌱 25歳・月3万・5%</button>
+      <button class="scenario-btn" onclick="setFuture(30,60,5,5)">💼 30歳・月5万・5%</button>
+      <button class="scenario-btn" onclick="setFuture(40,65,10,4)">🏃 40歳・月10万・4%</button>
+      <button class="scenario-btn" onclick="setFuture(22,60,2,6)">🎓 22歳・月2万・6%</button>
+    </div>
+  </div>
 
   <!-- 現在年齢 -->
   <div class="form-group">
@@ -455,6 +477,16 @@
 ═══════════════════════════════════════════ -->
 <div id="panel-need" class="panel">
   <div class="tip">老後に毎月いくら必要かを入力すると、必要な老後資金の総額を計算します。</div>
+
+  <div class="scenario-wrap">
+    <div class="scenario-label">📋 サンプルシナリオ</div>
+    <div class="scenario-btns">
+      <button class="scenario-btn" onclick="setNeed(20,10,65,90,2)">🏠 標準モデル（月20万）</button>
+      <button class="scenario-btn" onclick="setNeed(30,12,65,90,2)">✈️ ゆとりモデル（月30万）</button>
+      <button class="scenario-btn" onclick="setNeed(15,10,65,85,1)">🌿 シンプルモデル（月15万）</button>
+      <button class="scenario-btn" onclick="setNeed(25,8,60,95,2)">🎌 長生きモデル（95歳）</button>
+    </div>
+  </div>
 
   <!-- 老後の月生活費 -->
   <div class="form-group">
@@ -561,6 +593,16 @@
 ═══════════════════════════════════════════ -->
 <div id="panel-reverse" class="panel">
   <div class="tip">老後に毎月いくら使いたいかを決め、そのために今から月いくら積み立てればよいかを逆算します。</div>
+
+  <div class="scenario-wrap">
+    <div class="scenario-label">📋 サンプルシナリオ</div>
+    <div class="scenario-btns">
+      <button class="scenario-btn" onclick="setReverse(20,10,30,65,90,5,2)">💼 30歳スタート・老後月20万</button>
+      <button class="scenario-btn" onclick="setReverse(30,12,25,65,90,5,2)">🌱 25歳スタート・老後月30万</button>
+      <button class="scenario-btn" onclick="setReverse(20,10,40,65,90,4,2)">🏃 40歳スタート・老後月20万</button>
+      <button class="scenario-btn" onclick="setReverse(25,8,35,60,95,5,2)">🎌 35歳・早期リタイア60歳</button>
+    </div>
+  </div>
 
   <!-- 老後の月収目標 -->
   <div class="form-group">
@@ -697,6 +739,16 @@
 ═══════════════════════════════════════════ -->
 <div id="panel-compound" class="panel">
   <div class="tip">元本 + 毎月積立を「複利」と「単利」で比較します。時間が長いほど複利の差が広がる様子をグラフで確認できます。</div>
+
+  <div class="scenario-wrap">
+    <div class="scenario-label">📋 サンプルシナリオ</div>
+    <div class="scenario-btns">
+      <button class="scenario-btn" onclick="setCompound(100,3,5,30)">📈 オルカン想定（5%・30年）</button>
+      <button class="scenario-btn" onclick="setCompound(0,5,7,30)">🚀 米国株想定（7%・30年）</button>
+      <button class="scenario-btn" onclick="setCompound(500,10,5,20)">💰 まとまった元本から</button>
+      <button class="scenario-btn" onclick="setCompound(0,1,5,40)">🌱 月1万を40年（小さく長く）</button>
+    </div>
+  </div>
 
   <!-- 初期投資額 -->
   <div class="form-group">
@@ -1274,6 +1326,43 @@ function drawCombinedChart(canvasId, accData, retData, labels, splitIdx) {
     ctx.font = '10px sans-serif';
     ctx.fillText(labels[i], PAD.left + i * (chartW / (n - 1)), h - 6);
   }
+}
+
+/* ─── Scenario setters ─── */
+function setFuture(age, retire, amt, rate) {
+  $('f-age').value = age;   $('f-age-n').value = age;   $('f-age-v').textContent = age;
+  $('f-retire').value = retire; $('f-retire-n').value = retire; $('f-retire-v').textContent = retire;
+  $('f-amt').value = amt;   $('f-amt-n').value = amt;   $('f-amt-v').textContent = amt;
+  $('f-rate').value = rate; $('f-rate-n').value = rate; $('f-rate-v').textContent = rate;
+  calcFuture();
+}
+
+function setNeed(expense, pension, retire, life, rate) {
+  $('n-expense').value = expense; $('n-expense-n').value = expense; $('n-expense-v').textContent = expense;
+  $('n-pension').value = pension; $('n-pension-n').value = pension; $('n-pension-v').textContent = pension;
+  $('n-retire').value = retire;   $('n-retire-n').value = retire;   $('n-retire-v').textContent = retire;
+  $('n-life').value = life;       $('n-life-n').value = life;       $('n-life-v').textContent = life;
+  $('n-rate').value = rate;       $('n-rate-n').value = rate;       $('n-rate-v').textContent = rate;
+  calcNeed();
+}
+
+function setReverse(target, pension, age, retire, life, rate, rate2) {
+  $('r-target').value = target;   $('r-target-n').value = target;   $('r-target-v').textContent = target;
+  $('r-pension').value = pension; $('r-pension-n').value = pension; $('r-pension-v').textContent = pension;
+  $('r-age').value = age;         $('r-age-n').value = age;         $('r-age-v').textContent = age;
+  $('r-retire').value = retire;   $('r-retire-n').value = retire;   $('r-retire-v').textContent = retire;
+  $('r-life').value = life;       $('r-life-n').value = life;       $('r-life-v').textContent = life;
+  $('r-rate').value = rate;       $('r-rate-n').value = rate;       $('r-rate-v').textContent = rate;
+  $('r-rate2').value = rate2;     $('r-rate2-n').value = rate2;     $('r-rate2-v').textContent = rate2;
+  calcReverse();
+}
+
+function setCompound(init, monthly, rate, years) {
+  $('c-init').value = init;       $('c-init-n').value = init;       $('c-init-v').textContent = init;
+  $('c-monthly').value = monthly; $('c-monthly-n').value = monthly; $('c-monthly-v').textContent = monthly;
+  $('c-rate').value = rate;       $('c-rate-n').value = rate;       $('c-rate-v').textContent = rate;
+  $('c-years').value = years;     $('c-years-n').value = years;     $('c-years-v').textContent = years;
+  calcCompound();
 }
 
 /* ─── Panel 4: 複利グラフ ─── */
