@@ -275,6 +275,61 @@
 
     .bottom-pad { height: 3rem; }
 
+    /* ── Compound chart specific ── */
+    .compound-highlight {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .compound-card {
+      border-radius: 12px; padding: 0.75rem;
+      text-align: center;
+    }
+
+    .compound-card.c-compound { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.3); }
+    .compound-card.c-simple   { background: rgba(108,111,255,0.12); border: 1px solid rgba(108,111,255,0.3); }
+    .compound-card.c-diff     { background: rgba(245,166,35,0.12); border: 1px solid rgba(245,166,35,0.3); grid-column: span 2; }
+
+    .compound-card-label { font-size: 0.68rem; color: var(--muted); margin-bottom: 4px; }
+    .compound-card-val   { font-size: 1.3rem; font-weight: 800; line-height: 1; }
+    .compound-card-sub   { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+
+    /* Year table */
+    .year-table-wrap {
+      overflow-x: auto; margin-top: 0.75rem;
+      border-radius: 10px; border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.78rem;
+    }
+
+    th {
+      background: var(--surface2);
+      padding: 0.45rem 0.6rem;
+      text-align: right; color: var(--muted);
+      font-weight: 600; white-space: nowrap;
+    }
+    th:first-child { text-align: left; }
+
+    td {
+      padding: 0.4rem 0.6rem;
+      border-top: 1px solid var(--border);
+      text-align: right; white-space: nowrap;
+    }
+    td:first-child { text-align: left; color: var(--muted); }
+
+    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+    .td-compound { color: var(--green); font-weight: 600; }
+    .td-simple   { color: var(--blue); }
+    .td-diff     { color: var(--gold); font-weight: 600; }
+    .td-interest { color: var(--muted); font-size: 0.72rem; }
+
+    /* Chart: 2-line (compound vs simple) */
+    .chart-wrap-tall { height: 240px; margin-top: 0.75rem; }
+
     @media (min-width: 600px) {
       .panel { padding: 1.25rem 1.5rem; }
       .mode-tabs { padding: 0.75rem 1.5rem; }
@@ -295,6 +350,7 @@
   <button class="mode-tab active" onclick="switchMode(this,'future')">将来いくら？</button>
   <button class="mode-tab" onclick="switchMode(this,'need')">老後にいくら必要？</button>
   <button class="mode-tab" onclick="switchMode(this,'reverse')">月いくら積立？</button>
+  <button class="mode-tab" onclick="switchMode(this,'compound')">📊 複利グラフ</button>
 </div>
 
 <!-- ═══════════════════════════════════════════
@@ -633,6 +689,136 @@
     <div class="divider"></div>
     <div style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem;font-weight:600;">🔄 「もし早く始めていたら？」比較</div>
     <div id="r-compare" class="milestone-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     PANEL 4: 複利グラフ
+═══════════════════════════════════════════ -->
+<div id="panel-compound" class="panel">
+  <div class="tip">元本 + 毎月積立を「複利」と「単利」で比較します。時間が長いほど複利の差が広がる様子をグラフで確認できます。</div>
+
+  <!-- 初期投資額 -->
+  <div class="form-group">
+    <div class="form-label">初期投資額（一括） <strong id="c-init-v">100</strong><span class="unit">万円</span></div>
+    <div class="range-row">
+      <input type="range" id="c-init" min="0" max="1000" step="10" value="100"
+             oninput="sync('c-init','c-init-v','c-init-n');calcCompound()">
+      <input type="number" id="c-init-n" class="range-input" value="100" min="0" max="1000" step="10"
+             oninput="sync2('c-init-n','c-init','c-init-v');calcCompound()">
+      <span style="font-size:.72rem;color:var(--muted)">万円</span>
+    </div>
+  </div>
+
+  <!-- 毎月の追加投資 -->
+  <div class="form-group">
+    <div class="form-label">毎月の追加投資 <strong id="c-monthly-v">3</strong><span class="unit">万円</span></div>
+    <div class="range-row">
+      <input type="range" id="c-monthly" min="0" max="50" step="0.5" value="3"
+             oninput="sync('c-monthly','c-monthly-v','c-monthly-n');calcCompound()">
+      <input type="number" id="c-monthly-n" class="range-input" value="3" min="0" max="50" step="0.5"
+             oninput="sync2('c-monthly-n','c-monthly','c-monthly-v');calcCompound()">
+      <span style="font-size:.72rem;color:var(--muted)">万円</span>
+    </div>
+  </div>
+
+  <!-- 年利 -->
+  <div class="form-group">
+    <div class="form-label">年利 <strong id="c-rate-v">5</strong><span class="unit">%</span></div>
+    <div class="range-row">
+      <input type="range" id="c-rate" min="0.1" max="20" step="0.1" value="5"
+             oninput="sync('c-rate','c-rate-v','c-rate-n');calcCompound()">
+      <input type="number" id="c-rate-n" class="range-input" value="5" min="0.1" max="20" step="0.1"
+             oninput="sync2('c-rate-n','c-rate','c-rate-v');calcCompound()">
+      <span style="font-size:.72rem;color:var(--muted)">%</span>
+    </div>
+  </div>
+
+  <!-- 運用期間 -->
+  <div class="form-group">
+    <div class="form-label">運用期間 <strong id="c-years-v">30</strong><span class="unit">年</span></div>
+    <div class="range-row">
+      <input type="range" id="c-years" min="1" max="50" value="30"
+             oninput="sync('c-years','c-years-v','c-years-n');calcCompound()">
+      <input type="number" id="c-years-n" class="range-input" value="30" min="1" max="50"
+             oninput="sync2('c-years-n','c-years','c-years-v');calcCompound()">
+      <span style="font-size:.72rem;color:var(--muted)">年</span>
+    </div>
+  </div>
+
+  <button class="calc-btn" onclick="calcCompound()">複利グラフを表示</button>
+
+  <!-- Summary cards -->
+  <div id="compound-result" class="result-box">
+    <div class="result-title">💹 複利 vs 単利 比較結果</div>
+
+    <div class="compound-highlight">
+      <div class="compound-card c-compound">
+        <div class="compound-card-label">複利の最終資産</div>
+        <div class="compound-card-val c-green" id="c-fv-compound">—</div>
+        <div class="compound-card-sub" id="c-fv-compound-sub">—</div>
+      </div>
+      <div class="compound-card c-simple">
+        <div class="compound-card-label">単利の最終資産</div>
+        <div class="compound-card-val" style="color:var(--blue)" id="c-fv-simple">—</div>
+        <div class="compound-card-sub" id="c-fv-simple-sub">—</div>
+      </div>
+      <div class="compound-card c-diff">
+        <div class="compound-card-label">複利の「お得」額（複利効果）</div>
+        <div class="compound-card-val" style="color:var(--gold)" id="c-diff">—</div>
+        <div class="compound-card-sub" id="c-diff-sub">—</div>
+      </div>
+    </div>
+
+    <!-- 元本 / 複利利息 / 単利利息 -->
+    <div class="result-grid">
+      <div class="result-item">
+        <div class="result-item-label">総投資元本</div>
+        <div class="result-item-value" id="c-principal">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">複利の利息合計</div>
+        <div class="result-item-value c-green" id="c-interest-compound">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">単利の利息合計</div>
+        <div class="result-item-value c-blue" id="c-interest-simple">—</div>
+      </div>
+      <div class="result-item">
+        <div class="result-item-label">お金が2倍（72の法則）</div>
+        <div class="result-item-value c-gold" id="c-rule72">—</div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="divider"></div>
+    <div style="font-size:0.72rem;color:var(--muted);font-weight:600;margin-bottom:0.35rem;">📈 資産推移グラフ</div>
+    <div class="chart-wrap chart-wrap-tall">
+      <canvas id="compoundChart"></canvas>
+    </div>
+    <div class="chart-legend" style="margin-top:0.5rem;">
+      <div class="legend-item"><div class="legend-dot" style="background:#00c896"></div>複利</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6c6fff"></div>単利</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#2e3348"></div>元本のみ</div>
+    </div>
+
+    <!-- Year-by-year table -->
+    <div class="divider"></div>
+    <div style="font-size:0.72rem;color:var(--muted);font-weight:600;margin-bottom:0.35rem;">📋 年別詳細</div>
+    <div class="year-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>年数</th>
+            <th>投資元本</th>
+            <th style="color:var(--green)">複利資産</th>
+            <th style="color:var(--blue)">単利資産</th>
+            <th style="color:var(--gold)">差額</th>
+          </tr>
+        </thead>
+        <tbody id="compound-table"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -1090,20 +1276,214 @@ function drawCombinedChart(canvasId, accData, retData, labels, splitIdx) {
   }
 }
 
+/* ─── Panel 4: 複利グラフ ─── */
+function calcCompound() {
+  const initMan  = parseFloat($('c-init').value);
+  const monthMan = parseFloat($('c-monthly').value);
+  const rate     = parseFloat($('c-rate').value);
+  const years    = parseInt($('c-years').value);
+
+  const init    = initMan * 10000;
+  const monthly = monthMan * 10000;
+  const r       = monthlyRate(rate);          // monthly compound rate
+  const rAnn    = rate / 100;                 // annual rate (for simple)
+  const months  = years * 12;
+
+  /* Compound FV = initial lump + annuity */
+  const fvCompound = init * Math.pow(1 + r, months) + fvAnnuity(monthly, r, months);
+
+  /* Simple interest FV */
+  /* lump sum: P*(1 + r_annual*years)
+     monthly additions: each added at month m earns simple interest for (months-m) months
+     = sum_{m=1}^{months} monthly * (1 + rAnn*(months-m)/12)
+     = monthly*months + monthly*(rAnn/12)*sum_{m=1}^{months}(months-m)
+     = monthly*months + monthly*(rAnn/12)*(months*(months-1)/2) */
+  const fvSimple = init * (1 + rAnn * years)
+    + monthly * months
+    + monthly * (rAnn / 12) * ((months * (months - 1)) / 2);
+
+  const principal      = init + monthly * months;
+  const interestComp   = fvCompound - principal;
+  const interestSimple = fvSimple - principal;
+  const diff           = fvCompound - fvSimple;
+
+  /* Summary cards */
+  $('c-fv-compound').textContent = fmtMan(fvCompound);
+  $('c-fv-compound-sub').textContent = `元本の${(fvCompound/Math.max(principal,1)).toFixed(1)}倍`;
+  $('c-fv-simple').textContent = fmtMan(fvSimple);
+  $('c-fv-simple-sub').textContent = `元本の${(fvSimple/Math.max(principal,1)).toFixed(1)}倍`;
+  $('c-diff').textContent = fmtMan(diff);
+  $('c-diff-sub').textContent = `複利は単利より${(diff/Math.max(fvSimple,1)*100).toFixed(1)}%多い`;
+
+  $('c-principal').textContent = fmtMan(principal);
+  $('c-interest-compound').textContent = fmtMan(interestComp);
+  $('c-interest-simple').textContent   = fmtMan(interestSimple);
+  $('c-rule72').textContent = `約${Math.ceil(72 / rate)}年`;
+
+  /* Year-by-year data */
+  const rows = [];
+  for (let y = 0; y <= years; y++) {
+    const m   = y * 12;
+    const fvc = init * Math.pow(1 + r, m) + fvAnnuity(monthly, r, m);
+    const fvs = init * (1 + rAnn * y)
+      + monthly * m
+      + monthly * (rAnn / 12) * ((m * (m - 1)) / 2);
+    const p   = init + monthly * m;
+    rows.push({ y, fvc, fvs, p, diff: fvc - fvs });
+  }
+
+  /* Table (every year, but if >20 years show every 5) */
+  const step = years > 20 ? 5 : 1;
+  const tableRows = rows.filter(r => r.y % step === 0 || r.y === years);
+  $('compound-table').innerHTML = tableRows.map(r =>
+    `<tr>
+      <td>${r.y}年目</td>
+      <td>${fmtMan(r.p)}</td>
+      <td class="td-compound">${fmtMan(r.fvc)}</td>
+      <td class="td-simple">${fmtMan(r.fvs)}</td>
+      <td class="td-diff">+${fmtMan(r.diff)}</td>
+    </tr>`
+  ).join('');
+
+  $('compound-result').classList.add('show');
+
+  requestAnimationFrame(() => drawCompoundChart('compoundChart', rows));
+}
+
+function drawCompoundChart(canvasId, rows) {
+  const { ctx, w, h } = getCtx(canvasId);
+  const PAD = { top: 24, right: 12, bottom: 30, left: 60 };
+  const chartW = w - PAD.left - PAD.right;
+  const chartH = h - PAD.top - PAD.bottom;
+  const n = rows.length;
+
+  const maxVal = Math.max(...rows.map(r => r.fvc));
+
+  ctx.clearRect(0, 0, w, h);
+
+  /* Grid lines + Y labels */
+  const steps = 5;
+  ctx.font = '10px sans-serif';
+  for (let i = 0; i <= steps; i++) {
+    const val = (maxVal / steps) * i;
+    const y   = PAD.top + chartH - (val / maxVal) * chartH;
+    ctx.fillStyle = '#2e3348';
+    ctx.fillRect(PAD.left, y, chartW, 1);
+    ctx.fillStyle = '#7b82a0';
+    ctx.textAlign = 'right';
+    ctx.fillText(fmtMan(val), PAD.left - 4, y + 4);
+  }
+
+  /* Helper: draw line */
+  function drawLine(vals, color, lineWidth = 2, dash = []) {
+    ctx.beginPath();
+    ctx.setLineDash(dash);
+    vals.forEach((v, i) => {
+      const x = PAD.left + i * (chartW / (n - 1));
+      const y = PAD.top + chartH - (Math.max(v, 0) / maxVal) * chartH;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  /* Fill under compound line */
+  ctx.beginPath();
+  rows.forEach((r, i) => {
+    const x = PAD.left + i * (chartW / (n - 1));
+    const y = PAD.top + chartH - (r.fvc / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(PAD.left + chartW, PAD.top + chartH);
+  ctx.lineTo(PAD.left, PAD.top + chartH);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(0,200,150,0.08)';
+  ctx.fill();
+
+  /* Fill under simple line */
+  ctx.beginPath();
+  rows.forEach((r, i) => {
+    const x = PAD.left + i * (chartW / (n - 1));
+    const y = PAD.top + chartH - (r.fvs / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(PAD.left + chartW, PAD.top + chartH);
+  ctx.lineTo(PAD.left, PAD.top + chartH);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(108,111,255,0.08)';
+  ctx.fill();
+
+  /* Principal line (dashed) */
+  drawLine(rows.map(r => r.p), '#2e3348', 1.5, [5, 4]);
+
+  /* Simple interest line */
+  drawLine(rows.map(r => r.fvs), '#6c6fff', 2);
+
+  /* Compound line (on top) */
+  drawLine(rows.map(r => r.fvc), '#00c896', 2.5);
+
+  /* Dots at final values */
+  [
+    { val: rows[n-1].fvc, color: '#00c896' },
+    { val: rows[n-1].fvs, color: '#6c6fff' },
+  ].forEach(({ val, color }) => {
+    const x = PAD.left + chartW;
+    const y = PAD.top + chartH - (val / maxVal) * chartH;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = '#0f1117';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  /* Difference annotation at the end */
+  const compY = PAD.top + chartH - (rows[n-1].fvc / maxVal) * chartH;
+  const simpY = PAD.top + chartH - (rows[n-1].fvs / maxVal) * chartH;
+  const midY  = (compY + simpY) / 2;
+  const bracketX = PAD.left + chartW + 8;
+  ctx.strokeStyle = '#f5a623';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(bracketX, compY);
+  ctx.lineTo(bracketX + 4, compY);
+  ctx.lineTo(bracketX + 4, simpY);
+  ctx.lineTo(bracketX, simpY);
+  ctx.stroke();
+  ctx.fillStyle = '#f5a623';
+  ctx.textAlign = 'left';
+  ctx.font = 'bold 9px sans-serif';
+  ctx.fillText('差', bracketX + 6, midY + 4);
+
+  /* X axis labels */
+  const every = Math.ceil(n / 8);
+  for (let i = 0; i < n; i += every) {
+    ctx.fillStyle = '#7b82a0';
+    ctx.textAlign = 'center';
+    ctx.font = '10px sans-serif';
+    ctx.fillText(`${rows[i].y}年`, PAD.left + i * (chartW / (n - 1)), h - 6);
+  }
+}
+
 /* ─── Init: run default calc on load ─── */
 window.addEventListener('load', () => {
   calcFuture();
   calcNeed();
   calcReverse();
+  calcCompound();
 });
 
 window.addEventListener('resize', () => {
   const activePanel = document.querySelector('.panel.active');
   if (!activePanel) return;
   const id = activePanel.id;
-  if (id === 'panel-future') calcFuture();
-  else if (id === 'panel-need') calcNeed();
-  else calcReverse();
+  if (id === 'panel-future')   calcFuture();
+  else if (id === 'panel-need')     calcNeed();
+  else if (id === 'panel-reverse')  calcReverse();
+  else if (id === 'panel-compound') calcCompound();
 });
 </script>
 </body>
