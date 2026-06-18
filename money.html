@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>投資ダッシュボード</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3348;
+      --accent: #6c6fff;
+      --green: #00c896;
+      --gold: #f5a623;
+      --blue: #63b3ed;
+      --red: #ff5c5c;
+      --text: #e8eaf0;
+      --muted: #7b82a0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 2.5rem 1.25rem 1.5rem;
+      text-align: center;
+    }
+
+    .hero-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+    .hero h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #6c6fff, #00c896);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* Ticker strip */
+    .ticker {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 0;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 1.5rem;
+      padding: 0 1rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .ticker-inner::-webkit-scrollbar { display: none; }
+
+    .ticker-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .ticker-name { font-size: 0.7rem; color: var(--muted); }
+    .ticker-price { font-size: 0.82rem; font-weight: 600; }
+    .ticker-change { font-size: 0.68rem; font-weight: 600; padding: 1px 5px; border-radius: 4px; }
+    .up-bg { background: rgba(0,200,150,0.15); color: var(--green); }
+    .down-bg { background: rgba(255,92,92,0.15); color: var(--red); }
+
+    /* Section */
+    .section {
+      padding: 0 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Main cards */
+    .main-card {
+      display: block;
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s, transform 0.1s;
+    }
+
+    .main-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .main-card:active { transform: translateY(0); }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-icon-title {
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+
+    .card-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; flex-shrink: 0;
+    }
+
+    .icon-news    { background: linear-gradient(135deg, rgba(108,111,255,0.3), rgba(0,200,150,0.2)); }
+    .icon-sim     { background: linear-gradient(135deg, rgba(245,166,35,0.3), rgba(108,111,255,0.2)); }
+    .icon-orcan   { background: linear-gradient(135deg, rgba(99,179,237,0.3), rgba(0,200,150,0.2)); }
+
+    .card-title { font-size: 1rem; font-weight: 700; }
+    .card-desc  { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.75rem; }
+    .card-arrow { font-size: 1.1rem; color: var(--accent); }
+
+    .card-tags {
+      display: flex; flex-wrap: wrap; gap: 0.35rem;
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    /* Sub-link grid */
+    .sub-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .sub-card {
+      display: block;
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .sub-card:hover {
+      border-color: var(--accent);
+      background: rgba(108,111,255,0.06);
+    }
+
+    .sub-card-icon { font-size: 1.2rem; margin-bottom: 0.3rem; }
+    .sub-card-title { font-size: 0.82rem; font-weight: 700; margin-bottom: 2px; }
+    .sub-card-desc  { font-size: 0.7rem; color: var(--muted); line-height: 1.4; }
+
+    /* Date */
+    .updated {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+      padding-bottom: 2rem;
+    }
+
+    @media (min-width: 600px) {
+      .hero { padding: 3rem 2rem 2rem; }
+      .section { padding: 0 2rem; }
+      .sub-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-icon">💹</div>
+  <h1>投資ダッシュボード</h1>
+  <p>ニュース要約・積立シミュレーター・複利計算を<br>ひとまとめに</p>
+</div>
+
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-item">
+      <span class="ticker-name">BTC</span>
+      <span class="ticker-price" id="btc-price">取得中...</span>
+      <span class="ticker-change" id="btc-change">—</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">ETH</span>
+      <span class="ticker-price" id="eth-price">取得中...</span>
+      <span class="ticker-change" id="eth-change">—</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">USD/JPY</span>
+      <span class="ticker-price">155.42</span>
+      <span class="ticker-change down-bg">-0.21%</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">日経225</span>
+      <span class="ticker-price">38,420</span>
+      <span class="ticker-change down-bg">-0.48%</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">S&P500</span>
+      <span class="ticker-price">5,312</span>
+      <span class="ticker-change up-bg">+0.72%</span>
+    </div>
+    <div class="ticker-item">
+      <span class="ticker-name">オルカン</span>
+      <span class="ticker-price">¥24,318</span>
+      <span class="ticker-change up-bg">+0.61%</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main tools -->
+<div class="section">
+  <div class="section-label">🛠 ツール</div>
+
+  <a href="invest-news.html" class="main-card">
+    <div class="card-header">
+      <div class="card-icon-title">
+        <div class="card-icon icon-news">📰</div>
+        <div>
+          <div class="card-title">投資ニュース要約</div>
+        </div>
+      </div>
+      <span class="card-arrow">›</span>
+    </div>
+    <div class="card-desc">日本株・米国株・仮想通貨・為替・オルカンの最新ニュースをAIが要約。毎日の情報収集をまとめて確認。</div>
+    <div class="card-tags">
+      <span class="tag">🗾 日本株</span>
+      <span class="tag">🇺🇸 米国株</span>
+      <span class="tag">₿ 仮想通貨</span>
+      <span class="tag">💴 為替</span>
+      <span class="tag">🌏 オルカン</span>
+    </div>
+  </a>
+
+  <a href="simulator.html" class="main-card">
+    <div class="card-header">
+      <div class="card-icon-title">
+        <div class="card-icon icon-sim">📈</div>
+        <div>
+          <div class="card-title">積立シミュレーター</div>
+        </div>
+      </div>
+      <span class="card-arrow">›</span>
+    </div>
+    <div class="card-desc">将来いくらになるか、老後にいくら必要か、月いくら積み立てるべきかを複利計算でシミュレート。</div>
+    <div class="card-tags">
+      <span class="tag">将来いくら？</span>
+      <span class="tag">老後資金</span>
+      <span class="tag">逆算</span>
+      <span class="tag">複利グラフ</span>
+    </div>
+  </a>
+</div>
+
+<!-- Quick links to simulator tabs -->
+<div class="section">
+  <div class="section-label">⚡ クイックアクセス</div>
+  <div class="sub-grid">
+    <a href="simulator.html" class="sub-card" onclick="localStorage.setItem('simTab','future')">
+      <div class="sub-card-icon">🔮</div>
+      <div class="sub-card-title">将来いくら？</div>
+      <div class="sub-card-desc">積立金額と年利で将来の資産を試算</div>
+    </a>
+    <a href="simulator.html" class="sub-card">
+      <div class="sub-card-icon">🏖</div>
+      <div class="sub-card-title">老後資金の計算</div>
+      <div class="sub-card-desc">必要な老後資金の総額を計算</div>
+    </a>
+    <a href="simulator.html" class="sub-card">
+      <div class="sub-card-icon">🎯</div>
+      <div class="sub-card-title">月いくら積立？</div>
+      <div class="sub-card-desc">老後の目標から月額を逆算</div>
+    </a>
+    <a href="simulator.html" class="sub-card">
+      <div class="sub-card-icon">📊</div>
+      <div class="sub-card-title">複利グラフ</div>
+      <div class="sub-card-desc">複利 vs 単利を視覚的に比較</div>
+    </a>
+  </div>
+</div>
+
+<!-- About -->
+<div class="section">
+  <div class="section-label">🌏 オルカンについて</div>
+  <a href="invest-news.html#orcan" class="main-card" style="border-color:rgba(99,179,237,0.3);">
+    <div class="card-header">
+      <div class="card-icon-title">
+        <div class="card-icon icon-orcan">🌏</div>
+        <div>
+          <div class="card-title">eMAXIS Slim 全世界株式</div>
+        </div>
+      </div>
+      <span class="card-arrow">›</span>
+    </div>
+    <div class="card-desc">純資産6.2兆円・信託報酬0.05775%。新NISAで人気No.1のインデックスファンド情報をまとめて確認。</div>
+    <div class="card-tags">
+      <span class="tag">基準価額</span>
+      <span class="tag">地域別割合</span>
+      <span class="tag">NISA対応</span>
+    </div>
+  </a>
+</div>
+
+<div class="updated" id="updated"></div>
+
+<script>
+  // Updated date
+  const d = new Date();
+  document.getElementById('updated').textContent =
+    d.toLocaleDateString('ja-JP', {year:'numeric',month:'long',day:'numeric'}) + ' 更新';
+
+  // Fetch crypto prices
+  async function fetchPrices() {
+    try {
+      const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=jpy&include_24hr_change=true');
+      const data = await res.json();
+      if (data.bitcoin) {
+        const p = data.bitcoin.jpy, c = data.bitcoin.jpy_24h_change;
+        document.getElementById('btc-price').textContent = '¥' + Math.round(p).toLocaleString();
+        const el = document.getElementById('btc-change');
+        el.textContent = (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
+        el.className = 'ticker-change ' + (c >= 0 ? 'up-bg' : 'down-bg');
+      }
+      if (data.ethereum) {
+        const p = data.ethereum.jpy, c = data.ethereum.jpy_24h_change;
+        document.getElementById('eth-price').textContent = '¥' + Math.round(p).toLocaleString();
+        const el = document.getElementById('eth-change');
+        el.textContent = (c >= 0 ? '+' : '') + c.toFixed(2) + '%';
+        el.className = 'ticker-change ' + (c >= 0 ? 'up-bg' : 'down-bg');
+      }
+    } catch(e) {}
+  }
+
+  fetchPrices();
+</script>
+</body>
+</html>

@@ -376,9 +376,12 @@
     <h1>📊 投資ニュース要約</h1>
     <div class="date" id="headerDate"></div>
   </div>
-  <button class="refresh-btn" onclick="refreshAll()">
-    <span id="refreshIcon">↻</span> 更新
-  </button>
+  <div style="display:flex;gap:0.5rem;align-items:center;">
+    <a href="money.html" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:0.4rem 0.75rem;border-radius:20px;font-size:0.78rem;text-decoration:none;">← TOP</a>
+    <button class="refresh-btn" onclick="refreshAll()">
+      <span id="refreshIcon">↻</span> 更新
+    </button>
+  </div>
 </div>
 
 <!-- Price Ticker -->
