@@ -41,12 +41,18 @@
     .back-btn {
       background: var(--surface2);
       border: 1px solid var(--border);
-      color: var(--text);
-      padding: 0.3rem 0.65rem;
-      border-radius: 8px;
-      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 0.3rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
       cursor: pointer;
       text-decoration: none;
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .back-btn:hover {
+      color: var(--text);
+      border-color: rgba(108,111,255,0.4);
     }
 
     .header h1 {
@@ -58,7 +64,7 @@
     /* ── Mode Tabs ── */
     .mode-tabs {
       display: flex; gap: 0;
-      padding: 0.75rem 1rem;
+      padding: 0 1rem;
       overflow-x: auto; scrollbar-width: none;
       border-bottom: 1px solid var(--border);
     }
@@ -66,18 +72,20 @@
 
     .mode-tab {
       flex-shrink: 0;
-      padding: 0.45rem 0.9rem;
-      border-radius: 20px;
+      padding: 0.65rem 0.9rem;
+      border-radius: 0;
       font-size: 0.8rem;
       cursor: pointer;
       color: var(--muted);
       background: transparent;
-      border: 1px solid transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
       transition: all 0.2s;
-      margin-right: 0.4rem;
+      margin-right: 0.1rem;
+      margin-bottom: -1px;
     }
-    .mode-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
-    .mode-tab:not(.active):hover { border-color: var(--border); color: var(--text); }
+    .mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+    .mode-tab:not(.active):hover { color: var(--text); }
 
     /* ── Panel ── */
     .panel { display: none; padding: 1rem; }
@@ -88,12 +96,12 @@
 
     .form-label {
       display: flex; justify-content: space-between; align-items: center;
-      font-size: 0.8rem; color: var(--muted);
+      font-size: 0.85rem; color: var(--muted);
       margin-bottom: 0.35rem;
     }
 
     .form-label strong {
-      font-size: 1rem; color: var(--text); font-weight: 700;
+      font-size: 1.05rem; color: var(--text); font-weight: 700;
     }
 
     .form-label .unit { font-size: 0.72rem; color: var(--muted); }
@@ -142,10 +150,16 @@
     }
 
     /* ── Calc Button ── */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
     .calc-btn {
       width: 100%;
       padding: 0.85rem;
-      background: linear-gradient(135deg, var(--accent), #4e52cc);
+      background: linear-gradient(135deg, var(--accent), #4e52cc, var(--accent));
+      background-size: 200% 100%;
       border: none;
       border-radius: 12px;
       color: white;
@@ -155,6 +169,7 @@
       margin: 1.2rem 0;
       letter-spacing: 0.04em;
       transition: opacity 0.2s, transform 0.1s;
+      animation: shimmer 3s linear infinite;
     }
     .calc-btn:hover { opacity: 0.9; }
     .calc-btn:active { transform: scale(0.98); }
@@ -176,10 +191,18 @@
       margin-bottom: 0.75rem;
     }
 
-    .result-main {
-      font-size: 2rem; font-weight: 800;
-      color: var(--green);
+    .result-main-wrap {
+      display: inline-block;
+      padding: 0.5rem 1rem 0.5rem 0.75rem;
+      border-radius: 12px;
+      background: rgba(0,200,150,0.06);
+      box-shadow: 0 0 20px rgba(0,200,150,0.15), inset 0 0 12px rgba(0,200,150,0.04);
       margin-bottom: 0.25rem;
+    }
+
+    .result-main {
+      font-size: 2.4rem; font-weight: 800;
+      color: var(--green);
       line-height: 1;
     }
 
@@ -266,11 +289,12 @@
     /* ── Info tip ── */
     .tip {
       font-size: 0.75rem; color: var(--muted);
-      background: var(--surface2);
+      background: rgba(34,38,58,0.8);
       border-radius: 8px;
-      padding: 0.5rem 0.75rem;
+      padding: 0.6rem 0.85rem;
       margin-bottom: 1rem;
-      line-height: 1.6;
+      line-height: 1.65;
+      border-left: 3px solid rgba(108,111,255,0.5);
     }
 
     .bottom-pad { height: 3rem; }
@@ -284,6 +308,8 @@
     .compound-card {
       border-radius: 12px; padding: 0.75rem;
       text-align: center;
+      min-height: 90px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
     }
 
     .compound-card.c-compound { background: rgba(0,200,150,0.12); border: 1px solid rgba(0,200,150,0.3); }
@@ -291,7 +317,7 @@
     .compound-card.c-diff     { background: rgba(245,166,35,0.12); border: 1px solid rgba(245,166,35,0.3); grid-column: span 2; }
 
     .compound-card-label { font-size: 0.68rem; color: var(--muted); margin-bottom: 4px; }
-    .compound-card-val   { font-size: 1.3rem; font-weight: 800; line-height: 1; }
+    .compound-card-val   { font-size: 1.5rem; font-weight: 800; line-height: 1; }
     .compound-card-sub   { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
 
     /* Year table */
@@ -320,7 +346,7 @@
     }
     td:first-child { text-align: left; color: var(--muted); }
 
-    tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+    tr:nth-child(even) td { background: rgba(108,111,255,0.05); }
 
     .td-compound { color: var(--green); font-weight: 600; }
     .td-simple   { color: var(--blue); }
@@ -332,19 +358,25 @@
 
     /* ── Sample scenario buttons ── */
     .scenario-wrap { margin-bottom: 1rem; }
-    .scenario-label { font-size: 0.7rem; color: var(--muted); font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.4rem; }
+    .scenario-label { font-size: 0.7rem; color: var(--muted); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 0.5rem; }
     .scenario-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
     .scenario-btn {
-      padding: 0.35rem 0.75rem;
+      padding: 0.45rem 1rem;
       border-radius: 20px; font-size: 0.76rem; cursor: pointer;
       color: var(--text); background: var(--surface2); border: 1px solid var(--border);
-      transition: all 0.15s; white-space: nowrap;
+      transition: all 0.2s; white-space: nowrap;
+      background-image: linear-gradient(135deg, transparent 0%, rgba(108,111,255,0) 100%);
     }
-    .scenario-btn:hover { background: rgba(108,111,255,0.2); border-color: var(--accent); color: var(--accent); }
+    .scenario-btn:hover {
+      background: rgba(108,111,255,0.15);
+      background-image: linear-gradient(135deg, rgba(108,111,255,0.15) 0%, rgba(0,200,150,0.08) 100%);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
     @media (min-width: 600px) {
       .panel { padding: 1.25rem 1.5rem; }
-      .mode-tabs { padding: 0.75rem 1.5rem; }
+      .mode-tabs { padding: 0 1.5rem; }
       .header { padding: 1rem 1.5rem; }
     }
   </style>
@@ -434,7 +466,7 @@
   <!-- Result -->
   <div id="future-result" class="result-box">
     <div class="result-title">📊 老後開始時の資産総額</div>
-    <div class="result-main" id="f-total">—</div>
+    <div class="result-main-wrap"><div class="result-main" id="f-total">—</div></div>
     <div class="result-sub" id="f-sub">—</div>
 
     <div class="result-grid">
@@ -553,7 +585,7 @@
   <!-- Result -->
   <div id="need-result" class="result-box">
     <div class="result-title">💰 必要な老後資金（自己資金）</div>
-    <div class="result-main" id="n-total">—</div>
+    <div class="result-main-wrap"><div class="result-main" id="n-total">—</div></div>
     <div class="result-sub" id="n-sub">—</div>
 
     <div class="result-grid">
@@ -693,7 +725,7 @@
   <!-- Result -->
   <div id="reverse-result" class="result-box">
     <div class="result-title">📅 必要な毎月の積立額</div>
-    <div class="result-main" id="r-monthly">—</div>
+    <div class="result-main-wrap"><div class="result-main" id="r-monthly">—</div></div>
     <div class="result-sub" id="r-sub">—</div>
 
     <div class="result-grid">
