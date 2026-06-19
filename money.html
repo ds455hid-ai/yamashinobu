@@ -326,12 +326,38 @@
       .price-grid { grid-template-columns: repeat(6, 1fr); }
       .quick-grid { grid-template-columns: repeat(4, 1fr); }
     }
+
+    body.light-mode {
+      --bg: #f0f4ff;
+      --surface: #ffffff;
+      --border: #dde3f0;
+      --accent: #4f46e5;
+      --green: #16a34a;
+      --gold: #b45309;
+      --blue: #2563eb;
+      --red: #dc2626;
+      --muted: #6b7280;
+      --text: #1e293b;
+    }
+
+    body.light-mode .fund-card,
+    body.light-mode .news-card {
+      background: #ffffff;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    body.light-mode .beginner-note {
+      background: rgba(79,70,229,0.06);
+    }
   </style>
 </head>
 <body>
 
 <!-- Hero -->
 <div class="hero">
+  <div style="display:flex;justify-content:flex-end;padding:0 0.5rem 0.5rem;">
+    <button id="themeToggle" onclick="toggleTheme()" title="テーマ切替" style="background:none;border:1px solid var(--border);color:var(--text);padding:0.3rem 0.55rem;border-radius:20px;cursor:pointer;font-size:0.9rem;transition:all 0.2s;">🌙</button>
+  </div>
   <span class="hero-icon">💹</span>
   <h1>投資ダッシュボード</h1>
   <p>ニュース要約・積立シミュレーター・複利計算を<br>ひとまとめにした投資情報ハブ</p>
@@ -469,6 +495,21 @@
 <div class="updated" id="updated"></div>
 
 <script>
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  }
+
+  // Apply saved theme on load
+  (function() {
+    if (localStorage.getItem('theme') === 'light') {
+      document.body.classList.add('light-mode');
+      const btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = '☀️';
+    }
+  })();
+
   // Updated date
   const d = new Date();
   document.getElementById('updated').textContent =
