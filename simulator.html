@@ -63,8 +63,8 @@
 
     /* ── Mode Tabs ── */
     .mode-tabs {
-      display: flex; gap: 0;
-      padding: 0 1rem;
+      display: flex; gap: 0.4rem;
+      padding: 0.5rem 1rem;
       overflow-x: auto; scrollbar-width: none;
       border-bottom: 1px solid var(--border);
     }
@@ -73,22 +73,21 @@
     .mode-tab {
       flex-shrink: 0;
       padding: 0.65rem 0.9rem;
-      border-radius: 0;
+      border-radius: 20px;
       font-size: 0.8rem;
       cursor: pointer;
       color: var(--muted);
       background: transparent;
       border: none;
-      border-bottom: 2px solid transparent;
       transition: all 0.2s;
       margin-right: 0.1rem;
-      margin-bottom: -1px;
+      margin-bottom: 0;
     }
-    .mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+    .mode-tab.active { color: white; background: var(--accent); font-weight: 700; }
     .mode-tab:not(.active):hover { color: var(--text); }
 
     /* ── Panel ── */
-    .panel { display: none; padding: 1rem; }
+    .panel { display: none; padding: 1.1rem 1rem 1rem; }
     .panel.active { display: block; }
 
     /* ── Form ── */
@@ -109,11 +108,12 @@
     input[type="range"] {
       width: 100%;
       -webkit-appearance: none;
-      height: 4px;
+      height: 5px;
       border-radius: 2px;
       background: var(--border);
       outline: none;
       cursor: pointer;
+      accent-color: var(--accent);
     }
 
     input[type="range"]::-webkit-slider-thumb {
@@ -123,7 +123,7 @@
       background: var(--accent);
       cursor: pointer;
       border: 2px solid var(--bg);
-      box-shadow: 0 0 0 2px var(--accent);
+      box-shadow: 0 0 0 2px var(--accent), 0 0 8px rgba(108,111,255,0.5);
     }
 
     input[type="range"]::-moz-range-thumb {
@@ -193,15 +193,15 @@
 
     .result-main-wrap {
       display: inline-block;
-      padding: 0.5rem 1rem 0.5rem 0.75rem;
+      padding: 0.6rem 1.2rem 0.6rem 1rem;
       border-radius: 12px;
       background: rgba(0,200,150,0.06);
-      box-shadow: 0 0 20px rgba(0,200,150,0.15), inset 0 0 12px rgba(0,200,150,0.04);
+      box-shadow: 0 0 24px rgba(0,200,150,0.18), inset 0 0 12px rgba(0,200,150,0.04);
       margin-bottom: 0.25rem;
     }
 
     .result-main {
-      font-size: 2.4rem; font-weight: 800;
+      font-size: 2.8rem; font-weight: 800;
       color: var(--green);
       line-height: 1;
     }
@@ -290,8 +290,8 @@
     .tip {
       font-size: 0.75rem; color: var(--muted);
       background: rgba(34,38,58,0.8);
-      border-radius: 8px;
-      padding: 0.6rem 0.85rem;
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
       margin-bottom: 1rem;
       line-height: 1.65;
       border-left: 3px solid rgba(108,111,255,0.5);
@@ -361,10 +361,11 @@
     .scenario-label { font-size: 0.7rem; color: var(--muted); font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 0.5rem; }
     .scenario-btns { display: flex; flex-wrap: wrap; gap: 0.4rem; }
     .scenario-btn {
-      padding: 0.45rem 1rem;
-      border-radius: 20px; font-size: 0.76rem; cursor: pointer;
+      padding: 0.55rem 1.1rem;
+      border-radius: 10px; font-size: 0.76rem; cursor: pointer;
       color: var(--text); background: var(--surface2); border: 1px solid var(--border);
       transition: all 0.2s; white-space: nowrap;
+      font-weight: 600;
       background-image: linear-gradient(135deg, transparent 0%, rgba(108,111,255,0) 100%);
     }
     .scenario-btn:hover {
@@ -372,6 +373,8 @@
       background-image: linear-gradient(135deg, rgba(108,111,255,0.15) 0%, rgba(0,200,150,0.08) 100%);
       border-color: var(--accent);
       color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(108,111,255,0.2);
     }
 
     @media (min-width: 600px) {
