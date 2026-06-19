@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>積立記録 | 投資ダッシュボード</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080b14;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --accent: #818cf8;
+      --green: #34d399;
+      --gold: #fbbf24;
+      --blue: #60a5fa;
+      --red: #f87171;
+      --muted: #64748b;
+      --text: #f1f5f9;
+      --card-bg: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+      --glow: rgba(129,140,248,0.15);
+      --header-bg: rgba(8,11,20,0.75);
+      --header-border: rgba(129,140,248,0.15);
+      --header-shadow: 0 2px 24px rgba(8,11,20,0.6);
+    }
+
+    body.light-mode {
+      --bg: #f5f3ff;
+      --surface: #ffffff;
+      --border: #e0e7ff;
+      --accent: #4f46e5;
+      --green: #059669;
+      --gold: #d97706;
+      --blue: #2563eb;
+      --red: #dc2626;
+      --muted: #6b7280;
+      --text: #1e1b4b;
+      --card-bg: #ffffff;
+      --card-border: #e0e7ff;
+      --glow: rgba(79,70,229,0.1);
+      --header-bg: rgba(245,243,255,0.88);
+      --header-border: rgba(79,70,229,0.18);
+      --header-shadow: 0 2px 20px rgba(79,70,229,0.08);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      background-image: radial-gradient(ellipse 80% 60% at 20% 0%, rgba(129,140,248,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(52,211,153,0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body.light-mode {
+      background-image: radial-gradient(ellipse 80% 60% at 20% 0%, rgba(79,70,229,0.06) 0%, transparent 60%),
+                        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(5,150,105,0.04) 0%, transparent 50%);
+    }
+
+    /* ── Header ── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--header-border);
+      box-shadow: var(--header-shadow);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.25rem;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.3rem 0.7rem;
+      border: 1px solid var(--accent);
+      border-radius: 20px;
+      transition: background 0.2s, color 0.2s;
+      opacity: 0.85;
+    }
+
+    .back-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      opacity: 1;
+    }
+
+    .header h1 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .theme-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.3rem 0.55rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--accent);
+    }
+
+    /* ── Main content ── */
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 0.72rem;
+      color: var(--text);
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding-left: 0.6rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.1rem 1rem;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(129,140,248,0.35);
+      transform: translateY(-2px);
+    }
+
+    body.light-mode .stat-card {
+      box-shadow: 0 4px 24px rgba(79,70,229,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .stat-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.45rem;
+    }
+
+    .stat-value {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-unit {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.35rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    body.light-mode .card {
+      box-shadow: 0 4px 24px rgba(79,70,229,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    /* ── Form ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    input[type="month"],
+    input[type="number"],
+    input[type="text"] {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 0.92rem;
+      padding: 0.6rem 0.8rem;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+
+    body.light-mode input[type="month"],
+    body.light-mode input[type="number"],
+    body.light-mode input[type="text"] {
+      background: #f8f7ff;
+      border-color: var(--border);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--glow);
+    }
+
+    input::placeholder {
+      color: var(--muted);
+      opacity: 0.6;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(129,140,248,0.35);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* ── Charts ── */
+    .charts-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 1.2rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    body.light-mode .chart-card {
+      box-shadow: 0 4px 24px rgba(79,70,229,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .chart-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+      opacity: 0.9;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+    }
+
+    /* ── Goal section ── */
+    .goal-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .goal-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .goal-input-wrap input {
+      flex: 1;
+    }
+
+    .goal-unit {
+      font-size: 0.85rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .btn-secondary {
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .btn-secondary:hover {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .goal-progress {
+      margin-top: 0.85rem;
+      display: none;
+    }
+
+    .goal-progress.visible {
+      display: block;
+    }
+
+    .progress-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.06);
+      border-radius: 99px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    body.light-mode .progress-bar-wrap {
+      background: rgba(79,70,229,0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      transition: width 0.5s ease;
+    }
+
+    .progress-pct {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-top: 0.35rem;
+    }
+
+    /* ── Records table ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    thead {
+      background: rgba(129,140,248,0.08);
+    }
+
+    body.light-mode thead {
+      background: rgba(79,70,229,0.06);
+    }
+
+    th {
+      padding: 0.7rem 1rem;
+      text-align: left;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(255,255,255,0.02);
+    }
+
+    body.light-mode tbody tr:nth-child(even) {
+      background: rgba(79,70,229,0.03);
+    }
+
+    tbody tr:hover {
+      background: rgba(129,140,248,0.06);
+    }
+
+    .td-month {
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .td-amount {
+      font-weight: 700;
+      color: var(--green);
+      white-space: nowrap;
+    }
+
+    .td-memo {
+      color: var(--muted);
+      max-width: 200px;
+    }
+
+    .btn-delete {
+      background: rgba(248,113,113,0.12);
+      color: var(--red);
+      border: 1px solid rgba(248,113,113,0.25);
+      border-radius: 8px;
+      padding: 0.3rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+    .btn-delete:hover {
+      background: rgba(248,113,113,0.22);
+      border-color: rgba(248,113,113,0.5);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 560px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
+
+      .stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        text-align: left;
+      }
+
+      .stat-value {
+        font-size: 1.1rem;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (min-width: 600px) {
+      .container {
+        padding: 2rem 2rem 4rem;
+      }
+
+      .header {
+        padding: 0.9rem 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <a href="money.html" class="back-btn">← TOP</a>
+  <h1>📒 積立記録</h1>
+  <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">🌙</button>
+</div>
+
+<div class="container">
+
+  <!-- Summary Stats -->
+  <div class="section-label" style="margin-bottom:0.85rem;">📊 サマリー</div>
+  <div class="stats-row" style="margin-bottom:1.75rem;">
+    <div class="stat-card">
+      <div class="stat-label">合計積立額</div>
+      <div class="stat-value" id="stat-total">¥0</div>
+      <div class="stat-unit">累計</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">積立継続</div>
+      <div class="stat-value" id="stat-months">0</div>
+      <div class="stat-unit">ヶ月</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">月平均積立額</div>
+      <div class="stat-value" id="stat-avg">¥0</div>
+      <div class="stat-unit">平均</div>
+    </div>
+  </div>
+
+  <!-- Input Form -->
+  <div class="section-label">✏️ 積立を記録する</div>
+  <div class="card">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="input-month">年月</label>
+        <input type="month" id="input-month">
+      </div>
+      <div class="form-group">
+        <label for="input-amount">金額（円）</label>
+        <input type="number" id="input-amount" placeholder="例: 30000" min="0" step="100">
+      </div>
+      <div class="form-group full">
+        <label for="input-memo">メモ（任意）</label>
+        <input type="text" id="input-memo" placeholder="例: ボーナス追加など">
+      </div>
+    </div>
+    <button class="btn-primary" onclick="addRecord()">登録する</button>
+  </div>
+
+  <!-- Charts -->
+  <div class="section-label">📈 グラフ</div>
+  <div class="charts-row">
+    <div class="chart-card">
+      <div class="chart-title">月別積立グラフ（直近12ヶ月）</div>
+      <canvas id="barChart" height="200"></canvas>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">累積積立グラフ</div>
+      <canvas id="cumulativeChart" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Goal setting -->
+  <div class="section-label">🎯 目標設定</div>
+  <div class="card">
+    <div class="goal-row">
+      <div class="goal-input-wrap">
+        <label style="white-space:nowrap;margin-bottom:0;">月次目標額</label>
+        <input type="number" id="goal-amount" placeholder="例: 30000" min="0" step="100" style="margin-left:0.5rem;">
+        <span class="goal-unit">円 / 月</span>
+      </div>
+      <button class="btn-secondary" onclick="saveGoal()">保存</button>
+    </div>
+    <div class="goal-progress" id="goal-progress">
+      <div class="progress-label">今月の達成率</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+      </div>
+      <div class="progress-pct" id="progress-pct">0%</div>
+    </div>
+  </div>
+
+  <!-- Records Table -->
+  <div class="section-label">📋 積立記録一覧</div>
+  <div class="card" style="padding:0;overflow:hidden;">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>年月</th>
+            <th>金額</th>
+            <th>メモ</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="records-tbody">
+          <tr><td colspan="4" class="empty-state">記録がありません</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /.container -->
+
+<script>
+  /* ── Constants ── */
+  const LS_KEY = 'tsumitate_records';
+  const LS_GOAL = 'tsumitate_goal';
+  const LS_THEME = 'theme';
+
+  const SAMPLE = [
+    { month: '2025-01', amount: 30000, memo: '通常分' },
+    { month: '2025-02', amount: 30000, memo: '通常分' },
+    { month: '2025-03', amount: 50000, memo: 'ボーナス追加' },
+    { month: '2025-04', amount: 30000, memo: '通常分' },
+    { month: '2025-05', amount: 30000, memo: '通常分' },
+    { month: '2025-06', amount: 30000, memo: '通常分' },
+  ];
+
+  /* ── Theme ── */
+  function toggleTheme() {
+    const isLight = document.body.classList.toggle('light-mode');
+    document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem(LS_THEME, isLight ? 'light' : 'dark');
+    drawBarChart();
+    drawCumulativeChart();
+  }
+
+  (function() {
+    if (localStorage.getItem(LS_THEME) === 'light') {
+      document.body.classList.add('light-mode');
+      const btn = document.getElementById('themeToggle');
+      if (btn) btn.textContent = '☀️';
+    }
+  })();
+
+  /* ── Data helpers ── */
+  function loadRecords() {
+    const raw = localStorage.getItem(LS_KEY);
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch(e) { return []; }
+  }
+
+  function saveRecords(arr) {
+    localStorage.setItem(LS_KEY, JSON.stringify(arr));
+  }
+
+  function getRecords() {
+    let records = loadRecords();
+    if (records === null) {
+      records = SAMPLE;
+      saveRecords(records);
+    }
+    return records.slice().sort((a, b) => a.month.localeCompare(b.month));
+  }
+
+  /* ── Add / Delete ── */
+  function addRecord() {
+    const month = document.getElementById('input-month').value;
+    const amountRaw = document.getElementById('input-amount').value;
+    const memo = document.getElementById('input-memo').value.trim();
+
+    if (!month) { alert('年月を入力してください。'); return; }
+    const amount = parseInt(amountRaw, 10);
+    if (!amountRaw || isNaN(amount) || amount <= 0) {
+      alert('有効な金額を入力してください。');
+      return;
+    }
+
+    let records = getRecords();
+
+    // If same month exists, update it
+    const idx = records.findIndex(r => r.month === month);
+    if (idx !== -1) {
+      if (!confirm(`${month} の記録は既に存在します。上書きしますか？`)) return;
+      records[idx] = { month, amount, memo };
+    } else {
+      records.push({ month, amount, memo });
+      records.sort((a, b) => a.month.localeCompare(b.month));
+    }
+
+    saveRecords(records);
+    document.getElementById('input-amount').value = '';
+    document.getElementById('input-memo').value = '';
+    renderAll();
+  }
+
+  function deleteRecord(month) {
+    if (!confirm(`${month} の記録を削除しますか？`)) return;
+    let records = getRecords().filter(r => r.month !== month);
+    saveRecords(records);
+    renderAll();
+  }
+
+  /* ── Goal ── */
+  function saveGoal() {
+    const val = parseInt(document.getElementById('goal-amount').value, 10);
+    if (!val || val <= 0) { alert('有効な目標金額を入力してください。'); return; }
+    localStorage.setItem(LS_GOAL, val);
+    renderGoalProgress();
+    drawCumulativeChart();
+  }
+
+  function getGoal() {
+    const v = localStorage.getItem(LS_GOAL);
+    return v ? parseInt(v, 10) : null;
+  }
+
+  function renderGoalProgress() {
+    const goal = getGoal();
+    const el = document.getElementById('goal-progress');
+    if (!goal) { el.classList.remove('visible'); return; }
+
+    // Find current month amount
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    const records = getRecords();
+    const rec = records.find(r => r.month === currentMonth);
+    const thisAmount = rec ? rec.amount : 0;
+    const pct = Math.min(Math.round((thisAmount / goal) * 100), 100);
+
+    el.classList.add('visible');
+    document.getElementById('progress-bar').style.width = pct + '%';
+    document.getElementById('progress-pct').textContent = `今月の達成率: ${pct}%（¥${thisAmount.toLocaleString()} / ¥${goal.toLocaleString()}）`;
+  }
+
+  /* ── Stats ── */
+  function renderStats() {
+    const records = getRecords();
+    const total = records.reduce((s, r) => s + r.amount, 0);
+    const count = records.length;
+    const avg = count > 0 ? Math.round(total / count) : 0;
+
+    document.getElementById('stat-total').textContent = '¥' + total.toLocaleString();
+    document.getElementById('stat-months').textContent = count;
+    document.getElementById('stat-avg').textContent = '¥' + avg.toLocaleString();
+  }
+
+  /* ── Table ── */
+  function renderTable() {
+    const records = getRecords().slice().reverse(); // newest first
+    const tbody = document.getElementById('records-tbody');
+    if (records.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty-state">記録がありません</td></tr>';
+      return;
+    }
+    tbody.innerHTML = records.map(r => `
+      <tr>
+        <td class="td-month">${r.month}</td>
+        <td class="td-amount">¥${r.amount.toLocaleString()}</td>
+        <td class="td-memo">${escHtml(r.memo || '—')}</td>
+        <td><button class="btn-delete" onclick="deleteRecord('${escHtml(r.month)}')">削除</button></td>
+      </tr>
+    `).join('');
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── Canvas helpers ── */
+  function setupCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width || canvas.offsetWidth || 300;
+    const h = parseInt(canvas.getAttribute('height') || 200);
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.height = h + 'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    return { ctx, w, h };
+  }
+
+  function getCssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+
+  function isLightMode() {
+    return document.body.classList.contains('light-mode');
+  }
+
+  /* ── Bar Chart (last 12 months) ── */
+  function drawBarChart() {
+    const canvas = document.getElementById('barChart');
+    const { ctx, w, h } = setupCanvas(canvas);
+
+    const light = isLightMode();
+    const records = getRecords();
+
+    // Build last 12 months list
+    const months = [];
+    const now = new Date();
+    for (let i = 11; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+    }
+
+    const amounts = months.map(m => {
+      const rec = records.find(r => r.month === m);
+      return rec ? rec.amount : 0;
+    });
+
+    const labels = months.map(m => {
+      const parts = m.split('-');
+      return parts[1] + '月';
+    });
+
+    const maxAmt = Math.max(...amounts, 10000);
+
+    const padL = 42, padR = 12, padT = 28, padB = 40;
+    const chartW = w - padL - padR;
+    const chartH = h - padT - padB;
+    const barW = Math.max(4, (chartW / months.length) * 0.6);
+    const gap = chartW / months.length;
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Grid lines
+    const gridCount = 4;
+    ctx.strokeStyle = light ? 'rgba(79,70,229,0.1)' : 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= gridCount; i++) {
+      const y = padT + chartH - (i / gridCount) * chartH;
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(padL + chartW, y);
+      ctx.stroke();
+
+      // Y axis labels
+      const val = (maxAmt * i / gridCount) / 10000;
+      ctx.fillStyle = light ? '#6b7280' : '#64748b';
+      ctx.font = '10px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(val.toFixed(val < 1 ? 1 : 0) + '万', padL - 4, y + 3.5);
+    }
+
+    // Bars
+    amounts.forEach((amt, i) => {
+      const x = padL + i * gap + (gap - barW) / 2;
+      const barH = (amt / maxAmt) * chartH;
+      const y = padT + chartH - barH;
+
+      // Bar gradient
+      const grad = ctx.createLinearGradient(0, y, 0, padT + chartH);
+      grad.addColorStop(0, light ? 'rgba(79,70,229,0.85)' : 'rgba(129,140,248,0.9)');
+      grad.addColorStop(1, light ? 'rgba(79,70,229,0.35)' : 'rgba(129,140,248,0.35)');
+      ctx.fillStyle = grad;
+
+      // Rounded top bar
+      const radius = Math.min(5, barW / 2);
+      if (barH > 0) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + barW - radius, y);
+        ctx.quadraticCurveTo(x + barW, y, x + barW, y + radius);
+        ctx.lineTo(x + barW, padT + chartH);
+        ctx.lineTo(x, padT + chartH);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      // Value label on top of bar
+      if (amt > 0) {
+        ctx.fillStyle = light ? '#4f46e5' : '#a5b4fc';
+        ctx.font = 'bold 9px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        const labelVal = amt >= 10000 ? (amt/10000).toFixed(1)+'万' : amt.toLocaleString();
+        ctx.fillText(labelVal, x + barW/2, Math.max(y - 4, padT + 10));
+      }
+
+      // X axis label
+      ctx.fillStyle = light ? '#6b7280' : '#64748b';
+      ctx.font = '9px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(labels[i], x + barW/2, padT + chartH + 14);
+    });
+  }
+
+  /* ── Cumulative Line Chart ── */
+  function drawCumulativeChart() {
+    const canvas = document.getElementById('cumulativeChart');
+    const { ctx, w, h } = setupCanvas(canvas);
+
+    const light = isLightMode();
+    const records = getRecords();
+
+    if (records.length === 0) {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = light ? '#6b7280' : '#64748b';
+      ctx.font = '13px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('記録がありません', w/2, h/2);
+      return;
+    }
+
+    const months = records.map(r => r.month);
+    let cumulative = 0;
+    const cumulativeAmounts = records.map(r => { cumulative += r.amount; return cumulative; });
+    const labels = months.map(m => {
+      const parts = m.split('-');
+      return parts[0].slice(2) + '/' + parts[1];
+    });
+
+    const maxAmt = cumulativeAmounts[cumulativeAmounts.length - 1] || 10000;
+    const goal = getGoal();
+
+    const padL = 46, padR = 12, padT = 20, padB = 38;
+    const chartW = w - padL - padR;
+    const chartH = h - padT - padB;
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Y scale: up to at least maxAmt, and goal line if set
+    const yMax = goal ? Math.max(maxAmt, goal * months.length) : maxAmt * 1.15;
+
+    // Grid lines
+    const gridCount = 4;
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= gridCount; i++) {
+      const y = padT + chartH - (i / gridCount) * chartH;
+      ctx.strokeStyle = light ? 'rgba(79,70,229,0.1)' : 'rgba(255,255,255,0.06)';
+      ctx.beginPath();
+      ctx.moveTo(padL, y);
+      ctx.lineTo(padL + chartW, y);
+      ctx.stroke();
+
+      const val = (yMax * i / gridCount) / 10000;
+      ctx.fillStyle = light ? '#6b7280' : '#64748b';
+      ctx.font = '10px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.fillText(val.toFixed(val < 1 ? 1 : 0) + '万', padL - 4, y + 3.5);
+    }
+
+    const xStep = months.length > 1 ? chartW / (months.length - 1) : chartW;
+
+    // Area fill
+    const areaGrad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
+    areaGrad.addColorStop(0, light ? 'rgba(5,150,105,0.18)' : 'rgba(52,211,153,0.2)');
+    areaGrad.addColorStop(1, light ? 'rgba(5,150,105,0)' : 'rgba(52,211,153,0)');
+    ctx.fillStyle = areaGrad;
+    ctx.beginPath();
+    cumulativeAmounts.forEach((amt, i) => {
+      const x = padL + i * (months.length > 1 ? xStep : 0);
+      const y = padT + chartH - (amt / yMax) * chartH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.lineTo(padL + (months.length > 1 ? xStep * (months.length-1) : 0), padT + chartH);
+    ctx.lineTo(padL, padT + chartH);
+    ctx.closePath();
+    ctx.fill();
+
+    // Line
+    ctx.strokeStyle = light ? '#059669' : '#34d399';
+    ctx.lineWidth = 2.5;
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    cumulativeAmounts.forEach((amt, i) => {
+      const x = padL + i * (months.length > 1 ? xStep : 0);
+      const y = padT + chartH - (amt / yMax) * chartH;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Dots
+    cumulativeAmounts.forEach((amt, i) => {
+      const x = padL + i * (months.length > 1 ? xStep : 0);
+      const y = padT + chartH - (amt / yMax) * chartH;
+      ctx.beginPath();
+      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = light ? '#059669' : '#34d399';
+      ctx.fill();
+    });
+
+    // Goal dashed line (cumulative: goal * n_months)
+    if (goal && months.length > 0) {
+      const n = months.length;
+      const goalCum = goal * n;
+      const gy = padT + chartH - (goalCum / yMax) * chartH;
+      if (gy >= padT && gy <= padT + chartH) {
+        ctx.setLineDash([6, 4]);
+        ctx.strokeStyle = light ? 'rgba(217,119,6,0.65)' : 'rgba(251,191,36,0.65)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(padL, gy);
+        ctx.lineTo(padL + chartW, gy);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = light ? '#d97706' : '#fbbf24';
+        ctx.font = '9px system-ui, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText('目標', padL + chartW - 2, gy - 4);
+      }
+    }
+
+    // X axis labels (show every nth to avoid overcrowding)
+    const maxLabels = Math.floor(chartW / 32);
+    const step = Math.max(1, Math.ceil(months.length / maxLabels));
+    months.forEach((m, i) => {
+      if (i % step !== 0 && i !== months.length - 1) return;
+      const x = padL + i * (months.length > 1 ? xStep : 0);
+      ctx.fillStyle = light ? '#6b7280' : '#64748b';
+      ctx.font = '9px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(labels[i], x, padT + chartH + 14);
+    });
+  }
+
+  /* ── Render all ── */
+  function renderAll() {
+    renderStats();
+    renderTable();
+    renderGoalProgress();
+    drawBarChart();
+    drawCumulativeChart();
+  }
+
+  /* ── Init ── */
+  (function init() {
+    // Default month to current
+    const now = new Date();
+    const currentMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    document.getElementById('input-month').value = currentMonth;
+
+    // Restore goal
+    const goal = getGoal();
+    if (goal) document.getElementById('goal-amount').value = goal;
+
+    renderAll();
+
+    // Redraw on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        drawBarChart();
+        drawCumulativeChart();
+      }, 150);
+    });
+  })();
+</script>
+</body>
+</html>
