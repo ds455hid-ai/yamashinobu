@@ -25,6 +25,9 @@
       --card-bg: rgba(255,255,255,0.04);
       --card-border: rgba(255,255,255,0.08);
       --glow: rgba(129,140,248,0.15);
+      --header-bg: rgba(8,11,20,0.75);
+      --header-border: rgba(129,140,248,0.15);
+      --header-shadow: 0 2px 24px rgba(8,11,20,0.6);
     }
 
     body {
@@ -46,9 +49,11 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(8,11,20,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      background: var(--header-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--header-border);
+      box-shadow: var(--header-shadow);
       padding: 0.875rem 1rem;
       display: flex;
       align-items: center;
@@ -500,6 +505,9 @@
       --card-bg: #ffffff;
       --card-border: #e0e7ff;
       --glow: rgba(79,70,229,0.1);
+      --header-bg: rgba(245,243,255,0.88);
+      --header-border: rgba(79,70,229,0.18);
+      --header-shadow: 0 2px 20px rgba(79,70,229,0.08);
     }
 
     body.light-mode .fund-card,
