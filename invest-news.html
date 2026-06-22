@@ -1563,10 +1563,42 @@
     return 'jp';
   }
 
+  function makeBeginnerNote(cat, title, desc) {
+    const t = (title + ' ' + desc).toLowerCase();
+    if (cat === 'crypto') {
+      if (/半減期/.test(t)) return 'ビットコインの「半減期」とは約4年ごとに新規発行量が半分になるイベント。供給が減ると希少性が上がり、過去3回の半減期後はいずれも価格が大きく上昇しました。';
+      if (/etf/.test(t)) return 'ビットコインETFとは、株式口座からビットコインに間接投資できる商品。大企業や年金などの機関投資家が参入しやすくなり、大量の資金流入が起きやすくなります。';
+      if (/税|課税|申告/.test(t)) return '現在の日本では仮想通貨の利益は給与と合算されて最大55%の税金がかかります。株式は一律20%なので格差が大きい。改正が実現すれば投資家にとって大きなメリットです。';
+      if (/イーサ|ethereum|eth/.test(t)) return 'イーサリアムはビットコインに次ぐ第2位の仮想通貨。「スマートコントラクト」という自動契約機能を持ち、DeFi（分散型金融）やNFTなど様々なアプリの基盤として使われています。';
+      return 'ビットコインなどの仮想通貨（暗号資産）はブロックチェーン技術を使ったデジタル通貨です。価格変動が非常に大きいため、投資は余裕資金の範囲内・少額から始めるのが基本です。';
+    }
+    if (cat === 'fx') {
+      if (/円安|ドル高/.test(t)) return '円安とは「1ドルを買うのに多くの円が必要な状態」。円安だと輸出企業（トヨタなど）は有利ですが、輸入品（食料・エネルギー）が高くなります。外国株ファンドは円安で円換算の価値が上がります。';
+      if (/円高/.test(t)) return '円高とは「少ない円で1ドルを買える状態」。円高になると外国株ファンドは円換算の価値が下がります。一方、海外旅行が安くなり輸入品の値段が下がります。';
+      if (/スワップ|トルコ|メキシコ/.test(t)) return 'スワップポイントとはFXで通貨を保有することで毎日もらえる金利差収益。高金利通貨は魅力的に見えますが、急激な通貨安（為替差損）で大きな損失になることも多いです。';
+      if (/金利|利下げ|利上げ/.test(t)) return '金利と為替は密接に関連しています。金利が高い国の通貨が買われやすい傾向があります。米国が利下げすると円高ドル安、日銀が利上げしても円高になりやすくなります。';
+      return '為替レートとは2つの通貨の交換比率のこと。為替の動きは輸出入企業の業績や、外国株ファンドのリターンに大きく影響します。オルカンなどの外国株ファンドを持っている人は特に注目です。';
+    }
+    if (cat === 'us') {
+      if (/frb|連邦|利下げ|利上げ/.test(t)) return 'FRBはアメリカの中央銀行（日本の日銀に相当）。「利下げ」はお金を借りやすくして経済を刺激する政策で株価には追い風。「利上げ」はインフレ抑制が目的で株価には逆風になりやすい。';
+      if (/nvidia|gpu|半導体|ai/.test(t)) return 'NVIDIAはAI（人工知能）に必要なGPU（計算チップ）を作るアメリカ企業。ChatGPTなどのAI開発には大量のGPUが必要で、NVIDIA一強の状態が続いています。AI投資ブームの象徴的な銘柄です。';
+      if (/決算|eps|earnings/.test(t)) return '決算とは企業の成績発表のこと。「EPSが予想を上回った」＝「1株あたりの利益が市場予想より多かった」。予想を上回ると株価が上がりやすく、下回ると下がりやすい傾向があります。';
+      if (/s&p|nasdaq|ナスダック|ダウ/.test(t)) return 'S&P500はアメリカ主要500社の株価指数。オルカンの約60%はアメリカ株なので、S&P500が上がるとオルカンも連動して上がる傾向があります。ナスダックはIT・成長企業が中心の指数です。';
+      return '米国株はアメリカの証券取引所に上場している企業の株。Apple・Microsoft・NVIDIAなど世界的な大企業が多く、オルカンの約60%を占めます。米国株の動きは日本の投資信託にも大きく影響します。';
+    }
+    // jp default
+    if (/日銀|利上げ|金融政策/.test(t)) return '日銀（日本銀行）は日本の中央銀行。「利上げ」とは銀行の金利を上げること。住宅ローンの返済額が増えたり企業の借り入れコストが増えたりします。銀行株にはプラス、不動産・REITにはマイナスになりやすい傾向があります。';
+    if (/円安|為替/.test(t)) return '円安になると、海外で売上を上げる輸出企業（トヨタ・ソニーなど）は、ドルで稼いだお金を円に換えると増えるため有利になります。オルカンなどの外国株ファンドも円安で価値が上がります。';
+    if (/決算|営業利益|増収|増益/.test(t)) return '決算とは企業の成績発表のこと。「増収増益」は売上も利益も増えたということ。「営業利益」は本業で稼いだ利益で、企業の実力を測る重要な指標。予想を上回ると株価が上がりやすくなります。';
+    if (/reit|不動産/.test(t)) return 'REIT（リート）とはビルやマンションをまとめて持つ投資信託で、家賃収入を分配してもらえます。金利が上がると借り入れコストが増えて利益が減るため、利上げ局面では下がりやすい傾向があります。';
+    return 'このニュースは日本の株式市場に関するものです。個別株への投資は企業研究が重要ですが、インデックスファンド（オルカンなど）で分散投資するのが初心者には安心な方法です。';
+  }
+
   function renderNewsItem(item, cat) {
     const catLabels = { jp:'日本株', us:'米国株', crypto:'仮想通貨', fx:'為替・FX' };
     const catClasses = { jp:'cat-jp badge-jp', us:'cat-us badge-us', crypto:'cat-crypto badge-crypto', fx:'cat-fx badge-fx' };
     const date = item.pubDate ? new Date(item.pubDate).toLocaleDateString('ja-JP', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'}) : '';
+    const note = makeBeginnerNote(cat, item.title, item.description);
     return `<div class="news-card ${catClasses[cat]?.split(' ')[0] || ''}" style="cursor:pointer;" onclick="window.open('${item.link}', '_blank')">
     <div class="card-top">
       <span class="badge ${catClasses[cat]?.split(' ')[1] || 'badge-jp'}">${catLabels[cat] || '経済'}</span>
@@ -1574,6 +1606,7 @@
     </div>
     <div class="card-headline">${item.title}</div>
     <div style="font-size:0.8rem;color:var(--muted);margin-top:0.4rem;line-height:1.5;">${item.description.slice(0,120)}${item.description.length > 120 ? '…' : ''}</div>
+    <div class="beginner-note"><div class="beginner-note-label">💡 初心者向け解説</div>${note}</div>
     <div style="font-size:0.7rem;color:var(--accent);margin-top:0.5rem;">🔗 NHK経済 — 続きを読む</div>
   </div>`;
   }
