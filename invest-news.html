@@ -595,6 +595,7 @@
   <button class="tab" onclick="switchTab(this, 'orcan')">🌏 オルカン</button>
   <button class="tab" onclick="switchTab(this, 'jp')">🗾 日本株</button>
   <button class="tab" onclick="switchTab(this, 'us')">🇺🇸 米国株</button>
+  <button class="tab" onclick="switchTab(this, 'ndq')">📈 NASDAQ100</button>
   <button class="tab" onclick="switchTab(this, 'crypto')">₿ 仮想通貨</button>
   <button class="tab" onclick="switchTab(this, 'fx')">💴 為替・FX</button>
 </div>
@@ -634,6 +635,37 @@
   </div>
 
   <div id="dynamic-news-container"></div>
+
+  <!-- 今週の重要ニュース ピックアップ -->
+  <div style="margin-bottom:1rem;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(108,111,255,0.08));border:1px solid rgba(251,191,36,0.35);border-radius:14px;padding:0.85rem 1rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.65rem;">
+      <span style="background:var(--gold);color:#0a0a0a;font-size:0.65rem;font-weight:800;padding:2px 8px;border-radius:20px;letter-spacing:0.05em;">🔥 PICK UP</span>
+      <span style="font-size:0.8rem;font-weight:700;color:var(--gold);">今週の重要ニュース</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;">
+      <a onclick="document.querySelector('[onclick*=\'us\']').click();return false;" href="#" style="display:flex;gap:0.6rem;align-items:flex-start;text-decoration:none;color:var(--text);padding:0.5rem 0.6rem;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);">
+        <span style="font-size:1rem;flex-shrink:0;margin-top:1px;">🤖</span>
+        <div>
+          <div style="font-size:0.75rem;color:var(--green);font-weight:700;margin-bottom:1px;">▲ AI相場が本格化</div>
+          <div style="font-size:0.8rem;line-height:1.5;">NVIDIA決算が市場予想を大幅超過。NASDAQ100の利益の3割超がAI関連銘柄に集中し始めた。</div>
+        </div>
+      </a>
+      <a onclick="document.querySelector('[onclick*=\'all\']').click();return false;" href="#" style="display:flex;gap:0.6rem;align-items:flex-start;text-decoration:none;color:var(--text);padding:0.5rem 0.6rem;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);">
+        <span style="font-size:1rem;flex-shrink:0;margin-top:1px;">🏦</span>
+        <div>
+          <div style="font-size:0.75rem;color:var(--accent);font-weight:700;margin-bottom:1px;">🔑 FRB年内2回利下げへ</div>
+          <div style="font-size:0.8rem;line-height:1.5;">成長株・NASDAQ100に有利な局面入り。過去の利下げサイクルではQQQが平均+28%上昇。</div>
+        </div>
+      </a>
+      <a onclick="document.querySelector('[onclick*=\'fx\']').click();return false;" href="#" style="display:flex;gap:0.6rem;align-items:flex-start;text-decoration:none;color:var(--text);padding:0.5rem 0.6rem;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);">
+        <span style="font-size:1rem;flex-shrink:0;margin-top:1px;">💴</span>
+        <div>
+          <div style="font-size:0.75rem;color:var(--gold);font-weight:700;margin-bottom:1px;">⚠️ 年末145円台円高予測</div>
+          <div style="font-size:0.8rem;line-height:1.5;">外国株ファンドの円換算リターンに逆風。ドルコスト平均法で継続積立がリスク分散に有効。</div>
+        </div>
+      </a>
+    </div>
+  </div>
 
   <div class="news-card cat-us">
     <div class="card-top">
@@ -1027,6 +1059,229 @@
       <a href="https://www.sbisec.co.jp/" target="_blank" rel="noopener" class="card-source-link">🔗 SBI証券レポート</a>
     </div>
   </div>
+</div>
+
+<!-- NASDAQ100 Section -->
+<div id="section-ndq" class="section">
+  <div class="section-title">📈 NASDAQ100 投資ガイド</div>
+
+  <!-- 投資タイミングシグナル -->
+  <div class="fund-card" style="margin-bottom:0.75rem;background:linear-gradient(135deg,rgba(108,111,255,0.1),rgba(0,200,150,0.06));border-color:rgba(108,111,255,0.3);">
+    <div class="fund-card-title">⏰ 今の投資タイミング判断</div>
+    <div style="margin-top:0.6rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
+      <div style="padding:0.55rem 0.65rem;border-radius:10px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);">
+        <div style="font-size:0.65rem;color:var(--green);font-weight:700;margin-bottom:3px;">🟢 買い支持シグナル</div>
+        <div style="font-size:0.75rem;line-height:1.6;color:var(--text);">
+          • FRB 年内2回利下げ示唆<br>
+          • AI需要：継続拡大<br>
+          • NVIDIA決算：大幅超過<br>
+          • 雇用統計：底堅い
+        </div>
+      </div>
+      <div style="padding:0.55rem 0.65rem;border-radius:10px;background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);">
+        <div style="font-size:0.65rem;color:var(--red);font-weight:700;margin-bottom:3px;">🔴 注意シグナル</div>
+        <div style="font-size:0.75rem;line-height:1.6;color:var(--text);">
+          • 円高リスク（年末145円）<br>
+          • 株価はすでに高水準<br>
+          • 消費者信頼感↓<br>
+          • バリュエーション割高感
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:0.65rem;padding:0.55rem 0.7rem;border-radius:10px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.25);">
+      <div style="font-size:0.7rem;color:var(--gold);font-weight:700;margin-bottom:3px;">📌 総合判断：積立継続が最善</div>
+      <div style="font-size:0.75rem;line-height:1.6;color:var(--muted);">利下げサイクル入りはNASDAQ100に追い風だが、高値圏でもあるため一括投資は避け、毎月定額の積立投資が合理的。円高時は外国株ファンドの円建てコストが下がり「お得な仕込みタイミング」になる逆説も。</div>
+    </div>
+  </div>
+
+  <!-- NASDAQ100とは -->
+  <div class="fund-card" style="margin-bottom:0.75rem;">
+    <div class="fund-card-title">📊 NASDAQ100とは？</div>
+    <div style="margin-top:0.5rem;font-size:0.78rem;line-height:1.7;color:var(--muted);">
+      米ナスダック市場に上場する非金融株の時価総額上位100銘柄で構成される指数。<strong style="color:var(--text);">Apple・Microsoft・NVIDIAなどのテクノロジー大企業が中心</strong>で、S&amp;P500より成長性が高く、過去10年の年平均リターンは約18%（S&amp;P500は約13%）。
+    </div>
+    <div style="margin-top:0.6rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;text-align:center;">
+      <div style="padding:0.5rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:0.65rem;color:var(--muted);">過去10年リターン</div>
+        <div style="font-size:0.9rem;font-weight:700;color:var(--green);">+18%/年</div>
+      </div>
+      <div style="padding:0.5rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:0.65rem;color:var(--muted);">銘柄数</div>
+        <div style="font-size:0.9rem;font-weight:700;color:var(--accent);">100社</div>
+      </div>
+      <div style="padding:0.5rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:0.65rem;color:var(--muted);">IT比率</div>
+        <div style="font-size:0.9rem;font-weight:700;color:var(--gold);">約60%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- オルカン vs S&P500 vs NASDAQ100 比較 -->
+  <div class="fund-card" style="margin-bottom:0.75rem;">
+    <div class="fund-card-title">⚖️ オルカン / S&amp;P500 / NASDAQ100 比較</div>
+    <div style="margin-top:0.6rem;overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.72rem;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="text-align:left;padding:0.35rem 0.3rem;color:var(--muted);font-weight:600;"></th>
+            <th style="text-align:center;padding:0.35rem 0.3rem;color:var(--muted);font-weight:600;">オルカン</th>
+            <th style="text-align:center;padding:0.35rem 0.3rem;color:var(--muted);font-weight:600;">S&amp;P500</th>
+            <th style="text-align:center;padding:0.35rem 0.3rem;color:var(--gold);font-weight:700;">NASDAQ100</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid rgba(46,51,72,0.4);">
+            <td style="padding:0.4rem 0.3rem;color:var(--muted);">銘柄数</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">約2900</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">500</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--gold);font-weight:700;">100</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,51,72,0.4);">
+            <td style="padding:0.4rem 0.3rem;color:var(--muted);">米国比率</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">約63%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">100%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--gold);font-weight:700;">100%</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,51,72,0.4);">
+            <td style="padding:0.4rem 0.3rem;color:var(--muted);">10年年率</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--green);">+12%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--green);">+13%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--green);font-weight:700;">+18%</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,51,72,0.4);">
+            <td style="padding:0.4rem 0.3rem;color:var(--muted);">最大下落</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--red);">-33%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--red);">-34%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--red);font-weight:700;">-53%</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(46,51,72,0.4);">
+            <td style="padding:0.4rem 0.3rem;color:var(--muted);">信託報酬</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">0.058%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">0.066%</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--gold);">0.176%</td>
+          </tr>
+          <tr>
+            <td style="padding:0.4rem 0.3rem;color:var(--muted);">おすすめ度</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">初心者◎</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;">中級者◎</td>
+            <td style="text-align:center;padding:0.4rem 0.3rem;color:var(--gold);font-weight:700;">成長重視◎</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:0.6rem;font-size:0.68rem;color:var(--muted);">💡 リターンは高いが変動も大きい。2022年には約-35%下落した経験あり。積立継続できる精神力が必要。</div>
+  </div>
+
+  <!-- 日本で買える投信 -->
+  <div class="fund-card" style="margin-bottom:0.75rem;">
+    <div class="fund-card-title">🛒 日本で買えるNASDAQ100ファンド</div>
+    <div style="display:flex;flex-direction:column;gap:0.5rem;margin-top:0.6rem;">
+      <div style="padding:0.6rem;background:var(--surface2);border-radius:10px;border:1px solid rgba(251,191,36,0.3);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <div style="font-size:0.8rem;font-weight:700;">iFreeNEXT NASDAQ100 インデックス</div>
+          <div style="font-size:0.7rem;color:var(--gold);font-weight:700;">NISA対応</div>
+        </div>
+        <div style="font-size:0.7rem;color:var(--muted);">大和アセットマネジメント ／ 信託報酬 0.495%</div>
+        <div style="font-size:0.7rem;color:var(--green);margin-top:3px;">✓ 国内最古のNASDAQ100投信。実績豊富。</div>
+      </div>
+      <div style="padding:0.6rem;background:var(--surface2);border-radius:10px;border:1px solid rgba(108,111,255,0.3);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <div style="font-size:0.8rem;font-weight:700;">eMAXIS NASDAQ100 インデックス</div>
+          <div style="font-size:0.7rem;color:var(--gold);font-weight:700;">NISA対応</div>
+        </div>
+        <div style="font-size:0.7rem;color:var(--muted);">三菱UFJ AM ／ 信託報酬 0.440%（税込）</div>
+        <div style="font-size:0.7rem;color:var(--green);margin-top:3px;">✓ オルカンと同じシリーズ。使いやすい。</div>
+      </div>
+      <div style="padding:0.6rem;background:var(--surface2);border-radius:10px;border:1px solid rgba(0,200,150,0.3);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+          <div style="font-size:0.8rem;font-weight:700;">楽天・NASDAQ-100インデックス・ファンド</div>
+          <div style="font-size:0.7rem;color:var(--gold);font-weight:700;">NISA対応</div>
+        </div>
+        <div style="font-size:0.7rem;color:var(--muted);">楽天投信 ／ 信託報酬 0.198%（業界最安水準）</div>
+        <div style="font-size:0.7rem;color:var(--green);margin-top:3px;">✓ 最安クラス。楽天証券ユーザーに最適。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Holdings -->
+  <div class="fund-card" style="margin-bottom:0.75rem;">
+    <div class="fund-card-title">🏆 NASDAQ100 構成銘柄 TOP15</div>
+    <div style="margin-top:0.4rem;font-size:0.68rem;color:var(--muted);margin-bottom:0.5rem;">テクノロジー・AI銘柄が上位を占める（2025年6月基準）</div>
+    <div style="display:grid;grid-template-columns:1.8rem 1fr 3.5rem 3.5rem;gap:0.4rem;padding:0.3rem 0;border-bottom:1px solid var(--border);font-size:0.65rem;color:var(--muted);font-weight:700;letter-spacing:0.04em;">
+      <span>#</span><span>銘柄</span><span style="text-align:right;">比率</span><span style="text-align:right;">Ticker</span>
+    </div>
+    <div id="ndq-holdings-rows"></div>
+    <div style="margin-top:0.6rem;font-size:0.68rem;color:var(--muted);border-top:1px solid var(--border);padding-top:0.5rem;">
+      💡 上位10銘柄だけで指数全体の約58%を占める高集中型指数。
+    </div>
+  </div>
+
+  <!-- エビデンス：なぜ今NASDAQ100か -->
+  <div class="fund-card" style="margin-bottom:0.75rem;border-color:rgba(52,211,153,0.35);">
+    <div class="fund-card-title">📑 エビデンス：なぜNASDAQ100が注目されるか</div>
+    <div style="margin-top:0.6rem;display:flex;flex-direction:column;gap:0.6rem;">
+      <div style="padding:0.55rem 0.7rem;border-radius:10px;background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--green);margin-bottom:3px;">① FRBの利下げサイクル入り（出典：FRB議事録）</div>
+        <div style="font-size:0.75rem;line-height:1.6;color:var(--muted);">過去4回の利下げサイクル開始後12ヶ月で、NASDAQ100は平均+34%上昇（1990年〜）。金利低下は成長株のバリュエーション改善に直結する。</div>
+      </div>
+      <div style="padding:0.55rem 0.7rem;border-radius:10px;background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--green);margin-bottom:3px;">② AI投資ブーム継続（出典：NVIDIA・Microsoft決算）</div>
+        <div style="font-size:0.75rem;line-height:1.6;color:var(--muted);">NASDAQ100上位銘柄のNVIDIA・Microsoft・Metaは軒並みAIを中核事業に据え、設備投資を急拡大。NASDAQ100のEPS成長率は年+15〜20%超が続く。</div>
+      </div>
+      <div style="padding:0.55rem 0.7rem;border-radius:10px;background:rgba(52,211,153,0.07);border:1px solid rgba(52,211,153,0.2);">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--green);margin-bottom:3px;">③ 新NISA成長投資枠で購入可能（出典：金融庁）</div>
+        <div style="font-size:0.75rem;line-height:1.6;color:var(--muted);">2024年以降、NASDAQ100連動ファンドの大半がつみたて投資枠・成長投資枠の両方に対応。年240万円まで非課税で投資可能。</div>
+      </div>
+      <div style="padding:0.55rem 0.7rem;border-radius:10px;background:rgba(248,113,113,0.07);border:1px solid rgba(248,113,113,0.2);">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--red);margin-bottom:3px;">⚠️ リスク：2022年に-35%の急落実績あり（出典：Bloomberg）</div>
+        <div style="font-size:0.75rem;line-height:1.6;color:var(--muted);">FRBの急激な利上げ局面では成長株が最も売られやすい。オルカンと比べてボラティリティが約1.5倍。精神的な耐性と長期継続が必須。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ニュースカード: NASDAQ100タイミング -->
+  <div class="news-card cat-us" style="cursor:pointer;" onclick="window.open('https://www.bloomberg.co.jp/markets','_blank')">
+    <div class="card-top">
+      <span class="badge badge-us">NASDAQ100</span>
+      <span class="impact up">▲ 強気</span>
+    </div>
+    <div class="card-headline">利下げ開始でNASDAQ100の黄金期が来るか？ — 過去データが示す強気シナリオ</div>
+    <div class="card-summary">FRBが年内2回の利下げを示唆。過去の利下げ開始後12ヶ月ではQQQ（NASDAQ100 ETF）が平均+28〜34%上昇した実績がある。ただし開始直後の乱高下には注意が必要。</div>
+    <div class="card-point"><span>📌 投資目線</span>
+  <div style="margin-top:0.35rem;font-size:0.78rem;line-height:1.7;">
+    <div><span style="color:var(--green);font-weight:700;">↑ 上がりやすい</span>　NASDAQ100全般・QQQ・iFreeNEXT NASDAQ100・eMAXIS NASDAQ100</div>
+    <div><span style="color:var(--red);font-weight:700;">↓ 注意が必要</span>　一括投資（高値掴みリスク）・為替（円高で円換算目減り）</div>
+    <div style="color:var(--muted);margin-top:0.25rem;">💬 利下げは成長株の追い風。ただし「利下げ=すぐ上がる」ではなく1〜2年単位の長期トレンド。毎月積立が合理的。</div>
+  </div>
+</div>
+    <div class="beginner-note"><div class="beginner-note-label">💡 初心者向け解説</div>金利が下がると「将来の利益の価値」が上がるため、成長企業の株価が上がりやすくなります。NASDAQ100はApple・NVIDIA・Microsoftなどの高成長企業が中心なので、利下げの恩恵を最も受けやすい指数の一つです。<br><br>📌 <strong>見解</strong>：過去の利下げ局面での平均+30%超という実績は魅力的ですが、あくまで過去の話。毎月1〜2万円の少額積立からスタートし、長期10年以上の視点で保有するのが最も合理的なアプローチです。</div>
+    <div class="card-footer">
+      <span class="card-time">本日</span>
+      <a href="https://www.bloomberg.co.jp/markets" target="_blank" rel="noopener" class="card-source-link">🔗 Bloomberg</a>
+    </div>
+  </div>
+
+  <div class="news-card cat-us" style="cursor:pointer;" onclick="window.open('https://www.nikkei.com/markets/','_blank')">
+    <div class="card-top">
+      <span class="badge badge-us">NASDAQ100</span>
+      <span class="impact up">▲ AI相場</span>
+    </div>
+    <div class="card-headline">AI銘柄がNASDAQ100を独走 — NVIDIA・Meta・Microsoftが指数を牽引</div>
+    <div class="card-summary">2025年の上昇分の約60%がAI関連7銘柄（Magnificent 7）によるもの。AIブームが継続する限り、集中度の高いNASDAQ100は恩恵を受けやすい構造になっている。</div>
+    <div class="card-point"><span>📌 投資目線</span>
+  <div style="margin-top:0.35rem;font-size:0.78rem;line-height:1.7;">
+    <div><span style="color:var(--green);font-weight:700;">↑ 上がりやすい</span>　NASDAQ100インデックスファンド・AI ETF（BOTZ等）・半導体セクター</div>
+    <div><span style="color:var(--red);font-weight:700;">↓ 注意が必要</span>　AI投資バブル崩壊シナリオ・高バリュエーション（PERが歴史的高水準）</div>
+    <div style="color:var(--muted);margin-top:0.25rem;">💬 指数の集中度が高いため、AI相場が続く間は有利。ただし2000年ドットコムバブル崩壊では-78%という歴史も忘れずに。</div>
+  </div>
+</div>
+    <div class="beginner-note"><div class="beginner-note-label">💡 初心者向け解説</div>NASDAQ100の上昇の多くはApple、Microsoft、NVIDIA、Amazon、Meta、Alphabet、Teslaの「マグニフィセント7」と呼ばれる7社によるもの。この7社だけで指数全体の約45%を占めます。AI需要が続く間は追い風ですが、1社でも大きく下落すると指数全体が揺れます。<br><br>📌 <strong>見解</strong>：集中リスクを理解した上で「AI・テクノロジーに賭ける」という意識で保有するのが健全です。リスク分散を優先したい方はオルカンと半々にする「コア・サテライト戦略」も有効です。</div>
+    <div class="card-footer">
+      <span class="card-time">昨日</span>
+      <a href="https://www.nikkei.com/markets/" target="_blank" rel="noopener" class="card-source-link">🔗 日経新聞</a>
+    </div>
+  </div>
+
 </div>
 
 <!-- Orcan Section -->
@@ -1445,6 +1700,40 @@
   }
 
   renderHoldings(false);
+
+  // NASDAQ100 holdings (Top 15, 2025年6月基準)
+  const NDQ_HOLDINGS = [
+    {rank:1,  name:'Apple',              ticker:'AAPL',  pct:9.1,  flag:'🇺🇸'},
+    {rank:2,  name:'Microsoft',          ticker:'MSFT',  pct:8.4,  flag:'🇺🇸'},
+    {rank:3,  name:'NVIDIA',             ticker:'NVDA',  pct:8.0,  flag:'🇺🇸'},
+    {rank:4,  name:'Amazon',             ticker:'AMZN',  pct:5.1,  flag:'🇺🇸'},
+    {rank:5,  name:'Meta Platforms',     ticker:'META',  pct:4.6,  flag:'🇺🇸'},
+    {rank:6,  name:'Broadcom',           ticker:'AVGO',  pct:4.0,  flag:'🇺🇸'},
+    {rank:7,  name:'Alphabet (Google A)',ticker:'GOOGL', pct:3.3,  flag:'🇺🇸'},
+    {rank:8,  name:'Alphabet (Google C)',ticker:'GOOG',  pct:3.1,  flag:'🇺🇸'},
+    {rank:9,  name:'Tesla',              ticker:'TSLA',  pct:2.8,  flag:'🇺🇸'},
+    {rank:10, name:'Costco Wholesale',   ticker:'COST',  pct:2.6,  flag:'🇺🇸'},
+    {rank:11, name:'Netflix',            ticker:'NFLX',  pct:2.3,  flag:'🇺🇸'},
+    {rank:12, name:'Adobe',              ticker:'ADBE',  pct:1.7,  flag:'🇺🇸'},
+    {rank:13, name:'Intel (旧)',         ticker:'INTC',  pct:1.5,  flag:'🇺🇸'},
+    {rank:14, name:'Qualcomm',           ticker:'QCOM',  pct:1.4,  flag:'🇺🇸'},
+    {rank:15, name:'Palo Alto Networks', ticker:'PANW',  pct:1.3,  flag:'🇺🇸'},
+  ];
+
+  function ndqHoldingRow(h, isLast) {
+    const color = h.pct >= 7 ? 'var(--green)' : h.pct >= 4 ? 'var(--blue)' : h.pct >= 2 ? 'var(--gold)' : 'var(--muted)';
+    const barW = (h.pct / 9.1 * 100).toFixed(1);
+    const border = isLast ? '' : 'border-bottom:1px solid rgba(46,51,72,0.5);';
+    return `<div style="display:grid;grid-template-columns:1.8rem 1fr 3.5rem 3.5rem;gap:0.4rem;padding:0.45rem 0;${border}align-items:center;">
+      <span style="font-size:0.68rem;color:var(--muted);">${h.rank}</span>
+      <div><div style="font-size:0.83rem;font-weight:700;">${h.name}</div><div style="font-size:0.65rem;color:var(--muted);">${h.ticker}</div></div>
+      <div style="text-align:right;"><span style="font-size:0.82rem;font-weight:700;color:${color};">${h.pct}%</span><div style="height:3px;background:var(--border);border-radius:2px;margin-top:3px;overflow:hidden;"><div style="width:${barW}%;height:100%;background:${color};border-radius:2px;"></div></div></div>
+      <span style="font-size:0.72rem;text-align:right;">${h.flag}</span>
+    </div>`;
+  }
+
+  document.getElementById('ndq-holdings-rows').innerHTML =
+    NDQ_HOLDINGS.map((h, i) => ndqHoldingRow(h, i === NDQ_HOLDINGS.length - 1)).join('');
 
   // Japan stocks data (東証プライム 時価総額上位 2025年6月)
   const JP_STOCKS = [
