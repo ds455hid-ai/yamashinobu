@@ -528,6 +528,57 @@
     body.light-mode .beginner-note {
       background: rgba(79,70,229,0.06);
     }
+    /* ── Price Ticker ── */
+    .price-ticker-bar {
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      padding: 0.4rem 1rem;
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .price-ticker-bar::-webkit-scrollbar { display: none; }
+    .ticker-chip {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0.25rem 0.65rem;
+      margin-right: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.7rem;
+      vertical-align: middle;
+      min-width: 72px;
+    }
+    .ticker-chip-name { font-size: 0.6rem; color: var(--muted); font-weight: 600; }
+    .ticker-chip-price { font-size: 0.78rem; font-weight: 700; color: var(--text); }
+    .ticker-chip-change { font-size: 0.65rem; font-weight: 600; }
+    .ticker-chip-change.up { color: var(--green); }
+    .ticker-chip-change.down { color: var(--red); }
+    .ticker-chip-change.flat { color: var(--muted); }
+    .price-meta { text-align: center; font-size: 0.6rem; color: var(--muted); padding: 0.2rem 1rem; background: var(--surface2); border-bottom: 1px solid var(--border); }
+    /* ── Price Badge on cards ── */
+    .price-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      margin-top: 0.3rem;
+    }
+    .price-badge .pb-price { color: var(--text); }
+    .price-badge .pb-change { }
+    .price-badge .pb-change.up { color: var(--green); }
+    .price-badge .pb-change.down { color: var(--red); }
+    .price-badge .pb-change.flat { color: var(--muted); }
+    .price-badge .pb-loading { color: var(--muted); font-weight: 400; }
   </style>
 </head>
 <body>
@@ -588,6 +639,12 @@
     </div>
   </div>
 </div>
+
+<!-- Price Ticker Bar -->
+<div class="price-ticker-bar" id="priceTickerBar">
+  <span class="ticker-chip"><span class="ticker-chip-name">読込中...</span><span class="ticker-chip-price">---</span><span class="ticker-chip-change flat">---</span></span>
+</div>
+<div class="price-meta" id="priceMetaLine">株価データ取得中... ※15分遅延</div>
 
 <!-- Tabs -->
 <div class="tabs">
@@ -1189,12 +1246,13 @@
   <!-- Tier 2: ETF -->
   <div style="margin-bottom:0.4rem;font-size:0.72rem;font-weight:700;color:var(--blue);letter-spacing:0.05em;">○ TIER 2 — 攻め枠（ETF）</div>
 
-  <div class="news-card cat-jp" style="margin-bottom:0.5rem;cursor:pointer;" onclick="window.open('https://nextfunds.jp/lineup/1489/','_blank')">
+  <div class="news-card cat-jp" data-symbol="1489.T" style="margin-bottom:0.5rem;cursor:pointer;" onclick="window.open('https://nextfunds.jp/lineup/1489/','_blank')">
     <div class="card-top">
       <span class="badge badge-jp" style="font-size:0.65rem;">東証ETF</span>
       <span class="impact up">○ 攻め</span>
     </div>
     <div class="card-headline">【1489】NEXT FUNDS 日経平均高配当株50指数連動型ETF</div>
+    <div class="price-badge" id="price-1489T"><span class="pb-loading">価格取得中...</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">分配利回り目安</div><div style="color:var(--gold);font-weight:700;">約3.5〜4%</div></div>
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">年4回分配</div><div style="font-weight:700;">✓</div></div>
@@ -1213,12 +1271,13 @@
     </div>
   </div>
 
-  <div class="news-card cat-us" style="margin-bottom:0.75rem;cursor:pointer;" onclick="window.open('https://www.am.mufg.jp/fund/253425.html','_blank')">
+  <div class="news-card cat-us" data-symbol="2558.T" style="margin-bottom:0.75rem;cursor:pointer;" onclick="window.open('https://www.am.mufg.jp/fund/253425.html','_blank')">
     <div class="card-top">
       <span class="badge badge-us" style="font-size:0.65rem;">東証ETF</span>
       <span class="impact up">○ 攻め</span>
     </div>
     <div class="card-headline">【2558】MAXIS米国株式（S&amp;P500）上場投信（為替ヘッジなし）</div>
+    <div class="price-badge" id="price-2558T"><span class="pb-loading">価格取得中...</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">信託報酬</div><div style="color:var(--green);font-weight:700;">0.077%</div></div>
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">分配</div><div style="font-weight:700;">年1回</div></div>
@@ -1240,12 +1299,13 @@
   <!-- Tier 3: 個別株 -->
   <div style="margin-bottom:0.4rem;font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:0.05em;">△ TIER 3 — 個別株（高リスク・高リターン）</div>
 
-  <div class="news-card cat-jp" style="margin-bottom:0.5rem;">
+  <div class="news-card cat-jp" data-symbol="8306.T" style="margin-bottom:0.5rem;">
     <div class="card-top">
       <span class="badge badge-jp" style="font-size:0.65rem;">個別株</span>
       <span class="impact up">△ 攻め</span>
     </div>
     <div class="card-headline">【8306】三菱UFJフィナンシャルグループ — 利上げ恩恵 最大級</div>
+    <div class="price-badge" id="price-8306T"><span class="pb-loading">価格取得中...</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">配当利回り目安</div><div style="color:var(--gold);font-weight:700;">約3.5%</div></div>
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">市場</div><div style="font-weight:700;">東証プライム</div></div>
@@ -1264,12 +1324,13 @@
     </div>
   </div>
 
-  <div class="news-card cat-jp" style="margin-bottom:0.5rem;">
+  <div class="news-card cat-jp" data-symbol="8035.T" style="margin-bottom:0.5rem;">
     <div class="card-top">
       <span class="badge badge-jp" style="font-size:0.65rem;">個別株</span>
       <span class="impact up">△ 攻め</span>
     </div>
     <div class="card-headline">【8035】東京エレクトロン — AI半導体需要の直接受益者</div>
+    <div class="price-badge" id="price-8035T"><span class="pb-loading">価格取得中...</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">配当利回り目安</div><div style="color:var(--gold);font-weight:700;">約1.5%</div></div>
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">特徴</div><div style="font-weight:700;">半導体製造装置</div></div>
@@ -1288,12 +1349,13 @@
     </div>
   </div>
 
-  <div class="news-card cat-jp" style="margin-bottom:0.75rem;">
+  <div class="news-card cat-jp" data-symbol="8053.T" style="margin-bottom:0.75rem;">
     <div class="card-top">
       <span class="badge badge-jp" style="font-size:0.65rem;">個別株</span>
       <span class="impact up">△ 攻め</span>
     </div>
     <div class="card-headline">【8053】住友商事 — バフェットも注目する総合商社の高配当</div>
+    <div class="price-badge" id="price-8053T"><span class="pb-loading">価格取得中...</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">配当利回り目安</div><div style="color:var(--gold);font-weight:700;">約4%</div></div>
       <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">特徴</div><div style="font-weight:700;">総合商社</div></div>
@@ -2449,6 +2511,148 @@
 
   // Auto-refresh crypto prices every 60 seconds
   setInterval(fetchCryptoPrices, 60000);
+
+  // ── Real-Time Price System ──
+  const PRICE_SYMBOLS = [
+    { sym: '^N225',    label: '日経平均',  fmt: 'JPY_INDEX' },
+    { sym: '^GSPC',    label: 'S&P500',   fmt: 'USD_INDEX' },
+    { sym: '^IXIC',    label: 'NASDAQ',   fmt: 'USD_INDEX' },
+    { sym: 'USDJPY=X', label: 'ドル円',   fmt: 'FX' },
+    { sym: 'BTC-JPY',  label: 'BTC',      fmt: 'CRYPTO' },
+    { sym: '8306.T',   label: '三菱UFJ',  fmt: 'JPY', id: 'price-8306T' },
+    { sym: '8035.T',   label: '東エレク', fmt: 'JPY', id: 'price-8035T' },
+    { sym: '8053.T',   label: '住友商事', fmt: 'JPY', id: 'price-8053T' },
+    { sym: '1489.T',   label: '高配当ETF',fmt: 'JPY', id: 'price-1489T' },
+    { sym: '2558.T',   label: 'S&P500ETF',fmt: 'JPY', id: 'price-2558T' },
+    { sym: 'AAPL',     label: 'Apple',    fmt: 'USD' },
+    { sym: 'NVDA',     label: 'NVIDIA',   fmt: 'USD' },
+    { sym: 'MSFT',     label: 'Microsoft',fmt: 'USD' },
+    { sym: 'AMZN',     label: 'Amazon',   fmt: 'USD' },
+    { sym: 'META',     label: 'Meta',     fmt: 'USD' },
+  ];
+
+  const PRICE_CACHE_KEY = 'price_cache_v1';
+  const PRICE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+  function formatPriceNum(price, fmt) {
+    if (fmt === 'JPY' || fmt === 'JPY_INDEX') {
+      if (price >= 10000) return price.toLocaleString('ja-JP', {maximumFractionDigits: 0}) + '円';
+      return price.toLocaleString('ja-JP', {maximumFractionDigits: 1}) + '円';
+    }
+    if (fmt === 'FX') return price.toFixed(2) + '円';
+    if (fmt === 'CRYPTO') return (price / 10000).toFixed(0) + '万円';
+    if (fmt === 'USD' || fmt === 'USD_INDEX') return '$' + price.toLocaleString('en-US', {maximumFractionDigits: 2});
+    return price.toFixed(2);
+  }
+
+  function formatChangePct(pct) {
+    const sign = pct >= 0 ? '+' : '';
+    return sign + pct.toFixed(2) + '%';
+  }
+
+  function changeClass(pct) {
+    if (pct > 0) return 'up';
+    if (pct < 0) return 'down';
+    return 'flat';
+  }
+
+  async function fetchYahooFinance(symbols) {
+    const symsStr = symbols.join(',');
+    const apiUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symsStr)}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,shortName`;
+
+    const proxies = [
+      `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`,
+    ];
+
+    for (const proxyUrl of proxies) {
+      try {
+        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const results = data?.quoteResponse?.result;
+        if (results && results.length > 0) return results;
+      } catch (e) {
+        console.warn('[Prices] proxy failed:', proxyUrl, e);
+      }
+    }
+    return null;
+  }
+
+  function renderTickerBar(results) {
+    const bar = document.getElementById('priceTickerBar');
+    if (!bar) return;
+    const resultMap = {};
+    results.forEach(r => { resultMap[r.symbol] = r; });
+
+    const chips = PRICE_SYMBOLS.map(s => {
+      const r = resultMap[s.sym];
+      if (!r) return '';
+      const price = r.regularMarketPrice;
+      const pct = r.regularMarketChangePercent;
+      const cls = changeClass(pct);
+      const sign = pct >= 0 ? '▲' : '▼';
+      return `<div class="ticker-chip">
+        <span class="ticker-chip-name">${s.label}</span>
+        <span class="ticker-chip-price">${formatPriceNum(price, s.fmt)}</span>
+        <span class="ticker-chip-change ${cls}">${sign}${Math.abs(pct).toFixed(2)}%</span>
+      </div>`;
+    }).join('');
+
+    bar.innerHTML = chips || '<span style="font-size:0.72rem;color:var(--muted);padding:0.3rem 0;">価格データを取得できませんでした</span>';
+  }
+
+  function renderCardPrices(results) {
+    const resultMap = {};
+    results.forEach(r => { resultMap[r.symbol] = r; });
+
+    PRICE_SYMBOLS.filter(s => s.id).forEach(s => {
+      const el = document.getElementById(s.id);
+      if (!el) return;
+      const r = resultMap[s.sym];
+      if (!r) { el.innerHTML = '<span class="pb-loading">---</span>'; return; }
+      const price = r.regularMarketPrice;
+      const pct = r.regularMarketChangePercent;
+      const cls = changeClass(pct);
+      const sign = pct >= 0 ? '▲' : '▼';
+      el.innerHTML = `<span class="pb-price">${formatPriceNum(price, s.fmt)}</span><span class="pb-change ${cls}">${sign}${Math.abs(pct).toFixed(2)}%</span>`;
+    });
+  }
+
+  async function loadPrices(forceRefresh = false) {
+    // Check cache
+    if (!forceRefresh) {
+      try {
+        const cached = JSON.parse(localStorage.getItem(PRICE_CACHE_KEY) || 'null');
+        if (cached && Date.now() - cached.ts < PRICE_CACHE_TTL) {
+          renderTickerBar(cached.data);
+          renderCardPrices(cached.data);
+          const d = new Date(cached.ts);
+          document.getElementById('priceMetaLine').textContent =
+            `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}時点 ※Yahoo Finance 約15分遅延`;
+          return;
+        }
+      } catch(e) {}
+    }
+
+    const symbols = PRICE_SYMBOLS.map(s => s.sym);
+    const results = await fetchYahooFinance(symbols);
+
+    if (results) {
+      localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: results }));
+      renderTickerBar(results);
+      renderCardPrices(results);
+      const now = new Date();
+      document.getElementById('priceMetaLine').textContent =
+        `${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}時点 ※Yahoo Finance 約15分遅延 | 5分ごと自動更新`;
+    } else {
+      document.getElementById('priceMetaLine').textContent = '⚠️ 価格データ取得失敗（市場休場中または接続エラー）';
+    }
+  }
+
+  // Initial load + auto-refresh every 5 minutes
+  loadPrices();
+  setInterval(() => loadPrices(true), 5 * 60 * 1000);
 </script>
 </body>
 </html>
