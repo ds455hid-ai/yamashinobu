@@ -640,12 +640,6 @@
   </div>
 </div>
 
-<!-- Price Ticker Bar -->
-<div class="price-ticker-bar" id="priceTickerBar">
-  <span class="ticker-chip"><span class="ticker-chip-name">読込中...</span><span class="ticker-chip-price">---</span><span class="ticker-chip-change flat">---</span></span>
-</div>
-<div class="price-meta" id="priceMetaLine">株価データ取得中... ※15分遅延</div>
-
 <!-- Tabs -->
 <div class="tabs">
   <button class="tab active" onclick="switchTab(this, 'all')">すべて</button>
@@ -2512,150 +2506,81 @@
   // Auto-refresh crypto prices every 60 seconds
   setInterval(fetchCryptoPrices, 60000);
 
-  // ── Real-Time Price System ──
-  const PRICE_SYMBOLS = [
-    { sym: '^N225',    label: '日経平均',  fmt: 'JPY_INDEX' },
-    { sym: '^GSPC',    label: 'S&P500',   fmt: 'USD_INDEX' },
-    { sym: '^IXIC',    label: 'NASDAQ',   fmt: 'USD_INDEX' },
-    { sym: 'USDJPY=X', label: 'ドル円',   fmt: 'FX' },
-    { sym: 'BTC-JPY',  label: 'BTC',      fmt: 'CRYPTO' },
-    { sym: '8306.T',   label: '三菱UFJ',  fmt: 'JPY', id: 'price-8306T' },
-    { sym: '8035.T',   label: '東エレク', fmt: 'JPY', id: 'price-8035T' },
-    { sym: '8053.T',   label: '住友商事', fmt: 'JPY', id: 'price-8053T' },
-    { sym: '1489.T',   label: '高配当ETF',fmt: 'JPY', id: 'price-1489T' },
-    { sym: '2558.T',   label: 'S&P500ETF',fmt: 'JPY', id: 'price-2558T' },
-    { sym: 'AAPL',     label: 'Apple',    fmt: 'USD' },
-    { sym: 'NVDA',     label: 'NVIDIA',   fmt: 'USD' },
-    { sym: 'MSFT',     label: 'Microsoft',fmt: 'USD' },
-    { sym: 'AMZN',     label: 'Amazon',   fmt: 'USD' },
-    { sym: 'META',     label: 'Meta',     fmt: 'USD' },
+  // ── Stock Price Badges (おすすめ銘柄カード用) ──
+  // Yahoo Finance v8 chart API per symbol — more reliable than v7 bulk endpoint
+  const BADGE_STOCKS = [
+    { sym: '8306.T', id: 'price-8306T', fmt: 'JPY' },
+    { sym: '8035.T', id: 'price-8035T', fmt: 'JPY' },
+    { sym: '8053.T', id: 'price-8053T', fmt: 'JPY' },
+    { sym: '1489.T', id: 'price-1489T', fmt: 'JPY' },
+    { sym: '2558.T', id: 'price-2558T', fmt: 'JPY' },
   ];
+  const STOCK_CACHE_KEY = 'stock_badge_cache_v1';
+  const STOCK_CACHE_TTL = 5 * 60 * 1000;
 
-  const PRICE_CACHE_KEY = 'price_cache_v1';
-  const PRICE_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
-  function formatPriceNum(price, fmt) {
-    if (fmt === 'JPY' || fmt === 'JPY_INDEX') {
-      if (price >= 10000) return price.toLocaleString('ja-JP', {maximumFractionDigits: 0}) + '円';
-      return price.toLocaleString('ja-JP', {maximumFractionDigits: 1}) + '円';
-    }
-    if (fmt === 'FX') return price.toFixed(2) + '円';
-    if (fmt === 'CRYPTO') return (price / 10000).toFixed(0) + '万円';
-    if (fmt === 'USD' || fmt === 'USD_INDEX') return '$' + price.toLocaleString('en-US', {maximumFractionDigits: 2});
-    return price.toFixed(2);
+  function fmtJPY(v) {
+    return v >= 10000
+      ? v.toLocaleString('ja-JP', {maximumFractionDigits:0}) + '円'
+      : v.toLocaleString('ja-JP', {maximumFractionDigits:1}) + '円';
   }
 
-  function formatChangePct(pct) {
-    const sign = pct >= 0 ? '+' : '';
-    return sign + pct.toFixed(2) + '%';
-  }
-
-  function changeClass(pct) {
-    if (pct > 0) return 'up';
-    if (pct < 0) return 'down';
-    return 'flat';
-  }
-
-  async function fetchYahooFinance(symbols) {
-    const symsStr = symbols.join(',');
-    // NOTE: do NOT encode symsStr here — ^ and , must stay literal for Yahoo Finance
-    const apiUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symsStr}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,shortName`;
-
+  async function fetchOneStock(sym) {
+    const base = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?interval=1d&range=1d`;
     const proxies = [
-      `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`,
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`,
-      `https://api.codetabs.com/v1/proxy?quest=${apiUrl}`,
+      `https://corsproxy.io/?${encodeURIComponent(base)}`,
+      `https://api.allorigins.win/raw?url=${encodeURIComponent(base)}`,
     ];
-
-    for (const proxyUrl of proxies) {
+    for (const url of proxies) {
       try {
-        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-        if (!res.ok) { console.warn('[Prices] HTTP', res.status, proxyUrl); continue; }
+        const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
+        if (!res.ok) continue;
         const text = await res.text();
-        const data = JSON.parse(text);
-        const results = data?.quoteResponse?.result;
-        if (results && results.length > 0) return results;
-      } catch (e) {
-        console.warn('[Prices] proxy failed:', proxyUrl, e?.message);
-      }
+        let data; try { data = JSON.parse(text); } catch { continue; }
+        // allorigins /get wraps in {contents:'...'}
+        if (typeof data.contents === 'string') { try { data = JSON.parse(data.contents); } catch { continue; } }
+        const meta = data?.chart?.result?.[0]?.meta;
+        if (!meta?.regularMarketPrice) continue;
+        const price = meta.regularMarketPrice;
+        const prev  = meta.chartPreviousClose ?? meta.previousClose ?? price;
+        const pct   = prev ? (price - prev) / prev * 100 : 0;
+        return { price, pct };
+      } catch(e) { console.warn('[Stock]', sym, e?.message); }
     }
     return null;
   }
 
-  function renderTickerBar(results) {
-    const bar = document.getElementById('priceTickerBar');
-    if (!bar) return;
-    const resultMap = {};
-    results.forEach(r => { resultMap[r.symbol] = r; });
-
-    const chips = PRICE_SYMBOLS.map(s => {
-      const r = resultMap[s.sym];
-      if (!r) return '';
-      const price = r.regularMarketPrice;
-      const pct = r.regularMarketChangePercent;
-      const cls = changeClass(pct);
-      const sign = pct >= 0 ? '▲' : '▼';
-      return `<div class="ticker-chip">
-        <span class="ticker-chip-name">${s.label}</span>
-        <span class="ticker-chip-price">${formatPriceNum(price, s.fmt)}</span>
-        <span class="ticker-chip-change ${cls}">${sign}${Math.abs(pct).toFixed(2)}%</span>
-      </div>`;
-    }).join('');
-
-    bar.innerHTML = chips || '<span style="font-size:0.72rem;color:var(--muted);padding:0.3rem 0;">価格データを取得できませんでした</span>';
+  function applyBadge(id, data) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (!data) { el.innerHTML = '<span style="color:var(--muted);font-size:0.7rem;">取得失敗</span>'; return; }
+    const sign = data.pct >= 0 ? '▲' : '▼';
+    const cls  = data.pct > 0 ? 'up' : data.pct < 0 ? 'down' : 'flat';
+    el.innerHTML = `<span class="pb-price">${fmtJPY(data.price)}</span><span class="pb-change ${cls}">${sign}${Math.abs(data.pct).toFixed(2)}%</span>`;
   }
 
-  function renderCardPrices(results) {
-    const resultMap = {};
-    results.forEach(r => { resultMap[r.symbol] = r; });
-
-    PRICE_SYMBOLS.filter(s => s.id).forEach(s => {
-      const el = document.getElementById(s.id);
-      if (!el) return;
-      const r = resultMap[s.sym];
-      if (!r) { el.innerHTML = '<span class="pb-loading">---</span>'; return; }
-      const price = r.regularMarketPrice;
-      const pct = r.regularMarketChangePercent;
-      const cls = changeClass(pct);
-      const sign = pct >= 0 ? '▲' : '▼';
-      el.innerHTML = `<span class="pb-price">${formatPriceNum(price, s.fmt)}</span><span class="pb-change ${cls}">${sign}${Math.abs(pct).toFixed(2)}%</span>`;
-    });
-  }
-
-  async function loadPrices(forceRefresh = false) {
+  async function loadStockBadges(forceRefresh = false) {
     // Check cache
     if (!forceRefresh) {
       try {
-        const cached = JSON.parse(localStorage.getItem(PRICE_CACHE_KEY) || 'null');
-        if (cached && Date.now() - cached.ts < PRICE_CACHE_TTL) {
-          renderTickerBar(cached.data);
-          renderCardPrices(cached.data);
-          const d = new Date(cached.ts);
-          document.getElementById('priceMetaLine').textContent =
-            `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}時点 ※Yahoo Finance 約15分遅延`;
+        const c = JSON.parse(localStorage.getItem(STOCK_CACHE_KEY) || 'null');
+        if (c && Date.now() - c.ts < STOCK_CACHE_TTL) {
+          BADGE_STOCKS.forEach(s => applyBadge(s.id, c.data[s.sym]));
           return;
         }
-      } catch(e) {}
+      } catch {}
     }
-
-    const symbols = PRICE_SYMBOLS.map(s => s.sym);
-    const results = await fetchYahooFinance(symbols);
-
-    if (results) {
-      localStorage.setItem(PRICE_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: results }));
-      renderTickerBar(results);
-      renderCardPrices(results);
-      const now = new Date();
-      document.getElementById('priceMetaLine').textContent =
-        `${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}時点 ※Yahoo Finance 約15分遅延 | 5分ごと自動更新`;
-    } else {
-      document.getElementById('priceMetaLine').textContent = '⚠️ 価格データ取得失敗（市場休場中または接続エラー）';
-    }
+    // Fetch all in parallel
+    const results = await Promise.all(BADGE_STOCKS.map(s => fetchOneStock(s.sym)));
+    const cache = {};
+    BADGE_STOCKS.forEach((s, i) => {
+      cache[s.sym] = results[i];
+      applyBadge(s.id, results[i]);
+    });
+    try { localStorage.setItem(STOCK_CACHE_KEY, JSON.stringify({ ts: Date.now(), data: cache })); } catch {}
   }
 
-  // Initial load + auto-refresh every 5 minutes
-  loadPrices();
-  setInterval(() => loadPrices(true), 5 * 60 * 1000);
+  loadStockBadges();
+  setInterval(() => loadStockBadges(true), 5 * 60 * 1000);
 </script>
 </body>
 </html>
