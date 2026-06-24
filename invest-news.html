@@ -2558,22 +2558,25 @@
 
   async function fetchYahooFinance(symbols) {
     const symsStr = symbols.join(',');
-    const apiUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${encodeURIComponent(symsStr)}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,shortName`;
+    // NOTE: do NOT encode symsStr here — ^ and , must stay literal for Yahoo Finance
+    const apiUrl = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symsStr}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,shortName`;
 
     const proxies = [
       `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`,
       `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`,
+      `https://api.codetabs.com/v1/proxy?quest=${apiUrl}`,
     ];
 
     for (const proxyUrl of proxies) {
       try {
-        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
-        if (!res.ok) continue;
-        const data = await res.json();
+        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+        if (!res.ok) { console.warn('[Prices] HTTP', res.status, proxyUrl); continue; }
+        const text = await res.text();
+        const data = JSON.parse(text);
         const results = data?.quoteResponse?.result;
         if (results && results.length > 0) return results;
       } catch (e) {
-        console.warn('[Prices] proxy failed:', proxyUrl, e);
+        console.warn('[Prices] proxy failed:', proxyUrl, e?.message);
       }
     }
     return null;
