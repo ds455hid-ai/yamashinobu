@@ -592,6 +592,7 @@
 <!-- Tabs -->
 <div class="tabs">
   <button class="tab active" onclick="switchTab(this, 'all')">すべて</button>
+  <button class="tab" onclick="switchTab(this, 'recommend')" style="position:relative;">💎 おすすめ<span style="position:absolute;top:-4px;right:-2px;background:var(--red);color:#fff;font-size:0.55rem;font-weight:800;padding:1px 4px;border-radius:8px;">NEW</span></button>
   <button class="tab" onclick="switchTab(this, 'orcan')">🌏 オルカン</button>
   <button class="tab" onclick="switchTab(this, 'jp')">🗾 日本株</button>
   <button class="tab" onclick="switchTab(this, 'us')">🇺🇸 米国株</button>
@@ -1058,6 +1059,287 @@
       <span class="card-time">4日前</span>
       <a href="https://www.sbisec.co.jp/" target="_blank" rel="noopener" class="card-source-link">🔗 SBI証券レポート</a>
     </div>
+  </div>
+</div>
+
+<!-- おすすめ銘柄 Section -->
+<div id="section-recommend" class="section">
+  <div class="section-title" style="display:flex;justify-content:space-between;align-items:center;">
+    <span>💎 NISA成長投資枠 おすすめ銘柄</span>
+    <span style="font-size:0.68rem;color:var(--muted);font-weight:400;">2026年6月 調査</span>
+  </div>
+
+  <!-- 投資タイミングシグナル -->
+  <div style="margin-bottom:0.75rem;background:linear-gradient(135deg,rgba(52,211,153,0.1),rgba(108,111,255,0.08));border:1px solid rgba(52,211,153,0.3);border-radius:14px;padding:0.85rem 1rem;">
+    <div style="font-size:0.78rem;font-weight:700;color:var(--green);margin-bottom:0.5rem;">⏰ 2026年6月 投資タイミング判断</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.5rem;">
+      <div style="padding:0.45rem 0.6rem;border-radius:8px;background:rgba(52,211,153,0.08);border:1px solid rgba(52,211,153,0.25);">
+        <div style="font-size:0.65rem;color:var(--green);font-weight:700;margin-bottom:3px;">🟢 買い支持</div>
+        <div style="font-size:0.72rem;line-height:1.6;color:var(--text);">FRB 利下げ継続<br>AI需要 拡大中<br>自社株買い活発<br>新NISA流入 増加</div>
+      </div>
+      <div style="padding:0.45rem 0.6rem;border-radius:8px;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);">
+        <div style="font-size:0.65rem;color:var(--red);font-weight:700;margin-bottom:3px;">🔴 注意</div>
+        <div style="font-size:0.72rem;line-height:1.6;color:var(--text);">株価 高値圏<br>円高 年末145円予測<br>消費者信頼感↓<br>日銀 利上げ警戒</div>
+      </div>
+    </div>
+    <div style="font-size:0.72rem;color:var(--muted);padding:0.4rem 0.6rem;background:rgba(251,191,36,0.07);border-radius:8px;border:1px solid rgba(251,191,36,0.2);">
+      📌 <strong style="color:var(--gold);">総合判断:</strong> 一括より分割積立が安全。成長枠は大きな調整時のスポット購入に温存するのが賢明。
+    </div>
+  </div>
+
+  <!-- 成長投資枠ルール -->
+  <div class="fund-card" style="margin-bottom:0.75rem;">
+    <div class="fund-card-title">📋 成長投資枠 クイックガイド</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.4rem;margin-top:0.5rem;margin-bottom:0.6rem;text-align:center;">
+      <div style="padding:0.45rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:0.6rem;color:var(--muted);">年間上限</div>
+        <div style="font-size:0.88rem;font-weight:700;color:var(--accent);">240万円</div>
+      </div>
+      <div style="padding:0.45rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:0.6rem;color:var(--muted);">生涯上限</div>
+        <div style="font-size:0.88rem;font-weight:700;color:var(--gold);">1,200万円</div>
+      </div>
+      <div style="padding:0.45rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">
+        <div style="font-size:0.6rem;color:var(--muted);">購入方法</div>
+        <div style="font-size:0.78rem;font-weight:700;color:var(--green);">一括・積立</div>
+      </div>
+    </div>
+    <div style="font-size:0.72rem;color:var(--muted);line-height:1.7;">
+      ✅ 買える：国内外上場株式・ETF・REIT・幅広い投資信託（約2,651本）<br>
+      ❌ 買えない：レバレッジ型・毎月分配型・信託期間20年未満・整理/監理銘柄
+    </div>
+    <div style="margin-top:0.4rem;font-size:0.68rem;color:var(--muted);">出典: 金融庁 / SBI証券 / 楽天証券 / 野村証券（2026年調査）</div>
+  </div>
+
+  <!-- Tier 1: インデックス推奨 -->
+  <div style="margin-bottom:0.4rem;font-size:0.72rem;font-weight:700;color:var(--green);letter-spacing:0.05em;">◎ TIER 1 — 最優先（インデックス / 低リスク）</div>
+
+  <div class="news-card cat-orcan" style="margin-bottom:0.5rem;cursor:pointer;" onclick="window.open('https://emaxis.jp/fund/252698.html','_blank')">
+    <div class="card-top">
+      <span class="badge badge-orcan" style="font-size:0.65rem;">インデックス</span>
+      <span class="impact up">◎ 最優先</span>
+    </div>
+    <div class="card-headline">eMAXIS Slim 全世界株式（オール・カントリー）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">信託報酬</div><div style="color:var(--green);font-weight:700;">0.0578%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">分散</div><div style="font-weight:700;">約2,900銘柄</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">NISA成長枠</div><div style="color:var(--green);font-weight:700;">✓ 対応</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　世界分散・業界最安コスト・新NISA流入No.1継続。つみたて枠と同じ商品を成長枠で積み増し可能</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　円高時は海外資産の円換算が目減り</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 全ての投資の「土台」として最優先。成長枠でも積立設定してつみたて枠の120万を超えた分をここで補完する戦略が最もシンプル。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">三菱UFJ AM</span>
+      <a href="https://emaxis.jp/fund/252698.html" target="_blank" rel="noopener" class="card-source-link">🔗 公式ページ</a>
+    </div>
+  </div>
+
+  <div class="news-card cat-us" style="margin-bottom:0.5rem;cursor:pointer;" onclick="window.open('https://emaxis.jp/fund/252891.html','_blank')">
+    <div class="card-top">
+      <span class="badge badge-us" style="font-size:0.65rem;">インデックス</span>
+      <span class="impact up">◎ 最優先</span>
+    </div>
+    <div class="card-headline">eMAXIS Slim 米国株式（S&amp;P500）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">信託報酬</div><div style="color:var(--green);font-weight:700;">0.0814%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">過去10年年率</div><div style="color:var(--green);font-weight:700;">約+13%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">NISA成長枠</div><div style="color:var(--green);font-weight:700;">✓ 対応</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　FRB利下げサイクルで米国株に追い風。Apple・NVIDIA・Microsoftが上位。過去10年で最も安定した実績</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　米国集中リスク（分散という意味ではオルカン劣位）</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 「米国経済を信じるなら」S&P500。オルカンと半々にする投資家も多い。新NISAで最も人気の2商品。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">三菱UFJ AM</span>
+      <a href="https://emaxis.jp/fund/252891.html" target="_blank" rel="noopener" class="card-source-link">🔗 公式ページ</a>
+    </div>
+  </div>
+
+  <div class="news-card cat-us" style="margin-bottom:0.75rem;cursor:pointer;" onclick="window.open('https://www.rakuten-toushin.co.jp/fund/目論見書/','_blank')">
+    <div class="card-top">
+      <span class="badge badge-us" style="font-size:0.65rem;">NASDAQ100</span>
+      <span class="impact up">◎ 最優先</span>
+    </div>
+    <div class="card-headline">楽天・NASDAQ-100インデックス・ファンド</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">信託報酬</div><div style="color:var(--green);font-weight:700;">0.198%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">過去10年年率</div><div style="color:var(--green);font-weight:700;">約+18%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">NISA成長枠</div><div style="color:var(--green);font-weight:700;">✓ 対応</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　業界最安クラスのNASDAQ100。AI相場に直結。FRB利下げで成長株が最恩恵を受けるシナリオ</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　2022年に-35%急落実績あり。変動が大きい。精神力が必要</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 オルカン/S&P500に慣れたらNASDAQ100を「サテライト」として追加するのが定石。楽天証券ユーザーは特に使いやすい。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">楽天投信</span>
+      <a href="https://www.rakuten-toushin.co.jp/" target="_blank" rel="noopener" class="card-source-link">🔗 楽天投信</a>
+    </div>
+  </div>
+
+  <!-- Tier 2: ETF -->
+  <div style="margin-bottom:0.4rem;font-size:0.72rem;font-weight:700;color:var(--blue);letter-spacing:0.05em;">○ TIER 2 — 攻め枠（ETF）</div>
+
+  <div class="news-card cat-jp" style="margin-bottom:0.5rem;cursor:pointer;" onclick="window.open('https://nextfunds.jp/lineup/1489/','_blank')">
+    <div class="card-top">
+      <span class="badge badge-jp" style="font-size:0.65rem;">東証ETF</span>
+      <span class="impact up">○ 攻め</span>
+    </div>
+    <div class="card-headline">【1489】NEXT FUNDS 日経平均高配当株50指数連動型ETF</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">分配利回り目安</div><div style="color:var(--gold);font-weight:700;">約3.5〜4%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">年4回分配</div><div style="font-weight:700;">✓</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">信託報酬</div><div style="color:var(--green);font-weight:700;">0.308%</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　日銀利上げ局面でも配当が安定。三菱UFJ・トヨタ・NTT等の高配当50銘柄に一括投資。インカムゲイン重視</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　株価下落時は基準価額が下がる。円高で輸出株の業績悪化リスク</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 成長枠で「配当収入」を得たい人に最適。毎年3.5〜4%が非課税で受け取れるのはNISAの最大メリット。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">野村アセット</span>
+      <a href="https://nextfunds.jp/lineup/1489/" target="_blank" rel="noopener" class="card-source-link">🔗 公式ページ</a>
+    </div>
+  </div>
+
+  <div class="news-card cat-us" style="margin-bottom:0.75rem;cursor:pointer;" onclick="window.open('https://www.am.mufg.jp/fund/253425.html','_blank')">
+    <div class="card-top">
+      <span class="badge badge-us" style="font-size:0.65rem;">東証ETF</span>
+      <span class="impact up">○ 攻め</span>
+    </div>
+    <div class="card-headline">【2558】MAXIS米国株式（S&amp;P500）上場投信（為替ヘッジなし）</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">信託報酬</div><div style="color:var(--green);font-weight:700;">0.077%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">分配</div><div style="font-weight:700;">年1回</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">取引方法</div><div style="font-weight:700;">株と同様</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　投資信託版S&P500より信託報酬がさらに安い。リアルタイムで売買できる点が機動的</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　投資信託と違い1口単位での購入（金額指定不可）</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 暴落時に素早く買い増ししたい人はETF版が便利。コアはeMAXIS Slim、スポット追加はETFという使い分けも◎。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">三菱UFJ AM</span>
+      <a href="https://www.am.mufg.jp/fund/253425.html" target="_blank" rel="noopener" class="card-source-link">🔗 公式ページ</a>
+    </div>
+  </div>
+
+  <!-- Tier 3: 個別株 -->
+  <div style="margin-bottom:0.4rem;font-size:0.72rem;font-weight:700;color:var(--gold);letter-spacing:0.05em;">△ TIER 3 — 個別株（高リスク・高リターン）</div>
+
+  <div class="news-card cat-jp" style="margin-bottom:0.5rem;">
+    <div class="card-top">
+      <span class="badge badge-jp" style="font-size:0.65rem;">個別株</span>
+      <span class="impact up">△ 攻め</span>
+    </div>
+    <div class="card-headline">【8306】三菱UFJフィナンシャルグループ — 利上げ恩恵 最大級</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">配当利回り目安</div><div style="color:var(--gold);font-weight:700;">約3.5%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">市場</div><div style="font-weight:700;">東証プライム</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">特徴</div><div style="color:var(--green);font-weight:700;">利上げ◎</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　日銀利上げで貸出金利収益が増加→業績直結。国内最大銀行で財務安定。配当3.5%を非課税で受領</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　景気後退で不良債権リスク。海外展開が多く円高も影響</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 利上げ局面の「定番バリュー株」。高配当を非課税で受け取れるNISAの成長枠との相性は非常に良い。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">東証プライム: 8306</span>
+      <a href="https://www.mufg.jp/ir/index.html" target="_blank" rel="noopener" class="card-source-link">🔗 IR情報</a>
+    </div>
+  </div>
+
+  <div class="news-card cat-jp" style="margin-bottom:0.5rem;">
+    <div class="card-top">
+      <span class="badge badge-jp" style="font-size:0.65rem;">個別株</span>
+      <span class="impact up">△ 攻め</span>
+    </div>
+    <div class="card-headline">【8035】東京エレクトロン — AI半導体需要の直接受益者</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">配当利回り目安</div><div style="color:var(--gold);font-weight:700;">約1.5%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">特徴</div><div style="font-weight:700;">半導体製造装置</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">AI連動</div><div style="color:var(--green);font-weight:700;">◎</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　NVIDIA・TSMCなどのAIチップ製造に必須の半導体製造装置。AI需要増=直接的な受注増</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　株価はすでに高水準。半導体の在庫調整サイクルで急落リスクあり</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 「AIの恩恵を日本株で受けたい」ならTOP候補。ただし変動が大きいため全体の5〜10%以内が目安。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">東証プライム: 8035</span>
+      <a href="https://www.tel.co.jp/ir/" target="_blank" rel="noopener" class="card-source-link">🔗 IR情報</a>
+    </div>
+  </div>
+
+  <div class="news-card cat-jp" style="margin-bottom:0.75rem;">
+    <div class="card-top">
+      <span class="badge badge-jp" style="font-size:0.65rem;">個別株</span>
+      <span class="impact up">△ 攻め</span>
+    </div>
+    <div class="card-headline">【8053】住友商事 — バフェットも注目する総合商社の高配当</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.35rem;margin:0.4rem 0;font-size:0.7rem;text-align:center;">
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">配当利回り目安</div><div style="color:var(--gold);font-weight:700;">約4%</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">特徴</div><div style="font-weight:700;">総合商社</div></div>
+      <div style="padding:0.3rem;background:var(--surface2);border-radius:6px;"><div style="color:var(--muted);font-size:0.6rem;">バフェット</div><div style="color:var(--gold);font-weight:700;">注目◎</div></div>
+    </div>
+    <div class="card-point"><span>📌 推奨理由</span>
+      <div style="margin-top:0.3rem;font-size:0.75rem;line-height:1.6;">
+        <div><span style="color:var(--green);font-weight:700;">↑ 強み</span>　ウォーレン・バフェット氏が日本の総合商社株を継続保有。資源・食料・インフラに多角分散。高配当約4%</div>
+        <div><span style="color:var(--red);font-weight:700;">↓ 注意</span>　資源価格変動の影響を受けやすい。円高で海外収益目減り</div>
+        <div style="color:var(--muted);margin-top:0.2rem;">💬 「バフェットが選んだ日本株」という強力なブランド。配当4%を非課税で受け取る目的で長期保有するのが合理的。</div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <span class="card-time">東証プライム: 8053</span>
+      <a href="https://www.sumitomocorp.com/ja/jp/ir" target="_blank" rel="noopener" class="card-source-link">🔗 IR情報</a>
+    </div>
+  </div>
+
+  <!-- ポートフォリオ例 -->
+  <div class="fund-card" style="margin-bottom:0.75rem;border-color:rgba(108,111,255,0.35);">
+    <div class="fund-card-title">📐 おすすめポートフォリオ例（成長投資枠）</div>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;margin-top:0.6rem;">
+      <div style="padding:0.6rem;background:var(--surface2);border-radius:10px;border-left:3px solid var(--green);">
+        <div style="font-size:0.75rem;font-weight:700;margin-bottom:4px;">🏃 積極型（30代 / リスク許容度高）</div>
+        <div style="font-size:0.72rem;color:var(--muted);line-height:1.7;">
+          eMAXIS S&P500: <strong style="color:var(--text);">40%</strong> ／ 楽天NASDAQ100: <strong style="color:var(--text);">30%</strong> ／ 三菱UFJ: <strong style="color:var(--text);">20%</strong> ／ 東京エレクトロン: <strong style="color:var(--text);">10%</strong>
+        </div>
+      </div>
+      <div style="padding:0.6rem;background:var(--surface2);border-radius:10px;border-left:3px solid var(--accent);">
+        <div style="font-size:0.75rem;font-weight:700;margin-bottom:4px;">⚖️ バランス型（40代 / 中リスク）</div>
+        <div style="font-size:0.72rem;color:var(--muted);line-height:1.7;">
+          eMAXIS オルカン: <strong style="color:var(--text);">40%</strong> ／ eMAXIS S&P500: <strong style="color:var(--text);">20%</strong> ／ 1489高配当ETF: <strong style="color:var(--text);">30%</strong> ／ 住友商事: <strong style="color:var(--text);">10%</strong>
+        </div>
+      </div>
+      <div style="padding:0.6rem;background:var(--surface2);border-radius:10px;border-left:3px solid var(--gold);">
+        <div style="font-size:0.75rem;font-weight:700;margin-bottom:4px;">🛡️ 守り型（50代以上 / 低リスク重視）</div>
+        <div style="font-size:0.72rem;color:var(--muted);line-height:1.7;">
+          eMAXIS オルカン: <strong style="color:var(--text);">50%</strong> ／ 1489高配当ETF: <strong style="color:var(--text);">30%</strong> ／ 三菱UFJ: <strong style="color:var(--text);">20%</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 免責事項 -->
+  <div style="padding:0.6rem 0.8rem;background:rgba(248,113,113,0.05);border:1px solid rgba(248,113,113,0.15);border-radius:10px;font-size:0.68rem;color:var(--muted);line-height:1.6;margin-bottom:0.5rem;">
+    ⚠️ 本情報は金融庁・各証券会社公式サイトの調査に基づく参考情報です。投資は自己責任で行い、必要に応じてファイナンシャルアドバイザーにご相談ください。過去のリターンは将来の成績を保証しません。
   </div>
 </div>
 
