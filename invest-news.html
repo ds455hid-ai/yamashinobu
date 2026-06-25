@@ -580,6 +580,24 @@
     .price-badge .pb-change.flat { color: var(--muted); }
     .price-badge .pb-loading { color: var(--muted); font-weight: 400; }
 
+    /* ── Chart range buttons ── */
+    .chart-range-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.75rem;
+      padding: 0.32rem 0.75rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chart-range-btn.active,
+    .chart-range-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
     /* ── AI Ask button on cards ── */
     .ai-ask-btn {
       background: none;
@@ -812,6 +830,7 @@
   <button class="tab" onclick="switchTab(this, 'ndq')">📈 NASDAQ100</button>
   <button class="tab" onclick="switchTab(this, 'crypto')">₿ 仮想通貨</button>
   <button class="tab" onclick="switchTab(this, 'fx')">💴 為替・FX</button>
+  <button class="tab" onclick="switchTab(this,'chart')">📊 チャート</button>
 </div>
 
 <!-- News loading/error indicators -->
@@ -1273,6 +1292,26 @@
       <a href="https://www.sbisec.co.jp/" target="_blank" rel="noopener" class="card-source-link">🔗 SBI証券レポート</a>
     </div>
   </div>
+</div>
+
+<!-- Chart Section -->
+<div id="section-chart" class="section">
+  <div class="section-title">📊 レートチャート</div>
+  <p style="color:var(--muted);font-size:0.75rem;margin:0 0 0.85rem;">為替・株価指数・仮想通貨の推移（TradingView）</p>
+
+  <!-- Range selector -->
+  <div style="display:flex;gap:0.4rem;margin-bottom:1rem;flex-wrap:wrap;">
+    <button class="chart-range-btn active" onclick="renderCharts('1W',this)">1週間</button>
+    <button class="chart-range-btn" onclick="renderCharts('1M',this)">1ヶ月</button>
+    <button class="chart-range-btn" onclick="renderCharts('3M',this)">3ヶ月</button>
+    <button class="chart-range-btn" onclick="renderCharts('12M',this)">1年</button>
+  </div>
+
+  <div id="chart-grid" style="display:grid;grid-template-columns:1fr;gap:1rem;"></div>
+
+  <p style="color:var(--muted);font-size:0.62rem;margin-top:1rem;text-align:center;">
+    ※ TradingViewが提供するデータです。表示にはJavaScriptが必要です。
+  </p>
 </div>
 
 <!-- おすすめ銘柄 Section -->
@@ -2101,7 +2140,84 @@
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     el.classList.add('active');
     document.getElementById('section-' + name).classList.add('active');
+    if (name === 'chart') renderCharts(_chartRange);
   }
+
+  // ── Chart rendering via TradingView widgets ──────────────────
+  const CHART_ITEMS = [
+    { symbol: 'FX:USDJPY',        label: '💴 ドル円 (USD/JPY)',        color: 'rgba(108,111,255,1)', fill: 'rgba(108,111,255,0.15)' },
+    { symbol: 'TVC:NI225',        label: '🗾 日経225',                   color: 'rgba(34,197,94,1)',   fill: 'rgba(34,197,94,0.15)'   },
+    { symbol: 'TVC:SPX',          label: '🇺🇸 S&P500',                  color: 'rgba(245,166,35,1)',  fill: 'rgba(245,166,35,0.15)'  },
+    { symbol: 'TVC:NDX',          label: '📈 NASDAQ100',                 color: 'rgba(59,130,246,1)', fill: 'rgba(59,130,246,0.15)'  },
+    { symbol: 'BITSTAMP:BTCUSD',  label: '₿ ビットコイン (BTC/USD)',    color: 'rgba(245,166,35,1)', fill: 'rgba(245,166,35,0.15)'  },
+    { symbol: 'BITSTAMP:ETHUSD',  label: '⟠ イーサリアム (ETH/USD)',   color: 'rgba(108,111,255,1)', fill: 'rgba(108,111,255,0.15)' },
+    { symbol: 'TVC:GOLD',         label: '🥇 ゴールド (XAU/USD)',       color: 'rgba(212,175,55,1)', fill: 'rgba(212,175,55,0.15)'  },
+    { symbol: 'CAPITALCOM:JP225', label: '🏦 日経225先物',               color: 'rgba(34,197,94,1)',  fill: 'rgba(34,197,94,0.15)'   },
+  ];
+
+  let _chartRange = '1M';
+  let _chartRendered = false;
+
+  function renderCharts(range, btn) {
+    _chartRange = range || _chartRange;
+    if (btn) {
+      document.querySelectorAll('.chart-range-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+    const grid = document.getElementById('chart-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    CHART_ITEMS.forEach(c => {
+      const card = document.createElement('div');
+      card.className = 'news-card';
+      card.style.cssText = 'padding:0.75rem 0.75rem 0.4rem;overflow:hidden;';
+
+      const titleEl = document.createElement('div');
+      titleEl.style.cssText = 'font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:0.4rem;';
+      titleEl.textContent = c.label;
+      card.appendChild(titleEl);
+
+      const tvWrap = document.createElement('div');
+      tvWrap.className = 'tradingview-widget-container';
+
+      const tvInner = document.createElement('div');
+      tvInner.className = 'tradingview-widget-container__widget';
+      tvWrap.appendChild(tvInner);
+
+      const cfg = {
+        symbol: c.symbol,
+        width: '100%',
+        height: 220,
+        locale: 'ja',
+        dateRange: _chartRange,
+        colorTheme: theme,
+        trendLineColor: c.color,
+        underLineColor: c.fill,
+        underLineBottomColor: 'rgba(0,0,0,0)',
+        isTransparent: true,
+        autosize: false,
+        chartOnly: false,
+        noTimeScale: false,
+      };
+
+      const s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.src = 'https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js';
+      s.async = true;
+      s.textContent = JSON.stringify(cfg);
+      tvWrap.appendChild(s);
+      card.appendChild(tvWrap);
+      grid.appendChild(card);
+    });
+    _chartRendered = true;
+  }
+
+  // Re-render charts when theme toggles (if chart tab is active)
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    if (_chartRendered) setTimeout(() => renderCharts(_chartRange), 50);
+  });
 
   // Holdings data (MSCI ACWI top 50, 2025年6月基準)
   const HOLDINGS = [
