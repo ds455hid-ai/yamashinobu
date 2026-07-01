@@ -2285,6 +2285,13 @@
     return target / factor;
   }
 
+  // 今この金額を一括投資すれば、N年後に目標額になる（必要な元本 = 現在価値）
+  function lumpSum(target, years, ratePct) {
+    const r = ratePct / 100;
+    if (r <= 0) return target; // 運用しないなら目標額そのまま必要
+    return target / Math.pow(1 + r, years);
+  }
+
   function setPreset(name, amount, years) {
     document.getElementById('goalName').value = name;
     document.getElementById('goalAmount').value = amount;
@@ -2374,6 +2381,7 @@
     const save    = monthlySave(total, years);           // 貯金だけの月額
     const paidInvest = invest * months;                  // 運用時に自分が払う総額
     const gain    = total - paidInvest;                  // 運用益（払わずに済む額）
+    const lump    = lumpSum(total, years, rate);         // 今すぐ一括投資に必要な元本
 
     resEl.innerHTML = `
       <div class="plan-headline">
@@ -2383,6 +2391,13 @@
           自分で出すお金は合計 <strong>${fmtYen(paidInvest)}</strong>${gain > 0 ? `、運用益 約 <strong style="color:var(--green);">${fmtYen(gain)}</strong> が上乗せ` : ''}
         </div>
       </div>
+      <div class="plan-headline" style="margin-top:0.6rem;background:linear-gradient(135deg,rgba(108,111,255,0.12),rgba(108,111,255,0.04));">
+        <div class="big" style="color:var(--accent);">今すぐ一括なら ${fmtYen(lump)}</div>
+        <div class="sub">
+          今 ${fmtYen(lump)} を一括投資して年利${rate}%で運用できれば、<br>
+          積立せずに ${years}年後に ${fmtYen(total)} に到達する計算です。
+        </div>
+      </div>
       <div class="plan-compare">
         <div class="plan-compare-box">
           <div class="v">${fmtYen(save)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
@@ -2390,11 +2405,11 @@
         </div>
         <div class="plan-compare-box">
           <div class="v" style="color:var(--green);">${fmtYen(invest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
-          <div class="l">📈 ${rate}%運用</div>
+          <div class="l">📈 ${rate}%運用(積立)</div>
         </div>
         <div class="plan-compare-box">
-          <div class="v" style="color:var(--accent);">-${fmtYen(save - invest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
-          <div class="l">😊 月々ラクに</div>
+          <div class="v" style="color:var(--accent);">${fmtYen(lump)}</div>
+          <div class="l">💴 今すぐ一括</div>
         </div>
       </div>`;
   }
@@ -2449,19 +2464,24 @@
       const yearNote = (g.years && g.years > 0)
         ? `${g.years}年で実現する場合`
         : `${planYears}年で実現する場合（まとめてプランの年数）`;
+      const itemLump = lumpSum(g.amount, useYears, useRate);
       const perItem = `
         <div class="goal-item-calc">
           <div class="goal-calc-row">
             <div class="goal-calc-box save">
               <div class="cbig">${fmtYen(itemSave)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
-              <div class="csml">💰 貯金だけ</div>
+              <div class="csml">💰 貯金だけ<br>(毎月)</div>
             </div>
             <div class="goal-calc-box invest">
               <div class="cbig">${fmtYen(itemInvest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
-              <div class="csml">📈 ${useRate}%運用</div>
+              <div class="csml">📈 ${useRate}%運用<br>(毎月)</div>
+            </div>
+            <div class="goal-calc-box invest">
+              <div class="cbig" style="color:var(--accent);">${fmtYen(itemLump)}</div>
+              <div class="csml">💴 今すぐ一括<br>(${useRate}%運用)</div>
             </div>
           </div>
-          <div class="goal-save-note" style="margin-top:0.5rem;">🗓️ ${yearNote}の、この目標に必要な毎月の投資額です。</div>
+          <div class="goal-save-note" style="margin-top:0.5rem;">🗓️ ${yearNote}。今 <strong style="color:var(--accent);">${fmtYen(itemLump)}</strong> を一括投資して年${useRate}%で運用できれば、積立せずに達成できる計算です。</div>
         </div>`;
       return `
       <div class="goal-card">
