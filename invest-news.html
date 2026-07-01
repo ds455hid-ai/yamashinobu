@@ -643,6 +643,30 @@
     .goal-summary-item .val { font-size: 1.25rem; font-weight: 800; color: var(--text); }
     .goal-summary-item .lbl { font-size: 0.66rem; color: var(--muted); margin-top: 0.1rem; }
 
+    .goal-plan {
+      background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(108,111,255,0.1));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1.1rem;
+    }
+    .goal-plan-title { font-size: 0.9rem; font-weight: 800; color: var(--text); margin-bottom: 0.4rem; }
+    .plan-headline {
+      text-align: center;
+      padding: 0.9rem 0.6rem;
+      margin-top: 0.9rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .plan-headline .big { font-size: 1.7rem; font-weight: 900; color: var(--green); line-height: 1.1; }
+    .plan-headline .big span { font-size: 0.85rem; color: var(--muted); font-weight: 700; }
+    .plan-headline .sub { font-size: 0.72rem; color: var(--muted); margin-top: 0.35rem; line-height: 1.5; }
+    .plan-compare { display: flex; gap: 0.6rem; margin-top: 0.7rem; }
+    .plan-compare-box { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.55rem; text-align: center; }
+    .plan-compare-box .v { font-size: 0.95rem; font-weight: 800; }
+    .plan-compare-box .l { font-size: 0.62rem; color: var(--muted); margin-top: 0.15rem; }
+
     .goal-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -1265,28 +1289,46 @@
         <input type="number" id="goalAmount" class="goal-input" placeholder="500000" min="0" step="10000">
       </div>
       <div style="flex:1;">
-        <label class="goal-label">達成まで（年）</label>
-        <input type="number" id="goalYears" class="goal-input" placeholder="3" min="0" step="0.5">
-      </div>
-    </div>
-    <div class="goal-form-row" style="align-items:center;">
-      <div style="flex:1;">
-        <label class="goal-label">想定利回り（年％・運用する場合）</label>
-        <input type="number" id="goalRate" class="goal-input" value="5" min="0" max="30" step="0.5">
+        <label class="goal-label">達成まで（年・任意）</label>
+        <input type="number" id="goalYears" class="goal-input" placeholder="例:3" min="0" step="0.5">
       </div>
       <button class="goal-add-btn" onclick="addGoal()">＋ 追加</button>
     </div>
     <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.6rem;">
-      <button class="goal-preset" onclick="setPreset('ハワイ旅行',500000,2)">✈️ ハワイ旅行 50万</button>
-      <button class="goal-preset" onclick="setPreset('新しい車',3000000,5)">🚗 車 300万</button>
-      <button class="goal-preset" onclick="setPreset('住宅頭金',5000000,7)">🏠 住宅頭金 500万</button>
-      <button class="goal-preset" onclick="setPreset('結婚資金',3500000,3)">💍 結婚 350万</button>
-      <button class="goal-preset" onclick="setPreset('老後資金',20000000,30)">👵 老後 2000万</button>
+      <button class="goal-preset" onclick="setPreset('ハワイ旅行',500000)">✈️ ハワイ旅行 50万</button>
+      <button class="goal-preset" onclick="setPreset('新しい車',3000000)">🚗 車 300万</button>
+      <button class="goal-preset" onclick="setPreset('住宅頭金',5000000)">🏠 住宅頭金 500万</button>
+      <button class="goal-preset" onclick="setPreset('結婚資金',3500000)">💍 結婚 350万</button>
+      <button class="goal-preset" onclick="setPreset('老後資金',20000000)">👵 老後 2000万</button>
     </div>
   </div>
 
   <!-- Summary -->
   <div id="goalSummary" class="goal-summary" style="display:none;"></div>
+
+  <!-- Combined realize plan -->
+  <div id="goalPlan" class="goal-plan" style="display:none;">
+    <div class="goal-plan-title">🚀 まとめて実現プラン</div>
+    <p style="font-size:0.72rem;color:var(--muted);margin:0 0 0.75rem;line-height:1.55;">
+      リスト全部を「何年後」に実現したいですか？毎月いくら投資すればいいかを計算します。
+    </p>
+    <div class="goal-form-row" style="margin-top:0;">
+      <div style="flex:1;">
+        <label class="goal-label">何年後に実現したい？</label>
+        <input type="number" id="planYears" class="goal-input" value="10" min="0.5" max="60" step="0.5" oninput="renderPlan()">
+      </div>
+      <div style="flex:1;">
+        <label class="goal-label">想定利回り（年％）</label>
+        <input type="number" id="planRate" class="goal-input" value="5" min="0" max="30" step="0.5" oninput="renderPlan()">
+      </div>
+    </div>
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.55rem;">
+      <button class="goal-preset" onclick="setPlanRate(3)">堅実 3%</button>
+      <button class="goal-preset" onclick="setPlanRate(5)">標準 5%</button>
+      <button class="goal-preset" onclick="setPlanRate(7)">積極 7%</button>
+    </div>
+    <div id="planResult"></div>
+  </div>
 
   <!-- Goals list -->
   <div id="goalList"></div>
@@ -2244,21 +2286,21 @@
   function setPreset(name, amount, years) {
     document.getElementById('goalName').value = name;
     document.getElementById('goalAmount').value = amount;
-    document.getElementById('goalYears').value = years;
+    if (years != null) document.getElementById('goalYears').value = years;
     document.getElementById('goalName').focus();
   }
 
   function addGoal() {
     const name   = document.getElementById('goalName').value.trim();
     const amount = parseFloat(document.getElementById('goalAmount').value);
-    const years  = parseFloat(document.getElementById('goalYears').value);
-    const rate   = parseFloat(document.getElementById('goalRate').value) || 0;
+    const yearsRaw = document.getElementById('goalYears').value.trim();
+    const years  = yearsRaw === '' ? null : parseFloat(yearsRaw);
 
-    if (!name)                         { alert('目標の名前を入力してください'); return; }
-    if (!amount || amount <= 0)        { alert('目標金額を入力してください');   return; }
-    if (!years  || years  <= 0)        { alert('達成までの年数を入力してください'); return; }
+    if (!name)                  { alert('やりたいこと・欲しいものの名前を入力してください'); return; }
+    if (!amount || amount <= 0) { alert('金額を入力してください'); return; }
+    if (years != null && years <= 0) { alert('年数は0より大きい値にしてください'); return; }
 
-    _goals.push({ id: Date.now() + '_' + _goals.length, name, amount, years, rate });
+    _goals.push({ id: Date.now() + '_' + _goals.length, name, amount, years });
     saveGoals();
     document.getElementById('goalName').value = '';
     document.getElementById('goalAmount').value = '';
@@ -2272,6 +2314,58 @@
     renderGoals();
   }
 
+  function setPlanRate(r) {
+    document.getElementById('planRate').value = r;
+    renderPlan();
+  }
+
+  function goalTotal() {
+    return _goals.reduce((s, g) => s + (g.amount || 0), 0);
+  }
+
+  // まとめて実現プラン：全部の総額を N年後 に達成するための毎月投資額
+  function renderPlan() {
+    const planEl = document.getElementById('goalPlan');
+    const resEl  = document.getElementById('planResult');
+    if (!planEl) return;
+    if (_goals.length === 0) { planEl.style.display = 'none'; return; }
+    planEl.style.display = 'block';
+
+    const total = goalTotal();
+    const years = parseFloat(document.getElementById('planYears').value) || 0;
+    const rate  = parseFloat(document.getElementById('planRate').value) || 0;
+    if (years <= 0) { resEl.innerHTML = '<p style="color:var(--muted);font-size:0.75rem;margin-top:0.8rem;">年数を入力してください。</p>'; return; }
+
+    const months  = Math.round(years * 12);
+    const invest  = monthlyInvest(total, years, rate);   // 運用ありの月額
+    const save    = monthlySave(total, years);           // 貯金だけの月額
+    const paidInvest = invest * months;                  // 運用時に自分が払う総額
+    const gain    = total - paidInvest;                  // 運用益（払わずに済む額）
+
+    resEl.innerHTML = `
+      <div class="plan-headline">
+        <div class="big">毎月 ${fmtYen(invest)}<span> の投資</span></div>
+        <div class="sub">
+          ${fmtYen(total)} を ${years}年（${months}回積立）・年利${rate}%で運用した場合<br>
+          自分で出すお金は合計 <strong>${fmtYen(paidInvest)}</strong>${gain > 0 ? `、運用益 約 <strong style="color:var(--green);">${fmtYen(gain)}</strong> が上乗せ` : ''}
+        </div>
+      </div>
+      <div class="plan-compare">
+        <div class="plan-compare-box">
+          <div class="v">${fmtYen(save)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
+          <div class="l">💰 貯金だけ</div>
+        </div>
+        <div class="plan-compare-box">
+          <div class="v" style="color:var(--green);">${fmtYen(invest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
+          <div class="l">📈 ${rate}%運用</div>
+        </div>
+        <div class="plan-compare-box">
+          <div class="v" style="color:var(--accent);">-${fmtYen(save - invest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
+          <div class="l">😊 月々ラクに</div>
+        </div>
+      </div>`;
+  }
+
   function renderGoals() {
     const list  = document.getElementById('goalList');
     const empty = document.getElementById('goalEmpty');
@@ -2282,66 +2376,49 @@
       list.innerHTML = '';
       empty.style.display = 'block';
       sumEl.style.display = 'none';
+      renderPlan();
       return;
     }
     empty.style.display = 'none';
 
-    let totalAmount = 0, totalSave = 0, totalInvest = 0;
+    const totalAmount = goalTotal();
 
     list.innerHTML = _goals.map(g => {
-      const save   = monthlySave(g.amount, g.years);
-      const invest = monthlyInvest(g.amount, g.years, g.rate);
-      totalAmount += g.amount;
-      totalSave   += save;
-      totalInvest += invest;
-      const diff = save - invest;             // 運用で月々ラクになる額
-      const totalInvestPaid = invest * Math.round(g.years * 12);
-      const gain = g.amount - totalInvestPaid; // 運用益のおかげで払わずに済む額
-
+      const perItem = (g.years && g.years > 0) ? `
+        <div class="goal-save-note">
+          この1件を単独で <strong>${g.years}年</strong>で貯めるなら
+          月 <strong>${fmtYen(monthlySave(g.amount, g.years))}</strong>（貯金）／
+          <strong style="color:var(--green);">${fmtYen(monthlyInvest(g.amount, g.years, 5))}</strong>（5%運用）
+        </div>` : '';
       return `
       <div class="goal-card">
         <div class="goal-card-head">
           <div>
             <div class="goal-card-name">${escapeHtml(g.name)}</div>
-            <div class="goal-card-meta">${fmtYen(g.amount)} ／ ${g.years}年後 ／ 想定利回り ${g.rate}%</div>
+            <div class="goal-card-meta">${fmtYen(g.amount)}${g.years ? ` ／ ${g.years}年後に単独達成なら` : ''}</div>
           </div>
           <button class="goal-del" onclick="deleteGoal('${g.id}')" title="削除">🗑️</button>
         </div>
-        <div class="goal-calc-row">
-          <div class="goal-calc-box save">
-            <div class="cbig">${fmtYen(save)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
-            <div class="csml">💰 貯金だけ<br>(利回り0%)</div>
-          </div>
-          <div class="goal-calc-box invest">
-            <div class="cbig">${fmtYen(invest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
-            <div class="csml">📈 ${g.rate}%運用<br>(NISA等)</div>
-          </div>
-        </div>
-        <div class="goal-save-note">
-          📈で運用すると月々 <strong style="color:var(--green);">${fmtYen(diff)}</strong> ラクに。
-          ${gain > 0 ? `運用益で約 <strong style="color:var(--green);">${fmtYen(gain)}</strong> を稼ぐ計算です。` : ''}
-        </div>
+        ${perItem}
       </div>`;
     }).join('');
 
-    // Summary
+    // Summary (total needed)
     sumEl.style.display = 'block';
     sumEl.innerHTML = `
-      <div class="goal-summary-title">📊 ${_goals.length}件の目標の合計</div>
+      <div class="goal-summary-title">📊 やりたいこと ${_goals.length}件の合計</div>
       <div class="goal-summary-grid">
         <div class="goal-summary-item">
-          <div class="val">${fmtYen(totalAmount)}</div>
-          <div class="lbl">必要な合計金額</div>
+          <div class="val" style="color:var(--accent);">${fmtYen(totalAmount)}</div>
+          <div class="lbl">必要な総額</div>
         </div>
         <div class="goal-summary-item">
-          <div class="val">${fmtYen(totalSave)}<span style="font-size:0.7rem;color:var(--muted);">/月</span></div>
-          <div class="lbl">💰 貯金だけの場合</div>
-        </div>
-        <div class="goal-summary-item">
-          <div class="val" style="color:var(--green);">${fmtYen(totalInvest)}<span style="font-size:0.7rem;color:var(--muted);">/月</span></div>
-          <div class="lbl">📈 運用した場合</div>
+          <div class="val">${_goals.length}<span style="font-size:0.7rem;color:var(--muted);">件</span></div>
+          <div class="lbl">登録した目標</div>
         </div>
       </div>`;
+
+    renderPlan();
   }
 
   function escapeHtml(s) {
