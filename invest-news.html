@@ -699,6 +699,7 @@
     .goal-calc-box.save .cbig { color: var(--text); }
     .goal-calc-box.invest .cbig { color: var(--green); }
     .goal-save-note { font-size: 0.68rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.55; }
+    .goal-item-calc { margin-top: 0.75rem; }
 
     /* ── Chart range buttons ── */
     .chart-range-btn {
@@ -1315,11 +1316,11 @@
     <div class="goal-form-row" style="margin-top:0;">
       <div style="flex:1;">
         <label class="goal-label">何年後に実現したい？</label>
-        <input type="number" id="planYears" class="goal-input" value="10" min="0.5" max="60" step="0.5" oninput="renderPlan()">
+        <input type="number" id="planYears" class="goal-input" value="10" min="0.5" max="60" step="0.5" oninput="renderGoals()">
       </div>
       <div style="flex:1;">
         <label class="goal-label">想定利回り（年％）</label>
-        <input type="number" id="planRate" class="goal-input" value="5" min="0" max="30" step="0.5" oninput="renderPlan()">
+        <input type="number" id="planRate" class="goal-input" value="5" min="0" max="30" step="0.5" oninput="renderGoals()">
       </div>
     </div>
     <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.55rem;">
@@ -2348,7 +2349,7 @@
 
   function setPlanRate(r) {
     document.getElementById('planRate').value = r;
-    renderPlan();
+    renderGoals();
   }
 
   function goalTotal() {
@@ -2414,6 +2415,8 @@
     empty.style.display = 'none';
 
     const totalAmount = goalTotal();
+    const planYears = parseFloat(document.getElementById('planYears')?.value) || 10;
+    const planRate  = parseFloat(document.getElementById('planRate')?.value) || 0;
 
     list.innerHTML = _goals.map(g => {
       // Edit mode for this card
@@ -2438,18 +2441,34 @@
         </div>
       </div>`;
       }
-      const perItem = (g.years && g.years > 0) ? `
-        <div class="goal-save-note">
-          この1件を単独で <strong>${g.years}年</strong>で貯めるなら
-          月 <strong>${fmtYen(monthlySave(g.amount, g.years))}</strong>（貯金）／
-          <strong style="color:var(--green);">${fmtYen(monthlyInvest(g.amount, g.years, 5))}</strong>（5%運用）
-        </div>` : '';
+      // この目標を単独で実現するための毎月の投資額
+      const useYears = (g.years && g.years > 0) ? g.years : planYears;
+      const useRate  = (g.years && g.years > 0) ? 5 : planRate;
+      const itemSave   = monthlySave(g.amount, useYears);
+      const itemInvest = monthlyInvest(g.amount, useYears, useRate);
+      const yearNote = (g.years && g.years > 0)
+        ? `${g.years}年で実現する場合`
+        : `${planYears}年で実現する場合（まとめてプランの年数）`;
+      const perItem = `
+        <div class="goal-item-calc">
+          <div class="goal-calc-row">
+            <div class="goal-calc-box save">
+              <div class="cbig">${fmtYen(itemSave)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
+              <div class="csml">💰 貯金だけ</div>
+            </div>
+            <div class="goal-calc-box invest">
+              <div class="cbig">${fmtYen(itemInvest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
+              <div class="csml">📈 ${useRate}%運用</div>
+            </div>
+          </div>
+          <div class="goal-save-note" style="margin-top:0.5rem;">🗓️ ${yearNote}の、この目標に必要な毎月の投資額です。</div>
+        </div>`;
       return `
       <div class="goal-card">
         <div class="goal-card-head">
           <div>
             <div class="goal-card-name">${escapeHtml(g.name)}</div>
-            <div class="goal-card-meta">${fmtYen(g.amount)}${g.years ? ` ／ ${g.years}年後に単独達成なら` : ''}</div>
+            <div class="goal-card-meta">${fmtYen(g.amount)}</div>
           </div>
           <div style="display:flex;gap:0.15rem;flex-shrink:0;">
             <button class="goal-del" onclick="editGoal('${g.id}')" title="編集">✏️</button>
