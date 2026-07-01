@@ -2252,6 +2252,7 @@
   // ── Goals / Dream Simulator ──────────────────────────────────
   const GOALS_KEY = 'goals_v1';
   let _goals = [];
+  let _editingId = null;
 
   function loadGoals() {
     try { _goals = JSON.parse(localStorage.getItem(GOALS_KEY) || '[]'); }
@@ -2310,6 +2311,37 @@
 
   function deleteGoal(id) {
     _goals = _goals.filter(g => g.id !== id);
+    if (_editingId === id) _editingId = null;
+    saveGoals();
+    renderGoals();
+  }
+
+  function editGoal(id) {
+    _editingId = id;
+    renderGoals();
+    const el = document.getElementById('edit-name-' + id);
+    if (el) el.focus();
+  }
+
+  function cancelGoalEdit() {
+    _editingId = null;
+    renderGoals();
+  }
+
+  function saveGoalEdit(id) {
+    const g = _goals.find(x => x.id === id);
+    if (!g) return;
+    const name   = document.getElementById('edit-name-' + id).value.trim();
+    const amount = parseFloat(document.getElementById('edit-amount-' + id).value);
+    const yearsRaw = document.getElementById('edit-years-' + id).value.trim();
+    const years  = yearsRaw === '' ? null : parseFloat(yearsRaw);
+
+    if (!name)                  { alert('名前を入力してください'); return; }
+    if (!amount || amount <= 0) { alert('金額を入力してください'); return; }
+    if (years != null && years <= 0) { alert('年数は0より大きい値にしてください'); return; }
+
+    g.name = name; g.amount = amount; g.years = years;
+    _editingId = null;
     saveGoals();
     renderGoals();
   }
@@ -2384,6 +2416,28 @@
     const totalAmount = goalTotal();
 
     list.innerHTML = _goals.map(g => {
+      // Edit mode for this card
+      if (g.id === _editingId) {
+        return `
+      <div class="goal-card" style="border-color:var(--accent);">
+        <label class="goal-label">やりたいこと・欲しいもの</label>
+        <input type="text" id="edit-name-${g.id}" class="goal-input" value="${escapeHtml(g.name)}" maxlength="24">
+        <div class="goal-form-row">
+          <div style="flex:1;">
+            <label class="goal-label">金額（円）</label>
+            <input type="number" id="edit-amount-${g.id}" class="goal-input" value="${g.amount}" min="0" step="10000">
+          </div>
+          <div style="flex:1;">
+            <label class="goal-label">達成まで（年・任意）</label>
+            <input type="number" id="edit-years-${g.id}" class="goal-input" value="${g.years ?? ''}" min="0" step="0.5" placeholder="任意">
+          </div>
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-top:0.7rem;">
+          <button class="goal-add-btn" style="flex:1;" onclick="saveGoalEdit('${g.id}')">💾 保存</button>
+          <button class="goal-preset" style="padding:0.55rem 1rem;" onclick="cancelGoalEdit()">キャンセル</button>
+        </div>
+      </div>`;
+      }
       const perItem = (g.years && g.years > 0) ? `
         <div class="goal-save-note">
           この1件を単独で <strong>${g.years}年</strong>で貯めるなら
@@ -2397,7 +2451,10 @@
             <div class="goal-card-name">${escapeHtml(g.name)}</div>
             <div class="goal-card-meta">${fmtYen(g.amount)}${g.years ? ` ／ ${g.years}年後に単独達成なら` : ''}</div>
           </div>
-          <button class="goal-del" onclick="deleteGoal('${g.id}')" title="削除">🗑️</button>
+          <div style="display:flex;gap:0.15rem;flex-shrink:0;">
+            <button class="goal-del" onclick="editGoal('${g.id}')" title="編集">✏️</button>
+            <button class="goal-del" onclick="deleteGoal('${g.id}')" title="削除">🗑️</button>
+          </div>
         </div>
         ${perItem}
       </div>`;
