@@ -580,6 +580,102 @@
     .price-badge .pb-change.flat { color: var(--muted); }
     .price-badge .pb-loading { color: var(--muted); font-weight: 400; }
 
+    /* ── Goals simulator ── */
+    .goal-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    .goal-form-row { display: flex; gap: 0.7rem; margin-top: 0.7rem; }
+    .goal-label { display: block; font-size: 0.68rem; color: var(--muted); margin-bottom: 0.25rem; font-weight: 600; }
+    .goal-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.55rem 0.75rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      outline: none;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    .goal-input:focus { border-color: var(--accent); }
+    .goal-input::placeholder { color: var(--muted); opacity: 0.7; }
+    .goal-add-btn {
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      padding: 0.55rem 1.2rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      align-self: flex-end;
+      transition: opacity 0.15s;
+    }
+    .goal-add-btn:hover { opacity: 0.88; }
+    .goal-preset {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 0.7rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .goal-preset:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .goal-summary {
+      background: linear-gradient(135deg, rgba(108,111,255,0.12), rgba(34,197,94,0.1));
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1.1rem;
+    }
+    .goal-summary-title { font-size: 0.72rem; color: var(--muted); font-weight: 700; margin-bottom: 0.6rem; }
+    .goal-summary-grid { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .goal-summary-item { flex: 1; min-width: 120px; }
+    .goal-summary-item .val { font-size: 1.25rem; font-weight: 800; color: var(--text); }
+    .goal-summary-item .lbl { font-size: 0.66rem; color: var(--muted); margin-top: 0.1rem; }
+
+    .goal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 0.9rem;
+    }
+    .goal-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+    .goal-card-name { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .goal-card-meta { font-size: 0.7rem; color: var(--muted); margin-top: 0.15rem; }
+    .goal-del {
+      background: none; border: none; color: var(--muted); cursor: pointer;
+      font-size: 0.95rem; padding: 0.15rem 0.35rem; border-radius: 6px; line-height: 1;
+    }
+    .goal-del:hover { color: var(--red); background: var(--surface2); }
+    .goal-progress-track {
+      height: 8px; background: var(--surface2); border-radius: 20px; overflow: hidden;
+      margin: 0.75rem 0 0.5rem;
+    }
+    .goal-progress-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--accent), var(--green)); transition: width 0.4s; }
+    .goal-calc-row {
+      display: flex; gap: 0.7rem; margin-top: 0.7rem;
+    }
+    .goal-calc-box {
+      flex: 1; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.6rem 0.7rem; text-align: center;
+    }
+    .goal-calc-box .cbig { font-size: 1rem; font-weight: 800; }
+    .goal-calc-box .csml { font-size: 0.62rem; color: var(--muted); margin-top: 0.15rem; line-height: 1.4; }
+    .goal-calc-box.save .cbig { color: var(--text); }
+    .goal-calc-box.invest .cbig { color: var(--green); }
+    .goal-save-note { font-size: 0.68rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.55; }
+
     /* ── Chart range buttons ── */
     .chart-range-btn {
       background: var(--surface2);
@@ -669,6 +765,7 @@
   <button class="tab" onclick="switchTab(this, 'crypto')">₿ 仮想通貨</button>
   <button class="tab" onclick="switchTab(this, 'fx')">💴 為替・FX</button>
   <button class="tab" onclick="switchTab(this,'chart')">📊 チャート</button>
+  <button class="tab" onclick="switchTab(this,'goals')" style="position:relative;">🎯 目標<span style="position:absolute;top:-4px;right:-2px;background:var(--green);color:#fff;font-size:0.55rem;font-weight:800;padding:1px 4px;border-radius:8px;">NEW</span></button>
 </div>
 
 <!-- News loading/error indicators -->
@@ -1149,6 +1246,58 @@
 
   <p style="color:var(--muted);font-size:0.62rem;margin-top:1rem;text-align:center;">
     ※ TradingViewが提供するデータです。表示にはJavaScriptが必要です。
+  </p>
+</div>
+
+<!-- Goals / Dream Simulator Section -->
+<div id="section-goals" class="section">
+  <div class="section-title">🎯 目標シミュレーター</div>
+  <p style="color:var(--muted);font-size:0.75rem;margin:0 0 1rem;">
+    欲しいもの・やりたいことを登録すると、いくら必要か・毎月いくら貯めればいいか・投資で運用したらどうなるかを自動計算します。
+  </p>
+
+  <!-- Input form -->
+  <div class="goal-form">
+    <input type="text" id="goalName" class="goal-input" placeholder="例：ハワイ旅行、車、住宅頭金" maxlength="24">
+    <div class="goal-form-row">
+      <div style="flex:1;">
+        <label class="goal-label">目標金額（円）</label>
+        <input type="number" id="goalAmount" class="goal-input" placeholder="500000" min="0" step="10000">
+      </div>
+      <div style="flex:1;">
+        <label class="goal-label">達成まで（年）</label>
+        <input type="number" id="goalYears" class="goal-input" placeholder="3" min="0" step="0.5">
+      </div>
+    </div>
+    <div class="goal-form-row" style="align-items:center;">
+      <div style="flex:1;">
+        <label class="goal-label">想定利回り（年％・運用する場合）</label>
+        <input type="number" id="goalRate" class="goal-input" value="5" min="0" max="30" step="0.5">
+      </div>
+      <button class="goal-add-btn" onclick="addGoal()">＋ 追加</button>
+    </div>
+    <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.6rem;">
+      <button class="goal-preset" onclick="setPreset('ハワイ旅行',500000,2)">✈️ ハワイ旅行 50万</button>
+      <button class="goal-preset" onclick="setPreset('新しい車',3000000,5)">🚗 車 300万</button>
+      <button class="goal-preset" onclick="setPreset('住宅頭金',5000000,7)">🏠 住宅頭金 500万</button>
+      <button class="goal-preset" onclick="setPreset('結婚資金',3500000,3)">💍 結婚 350万</button>
+      <button class="goal-preset" onclick="setPreset('老後資金',20000000,30)">👵 老後 2000万</button>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div id="goalSummary" class="goal-summary" style="display:none;"></div>
+
+  <!-- Goals list -->
+  <div id="goalList"></div>
+
+  <div id="goalEmpty" style="text-align:center;color:var(--muted);font-size:0.82rem;padding:2rem 1rem;">
+    まだ目標がありません。<br>上のフォームか、よく使う目標ボタンから追加してみましょう 👆
+  </div>
+
+  <p style="color:var(--muted);font-size:0.62rem;margin-top:1.2rem;text-align:center;line-height:1.6;">
+    ※ 登録した目標はこの端末のブラウザにのみ保存されます（外部に送信されません）。<br>
+    ※ 運用シミュレーションは毎月積立・複利前提の概算です。投資は元本保証ではありません。
   </p>
 </div>
 
@@ -2057,6 +2206,150 @@
   document.getElementById('themeToggle').addEventListener('click', () => {
     if (_chartRendered) setTimeout(() => renderCharts(_chartRange), 50);
   });
+
+  // ── Goals / Dream Simulator ──────────────────────────────────
+  const GOALS_KEY = 'goals_v1';
+  let _goals = [];
+
+  function loadGoals() {
+    try { _goals = JSON.parse(localStorage.getItem(GOALS_KEY) || '[]'); }
+    catch { _goals = []; }
+  }
+  function saveGoals() {
+    try { localStorage.setItem(GOALS_KEY, JSON.stringify(_goals)); } catch {}
+  }
+
+  function fmtYen(n) {
+    n = Math.round(n);
+    if (n >= 100000000) return (n / 100000000).toFixed(n % 100000000 === 0 ? 0 : 2) + '億円';
+    if (n >= 10000)     return (n / 10000).toLocaleString('ja-JP', { maximumFractionDigits: 1 }) + '万円';
+    return n.toLocaleString('ja-JP') + '円';
+  }
+
+  // 毎月積立で目標額に到達するための月額（単純貯金＝利回り0）
+  function monthlySave(target, years) {
+    const months = Math.max(1, Math.round(years * 12));
+    return target / months;
+  }
+  // 年利rで毎月積立し、目標額に到達するための月額（複利・期末積立）
+  function monthlyInvest(target, years, ratePct) {
+    const months = Math.max(1, Math.round(years * 12));
+    const r = (ratePct / 100) / 12;
+    if (r <= 0) return target / months;
+    // FV = P * ((1+r)^n - 1) / r  →  P = FV * r / ((1+r)^n - 1)
+    const factor = (Math.pow(1 + r, months) - 1) / r;
+    return target / factor;
+  }
+
+  function setPreset(name, amount, years) {
+    document.getElementById('goalName').value = name;
+    document.getElementById('goalAmount').value = amount;
+    document.getElementById('goalYears').value = years;
+    document.getElementById('goalName').focus();
+  }
+
+  function addGoal() {
+    const name   = document.getElementById('goalName').value.trim();
+    const amount = parseFloat(document.getElementById('goalAmount').value);
+    const years  = parseFloat(document.getElementById('goalYears').value);
+    const rate   = parseFloat(document.getElementById('goalRate').value) || 0;
+
+    if (!name)                         { alert('目標の名前を入力してください'); return; }
+    if (!amount || amount <= 0)        { alert('目標金額を入力してください');   return; }
+    if (!years  || years  <= 0)        { alert('達成までの年数を入力してください'); return; }
+
+    _goals.push({ id: Date.now() + '_' + _goals.length, name, amount, years, rate });
+    saveGoals();
+    document.getElementById('goalName').value = '';
+    document.getElementById('goalAmount').value = '';
+    document.getElementById('goalYears').value = '';
+    renderGoals();
+  }
+
+  function deleteGoal(id) {
+    _goals = _goals.filter(g => g.id !== id);
+    saveGoals();
+    renderGoals();
+  }
+
+  function renderGoals() {
+    const list  = document.getElementById('goalList');
+    const empty = document.getElementById('goalEmpty');
+    const sumEl = document.getElementById('goalSummary');
+    if (!list) return;
+
+    if (_goals.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      sumEl.style.display = 'none';
+      return;
+    }
+    empty.style.display = 'none';
+
+    let totalAmount = 0, totalSave = 0, totalInvest = 0;
+
+    list.innerHTML = _goals.map(g => {
+      const save   = monthlySave(g.amount, g.years);
+      const invest = monthlyInvest(g.amount, g.years, g.rate);
+      totalAmount += g.amount;
+      totalSave   += save;
+      totalInvest += invest;
+      const diff = save - invest;             // 運用で月々ラクになる額
+      const totalInvestPaid = invest * Math.round(g.years * 12);
+      const gain = g.amount - totalInvestPaid; // 運用益のおかげで払わずに済む額
+
+      return `
+      <div class="goal-card">
+        <div class="goal-card-head">
+          <div>
+            <div class="goal-card-name">${escapeHtml(g.name)}</div>
+            <div class="goal-card-meta">${fmtYen(g.amount)} ／ ${g.years}年後 ／ 想定利回り ${g.rate}%</div>
+          </div>
+          <button class="goal-del" onclick="deleteGoal('${g.id}')" title="削除">🗑️</button>
+        </div>
+        <div class="goal-calc-row">
+          <div class="goal-calc-box save">
+            <div class="cbig">${fmtYen(save)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
+            <div class="csml">💰 貯金だけ<br>(利回り0%)</div>
+          </div>
+          <div class="goal-calc-box invest">
+            <div class="cbig">${fmtYen(invest)}<span style="font-size:0.6rem;color:var(--muted);">/月</span></div>
+            <div class="csml">📈 ${g.rate}%運用<br>(NISA等)</div>
+          </div>
+        </div>
+        <div class="goal-save-note">
+          📈で運用すると月々 <strong style="color:var(--green);">${fmtYen(diff)}</strong> ラクに。
+          ${gain > 0 ? `運用益で約 <strong style="color:var(--green);">${fmtYen(gain)}</strong> を稼ぐ計算です。` : ''}
+        </div>
+      </div>`;
+    }).join('');
+
+    // Summary
+    sumEl.style.display = 'block';
+    sumEl.innerHTML = `
+      <div class="goal-summary-title">📊 ${_goals.length}件の目標の合計</div>
+      <div class="goal-summary-grid">
+        <div class="goal-summary-item">
+          <div class="val">${fmtYen(totalAmount)}</div>
+          <div class="lbl">必要な合計金額</div>
+        </div>
+        <div class="goal-summary-item">
+          <div class="val">${fmtYen(totalSave)}<span style="font-size:0.7rem;color:var(--muted);">/月</span></div>
+          <div class="lbl">💰 貯金だけの場合</div>
+        </div>
+        <div class="goal-summary-item">
+          <div class="val" style="color:var(--green);">${fmtYen(totalInvest)}<span style="font-size:0.7rem;color:var(--muted);">/月</span></div>
+          <div class="lbl">📈 運用した場合</div>
+        </div>
+      </div>`;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  loadGoals();
+  renderGoals();
 
   // Holdings data (MSCI ACWI top 50, 2025年6月基準)
   const HOLDINGS = [
